@@ -6,11 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="HiveWallet.fs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="HiveAPI" Version="0.3.0" />
+    <Compile Include="Pipeline.fs" />
   </ItemGroup>
 
 </Project>
