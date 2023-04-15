@@ -4,6 +4,7 @@ open System
 open Xunit
 open FsUnit.Xunit
 open Functional.ETL.Pipeline
+open FSharp.Control
 
 let private hiveNodeUrl = "http://engine.alamut.uk"
 let private port = "5000"
@@ -33,10 +34,11 @@ let ``Can combine multiple using decoration pattern`` () =
 [<Fact>]
 let ``Execute All readers`` () =
     let testReader () = 
-        let indexes = seq { 1L .. 5L }
-
+        let indexes = taskSeq { yield! [1L..5L] }
+        
         indexes 
-        |> Seq.map Entity.bind
+        |> TaskSeq.map Entity.bind
+        |> TaskSeq.map Ok 
 
     let testConverter entity = 
         entity
@@ -45,4 +47,7 @@ let ``Execute All readers`` () =
    
     let results = process pipeline
 
-    results |> Seq.length |> should equal 5 
+    task {
+        let! underTestResult = results |> TaskSeq.length 
+        underTestResult|> should equal 5 
+    } 

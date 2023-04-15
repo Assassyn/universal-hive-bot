@@ -9,4 +9,8 @@
     <Compile Include="Pipeline.fs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FSharp.Control.TaskSeq" Version="0.3.0" />
+  </ItemGroup>
+
 </Project>

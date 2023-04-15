@@ -1,11 +1,20 @@
 ﻿namespace Functional.ETL
 
+open FSharp.Control
+
 module Pipeline =
-    type Entity = 
+    type PipelineProcessData = 
         {
             index: int64
             properties: Map<string, obj>
         }
+    type WriterResult = 
+        | Success
+        | Failure
+    type ErrorMessage = string
+    type Reader<'Error> = unit -> Result<PipelineProcessData, 'Error> taskSeq
+    type Transformer<'Error> = Result<PipelineProcessData, 'Error> -> Result<PipelineProcessData, 'Error>    
+        
     module Entity = 
         let withProperty entity key value =
             let properties = entity.properties.Add (key, value)
@@ -17,25 +26,18 @@ module Pipeline =
                 index = index
                 properties = Map.empty
             }
-    type WriterResult = 
-        | Success
-        | Failure
 
-    type ErrorMessage = string
-
-    type Reader = unit -> Entity seq
-
-    type Transformer<'Error> = Entity -> Result<Entity, 'Error>
     module Transformer = 
         let empty<'Error> =
             fun entity -> Ok entity
-        let wrap<'Error> (transformFunction: Entity -> Entity): Transformer<'Error> = 
-            transformFunction >> Ok
-
+        let wrap (transformFunction: PipelineProcessData -> PipelineProcessData) (result: Result<PipelineProcessData, 'Error>) = 
+            match result with 
+            | Ok entity -> entity |> transformFunction |> Ok
+            | Error error -> Error error
 
     type Pipeline<'Error> = 
         {
-            extractor: Reader
+            extractor: Reader<'Error>
             transformers: Transformer<'Error>
         }
     module Pipeline = 
@@ -45,7 +47,6 @@ module Pipeline =
                 transformers = transformers
             }
 
-
     let process pipeline =     
         pipeline.extractor ()
-        |> Seq.map pipeline.transformers
+        |> TaskSeq.map pipeline.transformers

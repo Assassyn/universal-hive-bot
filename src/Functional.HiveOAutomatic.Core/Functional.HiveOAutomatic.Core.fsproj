@@ -6,11 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Actions\LoadLevel2Tokens.fs" />
+    <Compile Include="Actions\UserReader.fs" />
     <Compile Include="HiveWallet.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HiveAPI" Version="0.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.ETL\Functional.ETL.fsproj" />
   </ItemGroup>
 
 </Project>
