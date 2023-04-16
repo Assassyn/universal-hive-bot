@@ -15,12 +15,15 @@ module Pipeline =
     type Reader<'Error> = unit -> Result<PipelineProcessData, 'Error> taskSeq
     type Transformer<'Error> = Result<PipelineProcessData, 'Error> -> Result<PipelineProcessData, 'Error>    
         
-    module Entity = 
+    module PipelineProcessData = 
         let withProperty entity key value =
             let properties = entity.properties.Add (key, value)
             { entity with properties = properties }
         let readProperty entity key =
             entity.properties.[key]
+        let readPropertyAsString entity key =
+            let property = readProperty entity key
+            property :?> string
         let bind index = 
             {
                 index = index
@@ -47,6 +50,8 @@ module Pipeline =
                 transformers = transformers
             }
 
-    let process pipeline =     
-        pipeline.extractor ()
-        |> TaskSeq.map pipeline.transformers
+    let processPipeline pipelineDefinition =     
+        pipelineDefinition.extractor ()
+        |> TaskSeq.map pipelineDefinition.transformers
+        |> TaskSeq.toSeq
+        

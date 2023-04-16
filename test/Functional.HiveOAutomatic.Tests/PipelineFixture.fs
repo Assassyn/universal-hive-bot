@@ -12,9 +12,9 @@ let private port = "5000"
 [<Fact>]
 let ``Can combine multiple using decoration pattern`` () =
     let converter1 entity =
-        Entity.withProperty entity "b" 2
+        PipelineProcessData.withProperty entity "b" 2
     let converter2 entity =
-        Entity.withProperty entity "c" true
+        PipelineProcessData.withProperty entity "c" true
 
     let testEntity = 
         {
@@ -27,9 +27,9 @@ let ``Can combine multiple using decoration pattern`` () =
 
     let result = combinedConverter testEntity
 
-    Entity.readProperty result "a" |> should equal "a"
-    Entity.readProperty result "b" |> should equal 2
-    Entity.readProperty result "c" |> should equal true
+    PipelineProcessData.readProperty result "a" |> should equal "a"
+    PipelineProcessData.readProperty result "b" |> should equal 2
+    PipelineProcessData.readProperty result "c" |> should equal true
 
 [<Fact>]
 let ``Execute All readers`` () =
@@ -37,7 +37,7 @@ let ``Execute All readers`` () =
         let indexes = taskSeq { yield! [1L..5L] }
         
         indexes 
-        |> TaskSeq.map Entity.bind
+        |> TaskSeq.map PipelineProcessData.bind
         |> TaskSeq.map Ok 
 
     let testConverter entity = 
@@ -45,9 +45,9 @@ let ``Execute All readers`` () =
 
     let pipeline = Pipeline.bind testReader (Transformer.wrap testConverter)
    
-    let results = process pipeline
+    let results = processPipeline pipeline
 
-    task {
-        let! underTestResult = results |> TaskSeq.length 
-        underTestResult|> should equal 5 
-    } 
+    //task {
+    let underTestResult = results |> Seq.length 
+    underTestResult|> should equal 5 
+    //} 

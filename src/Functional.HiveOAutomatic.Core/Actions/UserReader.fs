@@ -10,8 +10,9 @@ let private createEntity index (username: string) =
     }
 
 
-let getUserReader (usernames: string seq) =
-    usernames
-    |> Seq.mapi createEntity
-    |> TaskSeq.ofSeq
-
+let getUserReader  (usernames: string seq): Reader<Pipeline.HiveError> =
+    fun () -> 
+        usernames
+        |> Seq.mapi createEntity
+        |> Seq.map Result<PipelineProcessData, Pipeline.HiveError>.Ok
+        |> TaskSeq.ofSeq

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Level2TokensFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Tests.fs" />

@@ -10,9 +10,8 @@ let private port = "5000"
 [<Fact>]
 let ``Username is converted to entity`` () =
     let reader = UserReader.getUserReader [ "assassyn" ]
-
     task {
-        let! underTestResult = reader |> TaskSeq.length 
-        underTestResult|> should equal 1
-    } 
+        let! result = reader () |> TaskSeq.length 
+        result |> should equal 1
+    }
 
