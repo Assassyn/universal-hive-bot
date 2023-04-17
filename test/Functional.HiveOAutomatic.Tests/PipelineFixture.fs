@@ -9,6 +9,9 @@ open FSharp.Control
 let private hiveNodeUrl = "http://engine.alamut.uk"
 let private port = "5000"
 
+let extractSome (option: Option<obj>) =
+    option.Value
+
 [<Fact>]
 let ``Can combine multiple using decoration pattern`` () =
     let converter1 entity =
@@ -27,9 +30,9 @@ let ``Can combine multiple using decoration pattern`` () =
 
     let result = combinedConverter testEntity
 
-    PipelineProcessData.readProperty result "a" |> should equal "a"
-    PipelineProcessData.readProperty result "b" |> should equal 2
-    PipelineProcessData.readProperty result "c" |> should equal true
+    PipelineProcessData.readProperty result "a" |> extractSome |> should equal "a"
+    PipelineProcessData.readProperty result "b" |> extractSome |> should equal 2
+    PipelineProcessData.readProperty result "c" |> extractSome |> should equal true
 
 [<Fact>]
 let ``Execute All readers`` () =
@@ -47,7 +50,6 @@ let ``Execute All readers`` () =
    
     let results = processPipeline pipeline
 
-    //task {
     let underTestResult = results |> Seq.length 
-    underTestResult|> should equal 5 
-    //} 
+    underTestResult |> should equal 5 
+     

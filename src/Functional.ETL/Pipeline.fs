@@ -20,10 +20,14 @@ module Pipeline =
             let properties = entity.properties.Add (key, value)
             { entity with properties = properties }
         let readProperty entity key =
-            entity.properties.[key]
+            match entity.properties.ContainsKey (key) with 
+            | true -> Some entity.properties.[key]
+            | _ -> None
         let readPropertyAsString entity key =
             let property = readProperty entity key
-            property :?> string
+            match property with 
+            | Some x -> Some (x:?> string)
+            | _ -> None
         let bind index = 
             {
                 index = index

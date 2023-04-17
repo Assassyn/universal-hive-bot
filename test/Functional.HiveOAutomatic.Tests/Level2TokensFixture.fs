@@ -13,11 +13,22 @@ open Functioanl.HiveBot.HIVEConverter
 let private hiveNodeUrl = "http://engine.alamut.uk"
 let private port = "5000"
 
+let extractSome (option: Option<obj>) =
+    option.Value
+
 [<Fact>]
-let ``Username is converted to entity`` () =
+let ``Can read all tokens from levle 2`` () =
     let reader = UserReader.getUserReader [ "assassyn" ]
     let transformer = Transformer.wrap LoadLevel2Tokens.LoadLevel2Tokens
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
-    ()
+    let objectUnderTest = 
+        results 
+        |> Seq.item 0
+        |> function 
+            | Ok i -> i
+            | _ -> PipelineProcessData.bind 0
+
+    PipelineProcessData.readProperty objectUnderTest "username" |> extractSome |> should equal "assassyn"
+    PipelineProcessData.readProperty objectUnderTest "PGMM" |> extractSome |> should equal 5
