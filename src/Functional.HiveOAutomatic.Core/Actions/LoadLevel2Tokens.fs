@@ -1,11 +1,21 @@
 ﻿namespace Functioanl.HiveBot.HIVEConverter
 
 module LoadLevel2Tokens =
+    open Layer2
     open Functional.ETL.Pipeline
 
-    let LoadLevel2Tokens (entity: PipelineProcessData) = 
-        let username = PipelineProcessData.readProperty entity "username"
-        entity
+    let private addTokenBalanceAsProperty entity tokenBalance =
+        PipelineProcessData.withProperty entity tokenBalance.symbol tokenBalance.balance
+
+    let LoadLevel2Tokens apiUri (entity: PipelineProcessData) = 
+        let username = PipelineProcessData.readPropertyAsString entity "username"
+
+        match username with 
+        | Some username -> 
+            getBalance apiUri username
+            |> Seq.fold addTokenBalanceAsProperty entity
+        | _ -> 
+            entity
 
 //let getUserReader (usernames: string seq) =
 //    usernames
