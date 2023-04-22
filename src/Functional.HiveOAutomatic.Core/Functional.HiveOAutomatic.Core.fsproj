@@ -6,8 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Hive\Hive.fs" />
     <Compile Include="Hive\Layer2.fs" />
     <Compile Include="Pipline.fs" />
+    <Compile Include="Actions\StakeToken.fs" />
     <Compile Include="Actions\LoadLevel2Tokens.fs" />
     <Compile Include="Actions\UserReader.fs" />
     <Compile Include="HiveWallet.fs" />

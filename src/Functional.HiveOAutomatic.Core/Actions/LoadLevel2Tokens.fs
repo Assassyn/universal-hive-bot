@@ -7,7 +7,7 @@ module LoadLevel2Tokens =
     let private addTokenBalanceAsProperty entity tokenBalance =
         PipelineProcessData.withProperty entity tokenBalance.symbol tokenBalance.balance
 
-    let LoadLevel2Tokens apiUri (entity: PipelineProcessData) = 
+    let action apiUri (entity: PipelineProcessData) = 
         let username = PipelineProcessData.readPropertyAsString entity "username"
 
         match username with 

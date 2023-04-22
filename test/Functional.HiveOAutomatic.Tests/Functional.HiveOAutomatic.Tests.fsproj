@@ -8,9 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="HiveAccessFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Level2TokensFixture.fs" />
+    <Compile Include="StakeTokensFixture.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

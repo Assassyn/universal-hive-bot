@@ -1,4 +1,4 @@
-﻿module Level2TokensFixture
+﻿module StakeTokensFixture
 
 open Xunit
 open FsUnit.Xunit
@@ -18,9 +18,12 @@ let extractSome (option: Option<obj>) =
     option.Value
 
 [<Fact>]
-let ``Can read all tokens from levle 2`` () =
+let ``Can stake tokens`` () =
     let reader = UserReader.getUserReader [ "assassyn" ]
-    let transformer = Transformer.wrap (LoadLevel2Tokens.action hiveNodeUrl)
+    let hive = Hive.Hive (hiveNodeUrl)
+    let transformer = 
+        Transformer.wrap (LoadLevel2Tokens.action hiveNodeUrl)
+        >> Transformer.wrap (StakeToken.action hive ["ONEUP"; "CENT"])
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
