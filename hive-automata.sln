@@ -5,13 +5,13 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F85CC260-5594-48C0-A4CE-2019342ABCAB}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.HiveOAutomatic.Core", "src\Functional.HiveOAutomatic.Core\Functional.HiveOAutomatic.Core.fsproj", "{B7C9AC42-DD23-4758-843D-0EE6742A7B63}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.HiveUniversalBot.Core", "src\Functional.HiveOAutomatic.Core\Functional.HiveUniversalBot.Core.fsproj", "{B7C9AC42-DD23-4758-843D-0EE6742A7B63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{43E9CD43-AF90-410B-83C9-20A95FD9C17E}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.HiveOAutomatic.Tests", "test\Functional.HiveOAutomatic.Tests\Functional.HiveOAutomatic.Tests.fsproj", "{81968BFB-340C-4E6E-9039-24901F0FB5C9}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.ETL", "src\Functional.ETL\Functional.ETL.fsproj", "{32B0C3C3-D5F3-4745-BB9A-35F21DACBEEC}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.ETL", "src\Functional.ETL\Functional.ETL.fsproj", "{32B0C3C3-D5F3-4745-BB9A-35F21DACBEEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

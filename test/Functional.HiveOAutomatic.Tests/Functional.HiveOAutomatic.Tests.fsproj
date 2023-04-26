@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Functional.ETL\Functional.ETL.fsproj" />
-    <ProjectReference Include="..\..\src\Functional.HiveOAutomatic.Core\Functional.HiveOAutomatic.Core.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.HiveOAutomatic.Core\Functional.HiveUniversalBot.Core.fsproj" />
   </ItemGroup>
 
 </Project>
