@@ -19,20 +19,15 @@ let extractSome (option: Option<obj>) =
 
 [<Fact>]
 let ``Can stake tokens`` () =
-    let reader = UserReader.getUserReader [ "assassyn" ]
+    let reader = UserReader.getUserReader [ ("assassyn", "", "") ]
     let hive = Hive.Hive (hiveNodeUrl)
     let transformer = 
-        Transformer.wrap (LoadLevel2Tokens.action hiveNodeUrl)
-        >> Transformer.wrap (StakeToken.action hive ["ONEUP"; "CENT"])
+        (LoadLevel2Tokens.action hiveNodeUrl)
+        >> (StakeToken.action hive ["ONEUP"; "CENT"])
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
-    let objectUnderTest = 
-        results 
-        |> Seq.item 0
-        |> function 
-            | Ok i -> i
-            | _ -> PipelineProcessData.bind 0
+    let objectUnderTest = results |> Seq.item 0
 
     PipelineProcessData.readProperty objectUnderTest "username" |> extractSome |> should equal "assassyn"
     PipelineProcessData.readProperty objectUnderTest "PGMM" |> extractSome |> should equal "5"

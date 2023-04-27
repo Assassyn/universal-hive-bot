@@ -3,51 +3,56 @@
 open FSharp.Control
 
 module Pipeline =
-    type PipelineProcessData = 
+    type PipelineProcessData<'Result> = 
         {
             index: int64
             properties: Map<string, obj>
+            results: 'Result list
         }
     type WriterResult = 
         | Success
         | Failure
     type ErrorMessage = string
-    type Reader<'Error> = unit -> Result<PipelineProcessData, 'Error> taskSeq
-    type Transformer<'Error> = Result<PipelineProcessData, 'Error> -> Result<PipelineProcessData, 'Error>    
+    type Reader<'Result> = unit -> PipelineProcessData<'Result> taskSeq
+    type Transformer<'Result> = PipelineProcessData<'Result> -> PipelineProcessData<'Result>
         
     module PipelineProcessData = 
         let withProperty entity key value =
             let properties = entity.properties.Add (key, value)
             { entity with properties = properties }
+        let withResult<'Result> (entity: PipelineProcessData<'Result>) (value: 'Result) =
+            let results = value::entity.results
+            { entity with results = results }
         let readProperty entity key =
             match entity.properties.ContainsKey (key) with 
             | true -> Some entity.properties.[key]
             | _ -> None
-        let readPropertyAsType<'TResult> entity key =
+        let readPropertyAsType<'EntityResult, 'PropertyType> (entity: PipelineProcessData<'EntityResult>) key =
             let property = readProperty entity key
             match property with 
-            | Some x -> Some (x:?> 'TResult)
+            | Some x -> Some (x:?> 'PropertyType)
             | _ -> None
-        let readPropertyAsString = readPropertyAsType<string>
+        let readPropertyAsString<'Result> = readPropertyAsType<'Result, string>
 
         let bind index = 
             {
                 index = index
                 properties = Map.empty
+                results = list.Empty
             }
 
     module Transformer = 
         let empty<'Error> =
             fun entity -> Ok entity
-        let wrap (transformFunction: PipelineProcessData -> PipelineProcessData) (result: Result<PipelineProcessData, 'Error>) = 
-            match result with 
-            | Ok entity -> entity |> transformFunction |> Ok
-            | Error error -> Error error
+        //let wrap (transformFunction: PipelineProcessData -> PipelineProcessData) (result: Result<PipelineProcessData, 'Error>) = 
+        //    match result with 
+        //    | Ok entity -> entity |> transformFunction |> Ok
+        //    | Error error -> Error error
 
-    type Pipeline<'Error> = 
+    type Pipeline<'Results> = 
         {
-            extractor: Reader<'Error>
-            transformers: Transformer<'Error>
+            extractor: Reader<'Results>
+            transformers: Transformer<'Results>
         }
     module Pipeline = 
         let bind reader transformers = 

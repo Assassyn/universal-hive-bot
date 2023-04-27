@@ -8,12 +8,11 @@ let private createEntity index accessData =
     {
         index = int64(index)
         properties =  Map ["userdata", (username, activeKey, postingKey)]
+        results = list.Empty
     }
 
-
-let getUserReader (userdata: (string * string * string) seq): Reader<Pipeline.HiveError> =
+let getUserReader (userdata: (string * string * string) seq): Reader<Pipeline.UniversalHiveBotResutls> =
     fun () -> 
         userdata
         |> Seq.mapi createEntity
-        |> Seq.map Result<PipelineProcessData, Pipeline.HiveError>.Ok
         |> TaskSeq.ofSeq

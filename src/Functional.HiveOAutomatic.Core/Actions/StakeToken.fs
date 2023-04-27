@@ -1,7 +1,6 @@
 ﻿namespace Functioanl.HiveBot.HIVEConverter
 
 module StakeToken =
-    open Layer2
     open Functional.ETL.Pipeline
 
     let private getJson (hive: Hive.Hive) tokenStakingDetails =
@@ -14,7 +13,7 @@ module StakeToken =
                 symbol 
                 quantity
         let operations = hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-        operations
+        (operations, symbol)
 
 
     let getTokenDetails entity username tokensName = 
@@ -24,22 +23,22 @@ module StakeToken =
             | _ -> 0M
         (username, tokensName, balance)
 
-    let stakeTokens (hive: Hive.Hive) activeKey operations = 
+    let stakeTokens (hive: Hive.Hive) activeKey token operation entity = 
         try 
-            let txid = hive.brodcastTransaction operations activeKey
-            ()
+            let txid = hive.brodcastTransaction operation activeKey
+            
+            PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.Processed ("StakeAction", token))
         with  
             | ex -> 
                 let msg = ex.Message
-                ()
-        ()
+                PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.UnableToProcess ("StakeAction", token, msg))
 
     let ignoreEmpty tokenStakingDetails =
         let (_, _, quantity) = tokenStakingDetails
         quantity > 0.0M 
 
-    let action (hive: Hive.Hive) tokensToStake (entity: PipelineProcessData) = 
-        let userDetails = PipelineProcessData.readPropertyAsType<string * string * string> entity "userdata"
+    let action (hive: Hive.Hive) tokensToStake (entity: PipelineProcessData<Pipeline.UniversalHiveBotResutls>) = 
+        let userDetails = PipelineProcessData.readPropertyAsType entity "userdata"
 
         match userDetails with 
         | Some (username, activeKey, _) -> 
@@ -47,8 +46,6 @@ module StakeToken =
             |> Seq.map (getTokenDetails entity username)
             |> Seq.filter ignoreEmpty
             |> Seq.map (getJson hive)
-            |> Seq.iter (stakeTokens hive activeKey)
-            |> ignore
+            |> Seq.fold (fun entity (operation, token) -> stakeTokens hive activeKey token operation entity) entity 
         | _ -> 
-            ()
-        entity
+            PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.NoUserDetails "StakeAction")

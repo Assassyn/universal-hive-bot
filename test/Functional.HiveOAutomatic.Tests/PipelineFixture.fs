@@ -23,6 +23,7 @@ let ``Can combine multiple using decoration pattern`` () =
         {
             index = 1
             properties = Map ["a", "a";]
+            results = list.Empty
         }
 
     let combinedConverter = 
@@ -41,12 +42,11 @@ let ``Execute All readers`` () =
         
         indexes 
         |> TaskSeq.map PipelineProcessData.bind
-        |> TaskSeq.map Ok 
 
     let testConverter entity = 
         entity
 
-    let pipeline = Pipeline.bind testReader (Transformer.wrap testConverter)
+    let pipeline = Pipeline.bind testReader testConverter
    
     let results = processPipeline pipeline
 
