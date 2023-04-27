@@ -10,7 +10,8 @@ open FSharp.Control
 open Functioanl.HiveBot
 open Functioanl.HiveBot.HIVEConverter
 
-let private hiveNodeUrl = "http://engine.alamut.uk:5000"
+let private hiveNodeUrl = "https://anyx.io"
+let private hiveEngineNode = "http://engine.alamut.uk:5000"
 let private port = "5000"
 
 
@@ -22,8 +23,8 @@ let ``Can stake tokens`` () =
     let reader = UserReader.getUserReader [ "assassyn" ]
     let hive = Hive.Hive (hiveNodeUrl)
     let transformer = 
-        Transformer.wrap (LoadLevel2Tokens.action hiveNodeUrl)
-        >> Transformer.wrap (StakeToken.action hive ["ONEUP"; "CENT"])
+        Transformer.wrap (LoadLevel2Tokens.action hiveEngineNode)
+        >> Transformer.wrap (StakeToken.action hive ["ONEUP"; "CENT"; "PGM"])
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
@@ -34,5 +35,5 @@ let ``Can stake tokens`` () =
             | Ok i -> i
             | _ -> PipelineProcessData.bind 0
 
-    PipelineProcessData.readProperty objectUnderTest "username" |> extractSome |> should equal "assassyn"
+    PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("assassyn", "", "")
     PipelineProcessData.readProperty objectUnderTest "PGMM" |> extractSome |> should equal "5"

@@ -3,16 +3,17 @@
 open Functional.ETL.Pipeline
 open FSharp.Control
 
-let private createEntity index (username: string) =
+let private createEntity index accessData =
+    let (username, activeKey, postingKey) = accessData
     {
         index = int64(index)
-        properties =  Map ["username", username.ToLower();]
+        properties =  Map ["userdata", (username, activeKey, postingKey)]
     }
 
 
-let getUserReader  (usernames: string seq): Reader<Pipeline.HiveError> =
+let getUserReader (userdata: (string * string * string) seq): Reader<Pipeline.HiveError> =
     fun () -> 
-        usernames
+        userdata
         |> Seq.mapi createEntity
         |> Seq.map Result<PipelineProcessData, Pipeline.HiveError>.Ok
         |> TaskSeq.ofSeq

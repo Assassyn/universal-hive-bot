@@ -23,11 +23,13 @@ module Pipeline =
             match entity.properties.ContainsKey (key) with 
             | true -> Some entity.properties.[key]
             | _ -> None
-        let readPropertyAsString entity key =
+        let readPropertyAsType<'TResult> entity key =
             let property = readProperty entity key
             match property with 
-            | Some x -> Some (x:?> string)
+            | Some x -> Some (x:?> 'TResult)
             | _ -> None
+        let readPropertyAsString = readPropertyAsType<string>
+
         let bind index = 
             {
                 index = index

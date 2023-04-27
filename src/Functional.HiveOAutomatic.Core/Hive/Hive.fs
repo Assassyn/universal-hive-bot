@@ -3,6 +3,7 @@
 open System
 open System.Net.Http
 open HiveAPI
+open HiveAPI.CS
 
 type Hive (hiveNodeUrl) = 
     let hive = new CHived(new HttpClient(), hiveNodeUrl)
@@ -26,19 +27,16 @@ type Hive (hiveNodeUrl) =
             required_auths = setToUserNameWhenTrue username activeKey,
             required_posting_auths = setToUserNameWhenTrue username postingKey)
     
-    member this.createCustomJsonActiveKey username methodName getJson = 
-        let json = getJson applicationIdentifier (generateRandomString 10)
+    member this.createCustomJsonActiveKey username methodName json = 
+        //let json = getJson applicationIdentifier (generateRandomString 10)
         createCustomJson username true false methodName json
     
-    member this.createCustomJsonPostingKey username methodName getJson = 
-        let json = getJson applicationIdentifier (generateRandomString 10)
+    member this.createCustomJsonPostingKey username methodName json = 
+        //let json = getJson applicationIdentifier (generateRandomString 10)
         createCustomJson username false true methodName json
-    
-    member this.createTransaction json key =
-        hive.create_transaction([| json |], [| key |])
-    
+        
     member this.brodcastTransaction operations key = 
-        hive.broadcast_transaction([| operations |] , [| key |])
+        hive.broadcast_transaction ([| operations |] , [| key |])
 
 //let private hive = new CHived(new HttpClient(), hiveNodeUrl)
 

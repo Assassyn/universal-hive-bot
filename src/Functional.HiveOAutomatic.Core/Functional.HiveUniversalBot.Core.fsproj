@@ -18,6 +18,7 @@
   <ItemGroup>
     <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
     <PackageReference Include="HiveAPI" Version="0.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
