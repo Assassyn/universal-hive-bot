@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="config.json" />
+    <Content Include="users.json" />
     <Compile Include="HiveAccessFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
