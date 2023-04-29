@@ -6,13 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Hive.fs" />
+    <Compile Include="PipelineResult.fs" />
     <Compile Include="Configuration\Types.fs" />
-    <Compile Include="Configuration\Binder.fs" />
-    <Compile Include="Hive\Hive.fs" />
-    <Compile Include="Hive\Layer2.fs" />
-    <Compile Include="Pipline.fs" />
+    <Compile Include="Configuration\Configuration.fs" />
     <Compile Include="Actions\StakeToken.fs" />
-    <Compile Include="Actions\LoadLevel2Tokens.fs" />
+    <Compile Include="Actions\Level2Balance.fs" />
     <Compile Include="Actions\UserReader.fs" />
     <Compile Include="HiveWallet.fs" />
   </ItemGroup>

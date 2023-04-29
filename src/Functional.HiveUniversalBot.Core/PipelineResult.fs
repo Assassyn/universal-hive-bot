@@ -1,4 +1,4 @@
-﻿module Pipeline
+﻿module PipelineResult
 
 type Module = string
 type Item = string

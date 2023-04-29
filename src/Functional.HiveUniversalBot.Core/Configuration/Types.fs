@@ -1,14 +1,24 @@
 ﻿module Types
 
-type Settings =
+type Urls =
     {
         hiveNodeUrl: string
         hiveEngineNodeUrl: string
     }
 
-type User = 
+type ActionDefinition = 
+    {
+        name: string
+        parameters: Map<string, string>
+    }
+type UserActionsDefinition =
     {
         username: string
-        activeKey: string
-        passiveKey: string
     }
+
+type Configuration = 
+    {
+        urls: Urls
+        actions: ActionDefinition seq
+    }
+

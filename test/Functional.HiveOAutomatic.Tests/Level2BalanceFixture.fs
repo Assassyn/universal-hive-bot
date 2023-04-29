@@ -1,13 +1,8 @@
-﻿module Level2TokensFixture
+﻿module Level2BalanceFixture
 
 open Xunit
 open FsUnit.Xunit
-open FSharp.Control
-open Xunit
-open FsUnit.Xunit
 open Functional.ETL.Pipeline
-open FSharp.Control
-open Functioanl.HiveBot
 open Functioanl.HiveBot.HIVEConverter
 
 let private hiveEngineNode = "http://engine.alamut.uk:5000"
@@ -19,7 +14,7 @@ let extractSome (option: Option<obj>) =
 [<Fact>]
 let ``Can read all tokens from levle 2`` () =
     let reader = UserReader.getUserReader [ ("assassyn", "", "") ]
-    let transformer = (LoadLevel2Tokens.action hiveEngineNode)
+    let transformer = (Level2Balance.action hiveEngineNode)
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition

@@ -1,9 +1,11 @@
 ﻿namespace Functioanl.HiveBot.HIVEConverter
 
 module StakeToken =
+    open Core
+    open PipelineResult
     open Functional.ETL.Pipeline
 
-    let private getJson (hive: Hive.Hive) tokenStakingDetails =
+    let private getJson (hive: Hive) tokenStakingDetails =
         let (username, symbol, quantity) = tokenStakingDetails
         
         let json =
@@ -23,22 +25,22 @@ module StakeToken =
             | _ -> 0M
         (username, tokensName, balance)
 
-    let stakeTokens (hive: Hive.Hive) activeKey token operation entity = 
+    let stakeTokens (hive: Hive) activeKey token operation entity = 
         try 
             let txid = hive.brodcastTransaction operation activeKey
             
-            PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.Processed ("StakeAction", token))
+            PipelineProcessData.withResult entity (UniversalHiveBotResutls.Processed ("StakeAction", token))
         with  
             | ex -> 
                 let msg = ex.Message
-                PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.UnableToProcess ("StakeAction", token, msg))
+                PipelineProcessData.withResult entity (UniversalHiveBotResutls.UnableToProcess ("StakeAction", token, msg))
 
     let ignoreEmpty tokenStakingDetails =
         let (_, _, quantity) = tokenStakingDetails
         quantity > 0.0M 
 
-    let action (hive: Hive.Hive) tokensToStake (entity: PipelineProcessData<Pipeline.UniversalHiveBotResutls>) = 
-        let userDetails = PipelineProcessData.readPropertyAsType entity "userdata"
+    let action (hive: Hive) tokensToStake (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+        let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata"
 
         match userDetails with 
         | Some (username, activeKey, _) -> 
@@ -48,4 +50,4 @@ module StakeToken =
             |> Seq.map (getJson hive)
             |> Seq.fold (fun entity (operation, token) -> stakeTokens hive activeKey token operation entity) entity 
         | _ -> 
-            PipelineProcessData.withResult entity (Pipeline.UniversalHiveBotResutls.NoUserDetails "StakeAction")
+            PipelineProcessData.withResult entity (UniversalHiveBotResutls.NoUserDetails "StakeAction")

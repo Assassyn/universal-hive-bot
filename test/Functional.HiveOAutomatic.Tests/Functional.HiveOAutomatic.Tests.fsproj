@@ -8,17 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="users.json" />
-    <Compile Include="HiveAccessFixture.fs" />
+    <Content Include="configuration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="ConfigurationFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
-    <Compile Include="Level2TokensFixture.fs" />
+    <Compile Include="Level2BalanceFixture.fs" />
     <Compile Include="StakeTokensFixture.fs" />
     <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="FsUnit.xUnit" Version="5.2.0" />
@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Functional.ETL\Functional.ETL.fsproj" />
-    <ProjectReference Include="..\..\src\Functional.HiveOAutomatic.Core\Functional.HiveUniversalBot.Core.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
   </ItemGroup>
 
 </Project>

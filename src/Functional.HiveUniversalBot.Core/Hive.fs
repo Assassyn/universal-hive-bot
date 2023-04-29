@@ -1,6 +1,5 @@
-﻿module Hive
+﻿module Core
 
-open System
 open System.Net.Http
 open HiveAPI
 

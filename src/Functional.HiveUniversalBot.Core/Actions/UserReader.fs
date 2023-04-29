@@ -3,6 +3,8 @@
 open Functional.ETL.Pipeline
 open FSharp.Control
 
+type UserData = string * string * string
+
 let private createEntity index accessData =
     let (username, activeKey, postingKey) = accessData
     {
@@ -11,7 +13,7 @@ let private createEntity index accessData =
         results = list.Empty
     }
 
-let getUserReader (userdata: (string * string * string) seq): Reader<Pipeline.UniversalHiveBotResutls> =
+let getUserReader (userdata: (string * string * string) seq) =
     fun () -> 
         userdata
         |> Seq.mapi createEntity
