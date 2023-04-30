@@ -16,7 +16,6 @@
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Level2BalanceFixture.fs" />
     <Compile Include="StakeTokensFixture.fs" />
-    <Compile Include="Tests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
