@@ -11,7 +11,7 @@ let getConfiguration () =
         let config = config.AddYamlFile ("configuration.yml", true)
         config.Build()
 
-    let actions = config.GetSection("actions").Get<ActionDefinition seq> ()
+    let actions = config.GetSection("actions").Get<UserActionsDefinition array> ()
     let urls = config.GetSection("urls").Get<Urls>()
 
     {

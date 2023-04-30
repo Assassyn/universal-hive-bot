@@ -19,4 +19,4 @@ let ``Can access hive  url from settings file`` () =
 [<Fact>]
 let ``Can load defined actions`` () =
     let config = Configuration.getConfiguration ()
-    config.actions |> Seq.length |> should be 1 
+    config.actions |> Seq.length |> should equal 1 
