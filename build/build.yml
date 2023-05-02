@@ -21,157 +21,27 @@ stages:
       - job: 
         steps:
           - task: DotNetCoreCLI@2
-            displayName: build
             inputs:
-              command: 'build'
-              projects: 'src/*/*.fsproj'
+              command: 'custom'
+              custom: 'cake'
+              arguments: './build/build.cake --target=test'
+
   - stage: Publish 
     dependsOn: Build
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs: 
       - job: linux_arm 
         steps:
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
+          
           - task: DotNetCoreCLI@2
             inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'publish'
-              publishWebProjects: false
-              projects: 'src/Functional.SplinterBots.ClaimBot/InventoryTransferBot.fsproj'
-              arguments: '-c Release --self-contained -o $(Build.BinariesDirectory)/linux-arm -r "linux-arm64"'
-              zipAfterPublish: false
-          - task: DeleteFiles@1
-            inputs:
-              SourceFolder: '$(Build.BinariesDirectory)/linux-arm/Functional.SplinterBots.ClaimBot'
-              Contents: |
-                *.pdb
-                *.dll
-                *.xml
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/linux-arm/Functional.SplinterBots.ClaimBot/'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/linux-arm64-$(Build.BuildNumber).zip'
-              replaceExistingArchive: true
+              command: 'custom'
+              custom: 'cake'
+              arguments: './build/build.cake --target=Pack --build=$(Build.BuildNumber)'
           - task: PublishPipelineArtifact@1
             inputs:
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-              artifact: 'linux-arm'
-              publishLocation: 'pipeline'
-      - job: linux 
-        steps:
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'publish'
-              publishWebProjects: false
-              projects: 'src/Functional.SplinterBots.ClaimBot/InventoryTransferBot.fsproj'
-              arguments: '-c Release --self-contained -o $(Build.BinariesDirectory)/linux -r "linux-x64"'
-              zipAfterPublish: false
-          - task: DeleteFiles@1
-            inputs:
-              SourceFolder: '$(Build.BinariesDirectory)/linux/Functional.SplinterBots.ClaimBot'
-              Contents: |
-                *.pdb
-                *.dll
-                *.xml
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/linux/Functional.SplinterBots.ClaimBot'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/linux-x64-$(Build.BuildNumber).zip'
-              replaceExistingArchive: true
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-              artifact: 'linux'
-              publishLocation: 'pipeline'
-      - job: windows 
-        steps:
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'publish'
-              publishWebProjects: false
-              projects: 'src/Functional.SplinterBots.ClaimBot/InventoryTransferBot.fsproj'
-              arguments: '-c Release --self-contained -o $(Build.BinariesDirectory)/windows -r win-x64'
-              zipAfterPublish: false
-          - task: DeleteFiles@1
-            inputs:
-              SourceFolder: '$(Build.BinariesDirectory)/windows/Functional.SplinterBots.ClaimBot'
-              Contents: |
-                *.pdb
-                *.dll
-                *.xml
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/windows/Functional.SplinterBots.ClaimBot'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/windows-x64-$(Build.BuildNumber).zip'
-              replaceExistingArchive: true
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-              artifact: 'windows'
-              publishLocation: 'pipeline'
-      - job: mac 
-        pool:
-          vmImage: 'macOS-11'
-        steps:
-          - task: UseDotNet@2
-            inputs:
-              packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: 'publish'
-              publishWebProjects: false
-              projects: 'src/Functional.SplinterBots.ClaimBot/InventoryTransferBot.fsproj'
-              arguments: '-c Release --self-contained -o $(Build.BinariesDirectory)/mac -r osx-x64'
-              zipAfterPublish: false
-          - task: DeleteFiles@1
-            inputs:
-              SourceFolder: '$(Build.BinariesDirectory)/mac/Functional.SplinterBots.ClaimBot'
-              Contents: |
-                *.pdb
-                *.dll
-                *.xml
-          - task: ArchiveFiles@2
-            inputs:
-              rootFolderOrFile: '$(Build.BinariesDirectory)/mac/Functional.SplinterBots.ClaimBot'
-              includeRootFolder: false
-              archiveType: 'zip'
-              archiveFile: '$(Build.ArtifactStagingDirectory)/mac-x64-$(Build.BuildNumber).zip'
-              replaceExistingArchive: true
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-              artifact: 'mac'
+              targetPath: './build/artifacts'
+              artifact: 'packages'
               publishLocation: 'pipeline'
   - stage: push_2_github
     dependsOn: Publish
@@ -181,22 +51,7 @@ stages:
           - task: DownloadPipelineArtifact@2
             inputs:
               buildType: 'current'
-              artifactName: 'linux-arm'
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'linux'
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'mac'
-              targetPath: '$(Build.ArtifactStagingDirectory)'
-          - task: DownloadPipelineArtifact@2
-            inputs:
-              buildType: 'current'
-              artifactName: 'windows'
+              artifactName: 'packages'
               targetPath: '$(Build.ArtifactStagingDirectory)'
           - task: GitHubRelease@1
             inputs:
