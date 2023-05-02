@@ -73,8 +73,8 @@ stages:
               targetPath: '$(Build.ArtifactStagingDirectory)'
           - task: GitHubRelease@1
             inputs:
-              gitHubConnection: 'github.com_Assassyn'
-              repositoryName: 'functional-solutions/splinterbots'
+              gitHubConnection: 'github.com'
+              repositoryName: 'universal-hive-bot'
               action: 'create'
               target: '$(Build.SourceVersion)'
               tagSource: 'userSpecifiedTag'
