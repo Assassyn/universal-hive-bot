@@ -13,7 +13,7 @@ let extractSome (option: Option<obj>) =
 
 [<Fact>]
 let ``Can stake tokens`` () =
-    let reader = UserReader.bind [ ("assassyn", "", "") ]
+    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let hive = Hive (hiveNodeUrl)
     let transformer = 
         (Level2Balance.action hiveEngineNode)
@@ -23,5 +23,5 @@ let ``Can stake tokens`` () =
     let results = processPipeline pipelineDefinition
     let objectUnderTest = results |> Seq.item 0
 
-    PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("assassyn", "", "")
+    PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("ultimate-bot", "", "")
     PipelineProcessData.readProperty objectUnderTest "PGMM" |> extractSome |> should equal "5"

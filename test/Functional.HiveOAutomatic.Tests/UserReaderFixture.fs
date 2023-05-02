@@ -9,7 +9,7 @@ let private port = "5000"
 
 [<Fact>]
 let ``Username is converted to entity`` () =
-    let reader = UserReader.bind [ ("assassyn", "", "") ]
+    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     task {
         let! result = reader () |> TaskSeq.length 
         result |> should equal 1
