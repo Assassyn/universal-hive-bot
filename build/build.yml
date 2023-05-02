@@ -25,13 +25,13 @@ stages:
               packageType: 'sdk'
               useGlobalJson: true
           - task: DotNetCoreCLI@2
-            DisplayName: 'restore tools'
+            displayName: 'restore tools'
             inputs:
               command: 'custom'
               custom: 'tool'
               arguments: 'restore'
           - task: DotNetCoreCLI@2
-            DisplayName: 'build'
+            displayName: 'build'
             inputs:
               command: 'custom'
               custom: 'cake'
@@ -48,19 +48,19 @@ stages:
               packageType: 'sdk'
               useGlobalJson: true
           - task: DotNetCoreCLI@2
-            DisplayName: 'restore tools'
+            displayName: 'restore tools'
             inputs:
               command: 'custom'
               custom: 'tool'
               arguments: 'restore'
           - task: DotNetCoreCLI@2
-            DisplayName: 'build'
+            displayName: 'build'
             inputs:
               command: 'custom'
               custom: 'cake'
               arguments: './build/build.cake --target=Pack --build=$(Build.BuildNumber)'
           - task: PublishPipelineArtifact@1
-            DisplayName: 'publish artifacts'
+            displayName: 'publish artifacts'
             inputs:
               targetPath: './build/artifacts'
               artifact: 'packages'
@@ -72,13 +72,13 @@ stages:
       - job: copy_2_github
         steps:
           - task: DownloadPipelineArtifact@2
-            DisplayName: 'download artifacts'
+            displayName: 'download artifacts'
             inputs:
               buildType: 'current'
               artifactName: 'packages'
               targetPath: '$(Build.ArtifactStagingDirectory)'
           - task: GitHubRelease@1
-            DisplayName: 'Push to GitHub'
+            displayName: 'Push to GitHub'
             inputs:
               gitHubConnection: 'github.com'
               repositoryName: 'Assassyn/universal-hive-bot'
