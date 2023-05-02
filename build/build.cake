@@ -28,6 +28,10 @@ Task("Publish")
     .Does(() =>
 {
     var noBuild = false;
+    var msBuildSettings = new DotNetMSBuildSettings 
+    {
+        Version = version,
+    };
 
     DotNetPublish(cliProject, new DotNetPublishSettings 
         {
@@ -39,8 +43,8 @@ Task("Publish")
             PublishTrimmed = true,
             SelfContained = true,
             Runtime = "linux-x64",
-            VersionSuffix = version,
             NoBuild = noBuild,
+            MSBuildSettings = msBuildSettings,
         });
     DotNetPublish(cliProject, new DotNetPublishSettings 
         {
@@ -52,8 +56,8 @@ Task("Publish")
             PublishTrimmed = true,
             SelfContained = true,
             Runtime = "win-x64",
-            VersionSuffix = version,
             NoBuild = noBuild,
+            MSBuildSettings = msBuildSettings,
         });
     DotNetPublish(cliProject, new DotNetPublishSettings 
         {
@@ -65,8 +69,8 @@ Task("Publish")
             PublishTrimmed = true,
             SelfContained = true,
             Runtime = "osx-x64",
-            VersionSuffix = version,
             NoBuild = noBuild,
+            MSBuildSettings = msBuildSettings,
         });
 });
 
