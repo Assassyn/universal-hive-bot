@@ -8,16 +8,14 @@
   <ItemGroup>
     <Compile Include="Hive.fs" />
     <Compile Include="PipelineResult.fs" />
-    <Compile Include="Configuration\Types.fs" />
-    <Compile Include="Configuration\Configuration.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="Actions\StakeToken.fs" />
     <Compile Include="Actions\Level2Balance.fs" />
     <Compile Include="Actions\UserReader.fs" />
-    <Compile Include="HiveWallet.fs" />
+    <Compile Include="Configuration.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
     <PackageReference Include="HiveAPI" Version="0.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />

@@ -1,6 +1,9 @@
 ﻿module Types
 
 open System.Collections.Generic
+open Functional.ETL.Pipeline
+open Core
+open PipelineResult
 
 type Urls =
     {
@@ -18,10 +21,6 @@ type ActionDefinition () =
     member this.Parameters 
         with get () = parameters
         and set (value) = parameters <- value
-    //{
-    //    name: string
-    //    parameters: Dictionary<string, string>
-    //}
         
 type UserActionsDefinition () =
     let mutable username = ""
@@ -41,16 +40,12 @@ type UserActionsDefinition () =
     member this.Tasks
         with get () = tasks
         and set (value) = tasks <- value
-    //{
-    //    username: string
-    //    activeKey: string
-    //    postingKey: string
-    //    tasks: List<ActionDefinition>
-    //}
 
 type Configuration = 
     {
         urls: Urls
         actions: UserActionsDefinition seq
     }
-
+    
+type BindAction = Hive -> Urls -> Map<string, string> -> ( PipelineProcessData<UniversalHiveBotResutls> ->  PipelineProcessData<UniversalHiveBotResutls>)
+    

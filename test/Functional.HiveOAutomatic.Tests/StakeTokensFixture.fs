@@ -3,7 +3,6 @@
 open Xunit
 open FsUnit.Xunit
 open Functional.ETL.Pipeline
-open Functioanl.HiveBot.HIVEConverter
 open Core
 
 let private hiveNodeUrl = "https://anyx.io"
@@ -14,7 +13,7 @@ let extractSome (option: Option<obj>) =
 
 [<Fact>]
 let ``Can stake tokens`` () =
-    let reader = UserReader.getUserReader [ ("assassyn", "", "") ]
+    let reader = UserReader.bind [ ("assassyn", "", "") ]
     let hive = Hive (hiveNodeUrl)
     let transformer = 
         (Level2Balance.action hiveEngineNode)

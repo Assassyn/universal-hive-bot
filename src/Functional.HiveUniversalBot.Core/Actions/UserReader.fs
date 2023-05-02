@@ -13,7 +13,7 @@ let private createEntity index accessData =
         results = list.Empty
     }
 
-let getUserReader (userdata: (string * string * string) seq) =
+let bind (userdata: (string * string * string) seq) =
     fun () -> 
         userdata
         |> Seq.mapi createEntity

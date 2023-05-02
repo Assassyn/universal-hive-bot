@@ -44,10 +44,7 @@ module Pipeline =
     module Transformer = 
         let empty<'Error> =
             fun entity -> Ok entity
-        //let wrap (transformFunction: PipelineProcessData -> PipelineProcessData) (result: Result<PipelineProcessData, 'Error>) = 
-        //    match result with 
-        //    | Ok entity -> entity |> transformFunction |> Ok
-        //    | Error error -> Error error
+        let defaultTransformer<'Result> (entity: PipelineProcessData<'Result>) = entity
 
     type Pipeline<'Results> = 
         {
