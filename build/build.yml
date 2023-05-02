@@ -81,7 +81,7 @@ stages:
             DisplayName: 'Push to GitHub'
             inputs:
               gitHubConnection: 'github.com'
-              repositoryName: 'universal-hive-bot'
+              repositoryName: 'Assassyn/universal-hive-bot'
               action: 'create'
               target: '$(Build.SourceVersion)'
               tagSource: 'userSpecifiedTag'
