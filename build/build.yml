@@ -20,6 +20,11 @@ stages:
     jobs:
       - job: 
         steps:
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '6.0.x'
+              includePreviewVersions: true
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
@@ -32,7 +37,11 @@ stages:
     jobs: 
       - job: linux_arm 
         steps:
-          
+          - task: UseDotNet@2
+            inputs:
+              packageType: 'sdk'
+              version: '6.0.x'
+              includePreviewVersions: true
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
@@ -43,6 +52,7 @@ stages:
               targetPath: './build/artifacts'
               artifact: 'packages'
               publishLocation: 'pipeline'
+
   - stage: push_2_github
     dependsOn: Publish
     jobs: 
