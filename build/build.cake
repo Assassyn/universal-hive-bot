@@ -1,6 +1,6 @@
 var target = Argument("target", "Test");
 var configuration = Argument("configuration", "Release");
-var version = Argument("version", "0.1.0");
+var version = Argument("build", "0.1.0");
 var solution = "../universal-hive-bot.sln";
 var cliProject = "../src/Functional.UltimateHiveBot.CLI/Functional.UltimateHiveBot.CLI.fsproj";
 var publishDir = "./publish/";
