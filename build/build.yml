@@ -25,11 +25,10 @@ stages:
               packageType: 'sdk'
               useGlobalJson: true
           - task: DotNetCoreCLI@2
-            displayName: restore
             inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
+              command: 'custom'
+              custom: 'tool'
+              arguments: 'restore'
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
@@ -47,11 +46,10 @@ stages:
               packageType: 'sdk'
               useGlobalJson: true
           - task: DotNetCoreCLI@2
-            displayName: restore
             inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
+              command: 'custom'
+              custom: 'tool'
+              arguments: 'restore'
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
