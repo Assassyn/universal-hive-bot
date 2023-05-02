@@ -26,6 +26,12 @@ stages:
               version: '6.0.x'
               includePreviewVersions: true
           - task: DotNetCoreCLI@2
+            displayName: restore
+            inputs:
+              command: 'restore'
+              projects: '**/*.fsproj'
+              feedsToUse: 'select'
+          - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
               custom: 'cake'
@@ -42,6 +48,12 @@ stages:
               packageType: 'sdk'
               version: '6.0.x'
               includePreviewVersions: true
+          - task: DotNetCoreCLI@2
+            displayName: restore
+            inputs:
+              command: 'restore'
+              projects: '**/*.fsproj'
+              feedsToUse: 'select'
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
