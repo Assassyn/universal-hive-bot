@@ -13,6 +13,25 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.ETL", "src\Funct
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.HiveUniversalBot.Core", "src\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj", "{29A07625-1E7F-4E3C-9582-BC70D15CD201}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{03814A17-2B1F-4F1F-8FD4-EE54F0F10B50}"
+	ProjectSection(SolutionItems) = preProject
+		build\build.cake = build\build.cake
+		build\build.yml = build\build.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{44706128-3DC7-4205-AC6E-AE625A5C9C4D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UltimateHiveBot.CLI", "src\Functional.UltimateHiveBot.CLI\Functional.UltimateHiveBot.CLI.fsproj", "{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{4F9303C1-20D0-4A7A-B871-B238020C1DCB}"
+	ProjectSection(SolutionItems) = preProject
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +50,10 @@ Global
 		{29A07625-1E7F-4E3C-9582-BC70D15CD201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29A07625-1E7F-4E3C-9582-BC70D15CD201}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29A07625-1E7F-4E3C-9582-BC70D15CD201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +62,9 @@ Global
 		{81968BFB-340C-4E6E-9039-24901F0FB5C9} = {43E9CD43-AF90-410B-83C9-20A95FD9C17E}
 		{32B0C3C3-D5F3-4745-BB9A-35F21DACBEEC} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{29A07625-1E7F-4E3C-9582-BC70D15CD201} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
+		{03814A17-2B1F-4F1F-8FD4-EE54F0F10B50} = {44706128-3DC7-4205-AC6E-AE625A5C9C4D}
+		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
+		{4F9303C1-20D0-4A7A-B871-B238020C1DCB} = {44706128-3DC7-4205-AC6E-AE625A5C9C4D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F60D737-597D-4CE0-94EB-0CE960EF3735}
