@@ -13,7 +13,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-name: 0.4.0$(Rev:r)
+name: 0.1.0$(Rev:r)
 
 stages:
   - stage: Build
@@ -23,14 +23,12 @@ stages:
           - task: UseDotNet@2
             inputs:
               packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
+              useGlobalJson: true
           - task: DotNetCoreCLI@2
-            displayName: restore
             inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
+              command: 'custom'
+              custom: 'tool'
+              arguments: 'restore'
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
@@ -46,14 +44,12 @@ stages:
           - task: UseDotNet@2
             inputs:
               packageType: 'sdk'
-              version: '6.0.x'
-              includePreviewVersions: true
+              useGlobalJson: true
           - task: DotNetCoreCLI@2
-            displayName: restore
             inputs:
-              command: 'restore'
-              projects: '**/*.fsproj'
-              feedsToUse: 'select'
+              command: 'custom'
+              custom: 'tool'
+              arguments: 'restore'
           - task: DotNetCoreCLI@2
             inputs:
               command: 'custom'
