@@ -1,0 +1,8 @@
+﻿{
+  "urls": {
+    "hiveNodeUrl": "https://anyx.io",
+    "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
+  },
+  "actions": [
+  ]
+}

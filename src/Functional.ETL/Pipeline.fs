@@ -61,5 +61,5 @@ module Pipeline =
     let processPipeline pipelineDefinition =     
         pipelineDefinition.extractor ()
         |> TaskSeq.map pipelineDefinition.transformers
-        |> TaskSeq.toSeq
+        |> TaskSeq.toArray
         

@@ -4,10 +4,22 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <RuntimeIdentifiers>linux-x64;win-x64;osx-x64</RuntimeIdentifiers>
+        <UserSecretsId>01fcd8b6-1786-4a55-b2e8-6b24e7efaea8</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
+        <Content Include="configuration.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
         <Compile Include="Program.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
     </ItemGroup>
 
 </Project>

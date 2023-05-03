@@ -12,6 +12,7 @@ let getConfiguration () =
         let config = config.AddJsonFile ("configuration.json", true)
         let config = config.AddYamlFile ("configuration.yaml", true)
         let config = config.AddYamlFile ("configuration.yml", true)
+        let config = config.AddUserSecrets ("01fcd8b6-1786-4a55-b2e8-6b24e7efaea8", true)
         config.Build()
 
     let actions = config.GetSection("actions").Get<UserActionsDefinition array> ()

@@ -1,31 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <UserSecretsId>01fcd8b6-1786-4a55-b2e8-6b24e7efaea8</UserSecretsId>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Include="Hive.fs" />
-    <Compile Include="PipelineResult.fs" />
-    <Compile Include="Types.fs" />
-    <Compile Include="Actions\StakeToken.fs" />
-    <Compile Include="Actions\Level2Balance.fs" />
-    <Compile Include="Actions\UserReader.fs" />
-    <Compile Include="Configuration.fs" />
-  </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Hive.fs" />
+        <Compile Include="PipelineResult.fs" />
+        <Compile Include="Types.fs" />
+        <Compile Include="Actions\StakeToken.fs" />
+        <Compile Include="Actions\Level2Balance.fs" />
+        <Compile Include="Actions\UserReader.fs" />
+        <Compile Include="Configuration.fs" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
-    <PackageReference Include="HiveAPI" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
-    <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
+        <PackageReference Include="HiveAPI" Version="0.3.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+        <PackageReference Include="NetEscapades.Configuration.Yaml" Version="3.1.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Functional.ETL\Functional.ETL.fsproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Functional.ETL\Functional.ETL.fsproj" />
+    </ItemGroup>
 
 </Project>
