@@ -4,21 +4,5 @@
     "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
   },
   "actions": [
-    {
-      "username": "ultimate-bot",
-      "activeKey": "",
-      "postingKey": "",
-      "tasks": [
-        {
-          "name": "Balance"
-        },
-        {
-          "name": "Stake",
-          "parameters": {
-            "tokens": "ONEUP,CENT,PGM"
-          }
-        }
-      ]
-    }
   ]
 }
