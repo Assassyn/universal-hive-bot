@@ -10,6 +10,7 @@
         <Compile Include="Hive.fs" />
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Types.fs" />
+        <Compile Include="AmountCalator.fs" />
         <Compile Include="Actions\StakeToken.fs" />
         <Compile Include="Actions\Level2Balance.fs" />
         <Compile Include="Actions\UserReader.fs" />
