@@ -17,7 +17,8 @@ let ``Can stake tokens`` () =
     let hive = Hive (hiveNodeUrl)
     let transformer = 
         (Level2Balance.action hiveEngineNode)
-        >> (StakeToken.action hive ["ONEUP"; "CENT"; "PGM"])
+        >> (StakeToken.action hive "ONEUP" (AmountCalator.bind "*"))
+        >> (StakeToken.action hive "CENT" (AmountCalator.bind "*"))
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition

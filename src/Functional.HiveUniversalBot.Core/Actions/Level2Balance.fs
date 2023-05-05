@@ -6,6 +6,9 @@ open FsHttp
 open System.Text.Json
 open Types
     
+[<Literal>]
+let private ModuleName = "Balance"
+
 type HiveResponse<'Result> =
     {
         jsonrpc: string
@@ -67,7 +70,8 @@ let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) =
         getBalance apiUri username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
-        PipelineProcessData.withResult entity (NoUserDetails "LoadTokens")
+        NoUserDetails ModuleName 
+        |> PipelineProcessData.withResult entity 
 
 let bind hive (urls: Urls) (parameters: Map<string, string>) = 
     action urls.hiveEngineNodeUrl

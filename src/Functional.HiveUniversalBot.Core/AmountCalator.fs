@@ -9,7 +9,7 @@ let private ZeroWhenNegative value =
     else
         value
 
-let (|StaticValue|_|) (str: string) =
+let private (|StaticValue|_|) (str: string) =
     let valueWhenLargerThanLimit limit value = 
         if limit >= value 
         then 
@@ -20,7 +20,7 @@ let (|StaticValue|_|) (str: string) =
     if Decimal.TryParse(str, &limit) then Some(valueWhenLargerThanLimit limit)
     else None
 
-let (|Calculation|_|) (str: string) =
+let private (|Calculation|_|) (str: string) =
     if str.Contains ('-') then
         let numberOfTokensToIgnore = 
             let tokens = str.Split ('-')
