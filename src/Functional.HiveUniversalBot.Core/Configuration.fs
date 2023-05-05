@@ -27,6 +27,7 @@ let private getActionByName (name: string) =
     match name.ToLower() with 
     | "stake" -> StakeToken.bind
     | "balance" -> Level2Balance.bind
+    | "flush" -> FlushTokens.bind
     | _ -> (fun hive url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
 
 let private bindActions hive url parameters bindingFunctionName =

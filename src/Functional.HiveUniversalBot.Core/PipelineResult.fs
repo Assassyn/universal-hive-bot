@@ -7,12 +7,12 @@ type CustomJson = HiveAPI.COperations.custom_json
 type Token = string 
 type KeyRequired =
     | Active
-    | Passive
+    | Posting
 
 type UniversalHiveBotResutls =
     | Unknow
     | NoUserDetails of Module
-    | HiveOperation of Module * KeyRequired * CustomJson
+    | HiveOperation of Module * Token * KeyRequired * CustomJson
     | TokenBalanceTooLow of Module * Token 
     | Processed of Module * Item 
     | UnableToProcess of Module * Item * Message

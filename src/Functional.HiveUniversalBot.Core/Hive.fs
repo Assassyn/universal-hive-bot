@@ -24,5 +24,8 @@ type Hive (hiveNodeUrl) =
     member this.createCustomJsonPostingKey username methodName json = 
         createCustomJson username false true methodName json
         
-    member this.brodcastTransaction operations key = 
-        hive.broadcast_transaction ([| operations |] , [| key |])
+    member this.brodcastTransaction operation key = 
+        hive.broadcast_transaction ([| operation |], [| key |])
+
+        member this.brodcastTransactions operations key = 
+            hive.broadcast_transaction ( operations, [| key |])

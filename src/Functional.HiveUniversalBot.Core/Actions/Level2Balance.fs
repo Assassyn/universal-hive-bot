@@ -5,6 +5,7 @@ open Functional.ETL.Pipeline
 open FsHttp
 open System.Text.Json
 open Types
+open System
     
 [<Literal>]
 let private ModuleName = "Balance"
@@ -63,10 +64,10 @@ let private addTokenBalanceAsProperty entity tokenBalance =
     PipelineProcessData.withProperty entity tokenBalance.symbol tokenBalance.balance
 
 let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userdata = PipelineProcessData.readPropertyAsType<UniversalHiveBotResutls, string * string * string> entity "userdata"
+    let username  = PipelineProcessData.readPropertyAsString entity "username"
 
-    match userdata with 
-    | Some (username, _, _) -> 
+    match username with 
+    | Some username -> 
         getBalance apiUri username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
