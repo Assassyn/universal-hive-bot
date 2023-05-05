@@ -29,6 +29,14 @@ type TokenBalance =
         delegationsOut: string
         pendingUndelegations: string
     }
+
+let stringAsDecimal (input: string) =
+    let mutable number = 0M
+    if Decimal.TryParse  (input, &number)
+    then 
+        number
+    else 
+        0M
     
 let private deserialize (json: JsonElement) = 
     JsonSerializer.Deserialize<HiveResponse<TokenBalance>> json
@@ -60,8 +68,16 @@ let private getBalance api username =
     
     response.result
 
-let private addTokenBalanceAsProperty entity tokenBalance =
-    PipelineProcessData.withProperty entity tokenBalance.symbol tokenBalance.balance
+let private addTokenBalanceAsProperty entity tokenInfo =
+    let tokenBalance = tokenInfo.balance |> stringAsDecimal
+    if tokenBalance > 0M then 
+        PipelineProcessData.withProperty entity tokenInfo.symbol tokenBalance |> ignore
+
+    let stakeBalance = tokenInfo.stake |> stringAsDecimal
+    if stakeBalance > 0M then 
+        PipelineProcessData.withProperty entity (tokenInfo.symbol+"_stake") stakeBalance |> ignore
+
+    entity
 
 let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let username  = PipelineProcessData.readPropertyAsString entity "username"

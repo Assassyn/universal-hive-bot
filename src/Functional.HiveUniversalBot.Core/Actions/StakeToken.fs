@@ -8,8 +8,8 @@ open Functional.ETL.Pipeline
 let private ModuleName = "Stake"
 
 let private getTokenBalance tokensName entity = 
-    match (PipelineProcessData.readPropertyAsString entity tokensName) with 
-    | Some x -> System.Decimal.Parse x
+    match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
+    | Some x -> x
     | _ -> 0M
 
 let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =

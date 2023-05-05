@@ -33,6 +33,7 @@ module Pipeline =
             | Some x -> Some (x:?> 'PropertyType)
             | _ -> None
         let readPropertyAsString<'Result> = readPropertyAsType<'Result, string>
+        let readPropertyAsDecimal<'Result> = readPropertyAsType<'Result, decimal>
 
         let bind index = 
             {
