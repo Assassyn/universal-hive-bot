@@ -37,6 +37,9 @@ I am aware that there are a few places where I cna improve the bot. For example,
           }
         },
         {
+          "name": "Flush"
+        },
+        {
           "name": "Balance"
         },
         {
