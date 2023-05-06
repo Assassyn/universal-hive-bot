@@ -9,7 +9,10 @@ let private createEntity index accessData =
     let (username, activeKey, postingKey) = accessData
     {
         index = int64(index)
-        properties =  Map ["userdata", (username, activeKey, postingKey)]
+        properties =  Map [
+            "username", username :> obj
+            "userdata", (username, activeKey, postingKey) :> obj
+        ]
         results = list.Empty
     }
 

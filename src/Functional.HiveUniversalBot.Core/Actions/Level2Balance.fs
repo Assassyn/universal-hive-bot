@@ -5,7 +5,11 @@ open Functional.ETL.Pipeline
 open FsHttp
 open System.Text.Json
 open Types
+open System
     
+[<Literal>]
+let private ModuleName = "Balance"
+
 type HiveResponse<'Result> =
     {
         jsonrpc: string
@@ -25,6 +29,14 @@ type TokenBalance =
         delegationsOut: string
         pendingUndelegations: string
     }
+
+let stringAsDecimal (input: string) =
+    let mutable number = 0M
+    if Decimal.TryParse  (input, &number)
+    then 
+        number
+    else 
+        0M
     
 let private deserialize (json: JsonElement) = 
     JsonSerializer.Deserialize<HiveResponse<TokenBalance>> json
@@ -56,18 +68,35 @@ let private getBalance api username =
     
     response.result
 
-let private addTokenBalanceAsProperty entity tokenBalance =
-    PipelineProcessData.withProperty entity tokenBalance.symbol tokenBalance.balance
+let private addTokenBalanceAsProperty entity tokenInfo =
+    let tokenBalance = tokenInfo.balance |> stringAsDecimal
+    let newEntity = 
+        if tokenBalance > 0M 
+        then 
+            PipelineProcessData.withProperty entity tokenInfo.symbol tokenBalance
+        else 
+            entity
+
+    let stakeBalance = tokenInfo.stake |> stringAsDecimal
+    let newEntity = 
+        if stakeBalance > 0M 
+        then 
+            PipelineProcessData.withProperty newEntity (tokenInfo.symbol+"_stake") stakeBalance
+        else 
+            newEntity
+
+    newEntity
 
 let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userdata = PipelineProcessData.readPropertyAsType<UniversalHiveBotResutls, string * string * string> entity "userdata"
+    let username  = PipelineProcessData.readPropertyAsString entity "username"
 
-    match userdata with 
-    | Some (username, _, _) -> 
+    match username with 
+    | Some username -> 
         getBalance apiUri username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
-        PipelineProcessData.withResult entity (NoUserDetails "LoadTokens")
+        NoUserDetails ModuleName 
+        |> PipelineProcessData.withResult entity 
 
 let bind hive (urls: Urls) (parameters: Map<string, string>) = 
     action urls.hiveEngineNodeUrl

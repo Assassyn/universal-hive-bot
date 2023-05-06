@@ -1,24 +1,28 @@
 ﻿{
-  "urls": {
-    "hiveNodeUrl": "https://anyx.io",
-    "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
-  },
-  "actions": [
-    {
-      "username": "ultimate-bot",
-      "activeKey": "",
-      "postingKey": "",
-      "tasks": [
+    "urls": {
+        "hiveNodeUrl": "https://anyx.io",
+        "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
+    },
+    "actions": [
         {
-          "name": "Balance"
-        },
-        {
-          "name": "Stake",
-          "parameters": {
-            "tokens": "ONEUP,CENT,PGM"
-          }
+            "username": "ultimate-bot",
+            "activeKey": "",
+            "postingKey": "",
+            "tasks": [
+                {
+                    "name": "Balance"
+                },
+                {
+                    "name": "Stake",
+                    "parameters": {
+                        "token": "ONEUP",
+                        "amount": "*"
+                    }
+                },
+                {
+                    "name": "Flush"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }

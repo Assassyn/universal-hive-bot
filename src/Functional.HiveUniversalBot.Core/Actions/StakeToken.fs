@@ -4,53 +4,43 @@ open Core
 open PipelineResult
 open Functional.ETL.Pipeline
 
-let private getJson (hive: Hive) tokenStakingDetails =
-    let (username, symbol, quantity) = tokenStakingDetails
-        
+[<Literal>]
+let private ModuleName = "Stake"
+
+let private getTokenBalance tokensName entity = 
+    match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
+    | Some x -> x
+    | _ -> 0M
+
+let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =
     let json =
         sprintf 
             """{"contractName":"tokens","contractAction":"stake","contractPayload": {"to": "%s","symbol": "%s","quantity": "%M"}}""" 
             username 
-            symbol 
-            quantity
-    let operations = hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-    (operations, symbol)
+            tokenSymbol 
+            tokenBalance
+    hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
+let private requestTokenStakeProcess tokenSymbol operation entity = 
+    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
+    |> PipelineProcessData.withResult entity 
 
-let getTokenDetails entity username tokensName = 
-    let balance = 
-        match (PipelineProcessData.readPropertyAsString entity tokensName) with 
-        | Some x -> System.Decimal.Parse x
-        | _ -> 0M
-    (username, tokensName, balance)
+let action (hive: Hive) tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let username = PipelineProcessData.readPropertyAsString entity "username"
 
-let stakeTokens (hive: Hive) activeKey token operation entity = 
-    try 
-        let txid = hive.brodcastTransaction operation activeKey
-            
-        PipelineProcessData.withResult entity (UniversalHiveBotResutls.Processed ("StakeAction", token))
-    with  
-        | ex -> 
-            let msg = ex.Message
-            PipelineProcessData.withResult entity (UniversalHiveBotResutls.UnableToProcess ("StakeAction", token, msg))
-
-let ignoreEmpty tokenStakingDetails =
-    let (_, _, quantity) = tokenStakingDetails
-    quantity > 0.0M 
-
-let action (hive: Hive) tokensToStake (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata"
-
-    match userDetails with 
-    | Some (username, activeKey, _) -> 
-        tokensToStake
-        |> Seq.map (getTokenDetails entity username)
-        |> Seq.filter ignoreEmpty
-        |> Seq.map (getJson hive)
-        |> Seq.fold (fun entity (operation, token) -> stakeTokens hive activeKey token operation entity) entity 
+    match username with 
+    | Some username -> 
+        let tokenBalance = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
+        if tokenBalance > 0M
+        then 
+            let customJson = buildCustomJson hive username tokenSymbol tokenBalance
+            entity |> requestTokenStakeProcess tokenSymbol customJson 
+        else 
+            TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
-        PipelineProcessData.withResult entity (UniversalHiveBotResutls.NoUserDetails "StakeAction")
+        NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
 let bind hive urls (parameters: Map<string, string>) = 
-    let tokensToStake = parameters.["tokens"].Split(',')
-    action hive tokensToStake
+    let token = parameters.["token"]
+    let amount = parameters.["amount"] |> AmountCalator.bind
+    action hive token amount

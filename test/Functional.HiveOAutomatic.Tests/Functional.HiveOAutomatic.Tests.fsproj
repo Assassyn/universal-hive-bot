@@ -12,6 +12,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="ConfigurationFixture.fs" />
+    <Compile Include="AmountCalatorFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Level2BalanceFixture.fs" />
