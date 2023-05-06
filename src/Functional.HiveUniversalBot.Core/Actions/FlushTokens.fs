@@ -32,7 +32,7 @@ let private extractCustomJson hiveOperationRequest =
     customJson
 
 let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata"
+    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
     | Some (username, activeKey, postingKey) -> 

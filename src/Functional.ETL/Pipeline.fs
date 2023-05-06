@@ -27,6 +27,9 @@ module Pipeline =
             match entity.properties.ContainsKey (key) with 
             | true -> Some entity.properties.[key]
             | _ -> None
+
+        let (=>) entity key = readProperty entity key
+
         let readPropertyAsType<'EntityResult, 'PropertyType> (entity: PipelineProcessData<'EntityResult>) key =
             let property = readProperty entity key
             match property with 

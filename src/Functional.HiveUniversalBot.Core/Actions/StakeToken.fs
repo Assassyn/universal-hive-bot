@@ -26,7 +26,7 @@ let private requestTokenStakeProcess tokenSymbol operation entity =
     |> PipelineProcessData.withResult entity 
 
 let action (hive: Hive) tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let username  = PipelineProcessData.readPropertyAsString entity "username"
+    let username = PipelineProcessData.readPropertyAsString entity "username"
 
     match username with 
     | Some username -> 

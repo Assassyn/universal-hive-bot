@@ -70,14 +70,22 @@ let private getBalance api username =
 
 let private addTokenBalanceAsProperty entity tokenInfo =
     let tokenBalance = tokenInfo.balance |> stringAsDecimal
-    if tokenBalance > 0M then 
-        PipelineProcessData.withProperty entity tokenInfo.symbol tokenBalance |> ignore
+    let newEntity = 
+        if tokenBalance > 0M 
+        then 
+            PipelineProcessData.withProperty entity tokenInfo.symbol tokenBalance
+        else 
+            entity
 
     let stakeBalance = tokenInfo.stake |> stringAsDecimal
-    if stakeBalance > 0M then 
-        PipelineProcessData.withProperty entity (tokenInfo.symbol+"_stake") stakeBalance |> ignore
+    let newEntity = 
+        if stakeBalance > 0M 
+        then 
+            PipelineProcessData.withProperty newEntity (tokenInfo.symbol+"_stake") stakeBalance
+        else 
+            newEntity
 
-    entity
+    newEntity
 
 let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let username  = PipelineProcessData.readPropertyAsString entity "username"

@@ -25,4 +25,4 @@ let ``Can stake tokens`` () =
     let objectUnderTest = results |> Seq.item 0
 
     PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("ultimate-bot", "", "")
-    PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal "5"
+    PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M
