@@ -12,7 +12,7 @@ type KeyRequired =
 type UniversalHiveBotResutls =
     | Unknow
     | NoUserDetails of Module
-    //| (*HiveOperation*) of Module * Token * KeyRequired * CustomJson
+    | HiveOperation of Module * Token * KeyRequired * CustomJson
     | TokenBalanceTooLow of Module * Token 
     | Processed of Module * Item 
     | UnableToProcess of Module * Item * Message

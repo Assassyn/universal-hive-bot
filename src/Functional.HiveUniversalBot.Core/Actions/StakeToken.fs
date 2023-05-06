@@ -21,20 +21,21 @@ let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =
             tokenBalance
     hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
-let private stakeTokens (hive: Hive) operation key = 
-    let transactionId = hive.brodcastTransaction operation key 
-    Processed (ModuleName, transactionId) 
+let private stakeTokens tokenSymbol operation = 
+    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
+    //let transactionId = hive.brodcastTransaction operation key 
+    //Processed (ModuleName, transactionId) 
 
 let action hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, activeKey, _) -> 
+    | Some (username, _, _) -> 
         let tokenBalance = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson hive username tokenSymbol tokenBalance
-            stakeTokens hive customJson activeKey |> PipelineProcessData.withResult entity 
+            stakeTokens tokenSymbol customJson |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 

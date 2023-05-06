@@ -37,6 +37,9 @@ I am aware that there are a few places where I cna improve the bot. For example,
           }
         },
         {
+          "name": "Flush"
+        },
+        {
           "name": "Balance"
         },
         {
@@ -56,6 +59,8 @@ I am aware that there are a few places where I cna improve the bot. For example,
 Avaible actions: 
  * Balance -> reading all the lelve 2 tokens balance and staked balance
  * Stake -> moves desired amount to stake.
+ * DelegateStake -> delegate desired amount to a give account could
+ * Flush -> all actions, like stake and delegate stake, does not execute on the spot so the bot does not have the problem of trying to write multiple message in the same block which can cause error
 
 # Amount Calculation 
 
