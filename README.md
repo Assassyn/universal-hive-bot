@@ -2,6 +2,8 @@
 
 This is a solution to my problems. I have a few tokesn which I need to stake, delegate stake, or sell. This processes are long and anoying so I need a small bot to do this taks for me.
 
+Any question, advices or idea please create the issue.
+
 # Why do I need to specyfy ther Active Key? 
 
 Because bot is doing token operation it requires the ActiveKey to be able to authorise. I have added the posting key as to future-proof it just in case I will find an operation which can be automated and requires the posting authorization.
@@ -12,7 +14,12 @@ I am aware that there are a few places where I cna improve the bot. For example,
 
 # Example configuration
 
-> {
+``` JSON
+{
+  "urls": {
+    "hiveNodeUrl": "https://anyx.io",
+    "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
+  },
   "actions": [
     {
       "username": "assassyn",
@@ -44,6 +51,7 @@ I am aware that there are a few places where I cna improve the bot. For example,
     }
   ]
 }
+```
 
 Avaible actions: 
  * Balance -> reading all the lelve 2 tokens balance and staked balance
