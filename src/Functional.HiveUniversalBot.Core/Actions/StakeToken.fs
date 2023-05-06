@@ -5,7 +5,7 @@ open PipelineResult
 open Functional.ETL.Pipeline
 
 [<Literal>]
-let private ModuleName = "Stake"
+let ModuleName = "Stake"
 
 let private getTokenBalance tokensName entity = 
     match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
@@ -21,20 +21,20 @@ let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =
             tokenBalance
     hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
-let private requestTokenStakeProcess tokenSymbol operation entity = 
-    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
-    |> PipelineProcessData.withResult entity 
+let private stakeTokens (hive: Hive) operation key = 
+    let transactionId = hive.brodcastTransaction operation key 
+    Processed (ModuleName, transactionId) 
 
-let action (hive: Hive) tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let username = PipelineProcessData.readPropertyAsString entity "username"
+let action hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
-    match username with 
-    | Some username -> 
+    match userDetails with 
+    | Some (username, activeKey, _) -> 
         let tokenBalance = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson hive username tokenSymbol tokenBalance
-            entity |> requestTokenStakeProcess tokenSymbol customJson 
+            stakeTokens hive customJson activeKey |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
