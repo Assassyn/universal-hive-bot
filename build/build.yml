@@ -13,7 +13,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-name: 0.1.0-$(Rev:r)
+name: 0.2.0-$(Rev:r)
 
 stages:
   - stage: Build
