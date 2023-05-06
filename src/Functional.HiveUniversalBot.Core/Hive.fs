@@ -27,5 +27,5 @@ type Hive (hiveNodeUrl) =
     member this.brodcastTransaction operation key = 
         hive.broadcast_transaction ([| operation |], [| key |])
 
-        member this.brodcastTransactions operations key = 
-            hive.broadcast_transaction ( operations, [| key |])
+    member this.brodcastTransactions operations key = 
+        hive.broadcast_transaction ( operations, [| key |])
