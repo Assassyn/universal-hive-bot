@@ -23,9 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		global.json = global.json
+		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UltimateHiveBot.CLI", "src\Functional.UltimateHiveBot.CLI\Functional.UltimateHiveBot.CLI.fsproj", "{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UltimateHiveBot.CLI", "src\Functional.UltimateHiveBot.CLI\Functional.UltimateHiveBot.CLI.fsproj", "{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{4F9303C1-20D0-4A7A-B871-B238020C1DCB}"
 	ProjectSection(SolutionItems) = preProject
