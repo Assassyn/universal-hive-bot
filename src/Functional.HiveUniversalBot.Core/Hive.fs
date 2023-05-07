@@ -28,4 +28,8 @@ type Hive (hiveNodeUrl) =
         hive.broadcast_transaction ([| operation |], [| key |])
 
     member this.brodcastTransactions operations key = 
-        hive.broadcast_transaction ( operations, [| key |])
+        operations
+        |> Seq.chunkBySize 5
+        |> Seq.map (fun op -> 
+            hive.broadcast_transaction (op, [| key |]) |> ignore
+            System.Threading.Thread.Sleep(3000))
