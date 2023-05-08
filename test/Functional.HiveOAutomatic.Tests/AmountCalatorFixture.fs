@@ -3,8 +3,8 @@
 open Xunit
 open FsUnit.Xunit
 open FSharp.Control
+open TestingStubs
 
-let inline private (~~) x = x :> obj
 let amountToParse =
     [|
         [| ~~"*"; ~~10M; ~~10M |]
