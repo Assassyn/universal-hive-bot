@@ -21,12 +21,11 @@ let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =
             tokenBalance
     hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
-let private stakeTokens tokenSymbol operation = 
+let private stakeTokens logger tokenSymbol operation = 
+    logger ModuleName tokenSymbol "Scheduled"
     HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
-    //let transactionId = hive.brodcastTransaction operation key 
-    //Processed (ModuleName, transactionId) 
 
-let action hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action logger hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -35,13 +34,13 @@ let action hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<Univer
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson hive username tokenSymbol tokenBalance
-            stakeTokens tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            stakeTokens logger tokenSymbol customJson |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind hive urls (parameters: Map<string, string>) = 
+let bind logger hive urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let amount = parameters.["amount"] |> AmountCalator.bind
-    action hive token amount
+    action logger hive token amount

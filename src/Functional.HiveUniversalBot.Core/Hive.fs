@@ -31,5 +31,5 @@ type Hive (hiveNodeUrl) =
         operations
         |> Seq.chunkBySize 5
         |> Seq.map (fun op -> 
-            hive.broadcast_transaction (op, [| key |]) |> ignore
-            System.Threading.Thread.Sleep(3000))
+            let transactionId = hive.broadcast_transaction (op, [| key |])
+            transactionId)

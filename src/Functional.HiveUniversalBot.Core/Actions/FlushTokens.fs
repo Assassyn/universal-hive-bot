@@ -25,7 +25,7 @@ let private extractOperations entity =
     |> Seq.groupBy (fun (_, _, requiredKey, _) -> requiredKey)
 
 let private executeOperations (hive: Hive) keyRequired operations = 
-    hive.brodcastTransactions operations keyRequired |> ignore
+    hive.brodcastTransactions operations keyRequired
 
 let private extractCustomJson hiveOperationRequest = 
     let (_, _, _, customJson) = hiveOperationRequest
@@ -38,10 +38,10 @@ let private processHiveOperations hive requiredKey key (operations: Map<KeyRequi
             operations.[requiredKey] 
             |> Seq.map extractCustomJson
             |> Array.ofSeq 
-        let transactionId = executeOperations hive key ops
+        executeOperations hive key ops |> Array.ofSeq |> ignore
 
         operations.[requiredKey] 
-        |> Seq.map (fun (moduleName, item, _, _) -> Processed (moduleName, item))
+        |> Seq.map (fun (moduleName, tokenSymbol, _, _) -> Processed (moduleName, tokenSymbol))
     else 
         Array.empty
 
@@ -70,5 +70,5 @@ let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) =
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind hive urls (parameters: Map<string, string>) = 
+let bind logger hive urls (parameters: Map<string, string>) = 
     action hive
