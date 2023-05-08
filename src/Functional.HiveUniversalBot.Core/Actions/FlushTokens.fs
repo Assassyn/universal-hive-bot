@@ -34,7 +34,18 @@ let private extractCustomJson hiveOperationRequest =
 let private processHiveOperations hive requiredKey key (operations: Map<KeyRequired,seq<Module * Token * KeyRequired * obj>>) = 
     if operations.ContainsKey (requiredKey)
     then 
-        operations.[requiredKey] |> Seq.map extractCustomJson |> Array.ofSeq |> executeOperations hive key |> ignore
+        let ops =
+            operations.[requiredKey] 
+            |> Seq.map extractCustomJson
+            |> Array.ofSeq 
+        executeOperations hive key ops |> Array.ofSeq |> ignore
+
+        operations.[requiredKey] 
+        |> Seq.map (fun (moduleName, tokenSymbol, _, _) -> Processed (moduleName, tokenSymbol))
+    else 
+        Array.empty
+
+        // need to add info about processed items as they are lost now
 
 let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
@@ -43,17 +54,21 @@ let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) =
     | Some (username, activeKey, postingKey) -> 
         let operations = extractOperations entity |> Map.ofSeq
 
-        operations |> processHiveOperations hive KeyRequired.Active activeKey 
-        operations |> processHiveOperations hive KeyRequired.Posting postingKey
+        let activeOperationResults = 
+            operations |> processHiveOperations hive KeyRequired.Active activeKey 
+        let postingOperationResults =
+            operations |> processHiveOperations hive KeyRequired.Posting postingKey
 
         let results = 
             entity.results 
             |> Seq.filter (fun x -> not (isHiveOperation x))
+            |> Seq.append activeOperationResults 
+            |> Seq.append postingOperationResults 
             |> List.ofSeq
 
         { entity with results = results }
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind hive urls (parameters: Map<string, string>) = 
+let bind logger hive urls (parameters: Map<string, string>) = 
     action hive

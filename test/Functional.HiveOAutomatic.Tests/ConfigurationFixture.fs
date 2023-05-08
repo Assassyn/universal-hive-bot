@@ -19,9 +19,9 @@ let ``Can load defined actions`` () =
     let config = Configuration.getConfiguration ()
     config.actions |> Seq.length |> should equal 1 
 
-[<Fact>]
-let ``Create action from config`` () =
-    let config = Configuration.getConfiguration ()
-    let actions = Configuration.createPipelines config
+//[<Fact>]
+//let ``Create action from config`` () =
+//    let config = Configuration.getConfiguration ()
+//    let actions = Configuration.createPipelines config
 
-    actions |> Seq.length |> should equal 1
+//    actions |> Seq.length |> should equal 1

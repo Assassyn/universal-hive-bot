@@ -87,16 +87,17 @@ let private addTokenBalanceAsProperty entity tokenInfo =
 
     newEntity
 
-let action apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action logger apiUri (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let username  = PipelineProcessData.readPropertyAsString entity "username"
 
     match username with 
     | Some username -> 
+        logger ModuleName "Balance" ""
         getBalance apiUri username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
         NoUserDetails ModuleName 
         |> PipelineProcessData.withResult entity 
 
-let bind hive (urls: Urls) (parameters: Map<string, string>) = 
-    action urls.hiveEngineNodeUrl
+let bind logger hive (urls: Urls) (parameters: Map<string, string>) = 
+    action logger urls.hiveEngineNodeUrl

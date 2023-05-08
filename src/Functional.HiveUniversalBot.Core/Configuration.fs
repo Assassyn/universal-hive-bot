@@ -29,32 +29,33 @@ let private getActionByName (name: string) =
     | "balance" -> Level2Balance.bind
     | "delegatestake" -> DelegateStake.bind
     | "flush" -> FlushTokens.bind
-    | _ -> (fun hive url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
+    | _ -> (fun logger hive url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
 
-let private bindActions hive url parameters bindingFunctionName =
+let private bindActions logger hive url parameters bindingFunctionName =
     let prototypeFunction = (getActionByName bindingFunctionName) 
-    let pipelineAction = prototypeFunction hive url parameters
+    let pipelineAction = prototypeFunction logger hive url parameters
     pipelineAction
 
-let private bindTransfomers hive url (config: UserActionsDefinition) =
+let private bindTransfomers logger hive url (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
-        bindActions hive url parameters bindingFunctionName
+        bindActions logger hive url parameters bindingFunctionName
     config.Tasks
     |> List.ofSeq
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)
+    //|> List.map (fun transformer -> logger >> transformer)
     |> List.fold (fun state next -> state >> next) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
 
-let private bindPipeline hive urls (config: UserActionsDefinition) =
+let private bindPipeline logger hive urls (config: UserActionsDefinition) =
     let reader = UserReader.bind [ (config.Username, config.ActiveKey, config.PostingKey) ]
-    let transforms = bindTransfomers hive urls config
+    let transforms = bindTransfomers logger hive urls config
 
     Pipeline.bind reader transforms
 
-let createPipelines (config: Configuration) = 
+let createPipelines (config: Configuration) logger = 
     let hive = Hive (config.urls.hiveNodeUrl)
     let urls = config.urls
     
     config.actions
-    |> Seq.map (bindPipeline hive urls)
+    |> Seq.map (bindPipeline logger hive urls)

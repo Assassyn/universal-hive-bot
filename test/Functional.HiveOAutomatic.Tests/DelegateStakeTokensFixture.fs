@@ -1,4 +1,4 @@
-﻿module StakeTokensFixture
+﻿module DelegateStakeTokensFixture
 
 open Xunit
 open FsUnit.Xunit
@@ -17,12 +17,12 @@ let testData =
     
 [<Theory>]
 [<MemberData("testData")>]
-let ``Can stake tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
+let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let hive = Hive (hiveNodeUrl)
     let transformer = 
-        (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (StakeToken.action TestingStubs.logger hive "ONEUP" (AmountCalator.bind amountToBind))
+        (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
+        >> (DelegateStake.action TestingStubs.logger hive "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
@@ -33,4 +33,5 @@ let ``Can stake tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: 
 
     underTestObject 
     |> TestingStubs.extractCustomJson 
-    |> should equal (sprintf """{"contractName":"tokens","contractAction":"stake","contractPayload": {"to": "ultimate-bot","symbol": "ONEUP","quantity": "%s"}}""" result)
+
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"delegate","contractPayload":{"to":"delegation-target-user","symbol":"ONEUP","quantity":"%s"}}""" result)

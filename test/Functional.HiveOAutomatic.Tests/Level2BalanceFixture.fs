@@ -13,7 +13,7 @@ let extractSome (option: Option<obj>) =
 [<Fact>]
 let ``Can read all tokens from levle 2`` () =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
-    let transformer = (Level2Balance.action hiveEngineNode)
+    let transformer = (Level2Balance.action TestingStubs.logger hiveEngineNode)
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
