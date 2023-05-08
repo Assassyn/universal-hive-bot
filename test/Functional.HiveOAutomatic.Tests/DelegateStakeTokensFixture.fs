@@ -1,4 +1,4 @@
-﻿module StakeTokensFixture
+﻿module DelegateStakeTokensFixture
 
 open Xunit
 open FsUnit.Xunit
@@ -11,7 +11,6 @@ let private hiveEngineNode = "http://engine.alamut.uk:5000"
 let extractSome (option: Option<obj>) =
     option.Value
 
-
 [<Fact>]
 let ``Can stake tokens`` () =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
@@ -23,5 +22,7 @@ let ``Can stake tokens`` () =
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
-    
-    ()
+    let objectUnderTest = results |> Seq.item 0
+
+    PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("ultimate-bot", "", "")
+    PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M

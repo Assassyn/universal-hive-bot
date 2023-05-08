@@ -11,12 +11,14 @@
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="TestingStubs.fs" />
     <Compile Include="ConfigurationFixture.fs" />
     <Compile Include="AmountCalatorFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Level2BalanceFixture.fs" />
     <Compile Include="StakeTokensFixture.fs" />
+    <Compile Include="DelegateStakeTokensFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
