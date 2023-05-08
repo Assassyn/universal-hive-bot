@@ -1,16 +1,16 @@
-﻿module StakeToken 
+﻿module SellToken 
 
 open Core
 open PipelineResult
+open Types
 open Functional.ETL.Pipeline
-open FsHttp
 
 [<Literal>]
 let ModuleName = "Sell"
 
-let action logger hive tokenSymbol (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    
+let action logger hive hiveEngineUrl tokenSymbol (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    ()
 
-let bind logger hive urls (parameters: Map<string, string>) = 
+let bind logger hive (urls: Urls) (parameters: Map<string, string>) = 
     let token = parameters.["token"]
-    action logger hive token amount
+    action logger hive urls.hiveEngineNodeUrl token

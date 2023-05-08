@@ -1,4 +1,4 @@
-﻿module StakeToken 
+﻿module StakeToken
 
 open Core
 open PipelineResult

@@ -1,4 +1,4 @@
-﻿module CoreEngine
+﻿module HiveEngine
 
 open System.Net.Http
 open HiveAPI
@@ -25,33 +25,71 @@ type TokenBalance =
         pendingUndelegations: string
     }
 
-type HiveEngine (hiveEngineUrl) =
-    let deserialize (json: JsonElement) = 
-        JsonSerializer.Deserialize<HiveResponse<TokenBalance>> json
+let private deserialize<'ResponsePayload> (json: JsonElement) = 
+    JsonSerializer.Deserialize<HiveResponse<'ResponsePayload>> json
         
-    member this.getBalance username = 
-        let contractsUri = sprintf "%s/contracts" hiveEngineUrl
-        let response = 
-            http {
-                POST contractsUri
-                CacheControl "no-cache"
-                body
-                jsonSerialize
-                    {|
-                        jsonrpc = "2.0"
-                        id = 1
-                        method = "find"
-                        ``params`` = {|
-                            contract = "tokens"
-                            table = "balances"
-                            query = {|
-                                account = username
-                            |}
-                        |}
-                    |}
-            }
-            |> Request.send
-            |> Response.toJson
-            |> deserialize
-        
-        response.result
+let private runContractsQuery<'ResponsePayload> hiveEngineUrl method (parameters: obj) = 
+   let contractsUri = sprintf "%s/contracts" hiveEngineUrl
+   let response = 
+       http {
+           POST contractsUri
+           CacheControl "no-cache"
+           body
+           jsonSerialize
+               {|
+                   jsonrpc = "2.0"
+                   id = 1
+                   method = method
+                   ``params`` = parameters
+               |}
+       }
+       |> Request.send
+       |> Response.toJson
+       |> deserialize<'ResponsePayload>
+       
+   response.result
+
+let getBalance hiveEngineUrl username = 
+    let payload = 
+        {|
+            contract = "tokens"
+            table = "balances"
+            query = {|
+                account = username
+            |}
+        |}
+    runContractsQuery<TokenBalance> hiveEngineUrl "find" (payload :> obj)
+    
+type MarketBuyBook = 
+    {
+        _id: int64
+        txId: string
+        timestamp: int32
+        account: string
+        symbol: string
+        quantity: string
+        price: string
+        priceDec: {|
+            ``$numberDecimal``: string
+        |}
+        expiration: int64
+    }
+let getMarketBuyBook hiveEngineUrl tokenSymbol =
+    let payload = 
+        {|
+            contract = "market"
+            query = {|
+                symbol = tokenSymbol
+            |}
+            indexes = [
+                {| 
+                    index = "priceDec"
+                    descending=true
+                |}
+            ]
+            limit = 100
+            offset = 0
+            table = "buyBook"
+        |}
+
+    runContractsQuery<MarketBuyBook> hiveEngineUrl "find" (payload :> obj)
