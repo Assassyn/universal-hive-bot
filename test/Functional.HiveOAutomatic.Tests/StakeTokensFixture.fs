@@ -8,7 +8,7 @@ open TestingStubs
 
 let private hiveNodeUrl = "https://anyx.io"
 
-let amountToParse =
+let testData =
     [|
         [| ~~123M; ~~"*"; ~~"123" |]
         [| ~~123M; ~~"100"; ~~"100" |]
@@ -16,12 +16,12 @@ let amountToParse =
     |]
     
 [<Theory>]
-[<MemberData("amountToParse")>]
-let ``Can stake tokens`` (oneUupBalance:decimal) (amountToBind: string) (result: string) =
+[<MemberData("testData")>]
+let ``Can stake tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let hive = Hive (hiveNodeUrl)
     let transformer = 
-        (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUupBalance) |])
+        (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (StakeToken.action TestingStubs.logger hive "ONEUP" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    

@@ -4,25 +4,34 @@ open Xunit
 open FsUnit.Xunit
 open Functional.ETL.Pipeline
 open Core
+open TestingStubs
 
 let private hiveNodeUrl = "https://anyx.io"
-let private hiveEngineNode = "http://engine.alamut.uk:5000"
 
-let extractSome (option: Option<obj>) =
-    option.Value
-
-[<Fact>]
-let ``Can stake tokens`` () =
+let testData =
+    [|
+        [| ~~123M; ~~"*"; ~~"123" |]
+        [| ~~123M; ~~"100"; ~~"100" |]
+        [| ~~99M; ~~"100"; ~~"99" |]
+    |]
+    
+[<Theory>]
+[<MemberData("testData")>]
+let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let hive = Hive (hiveNodeUrl)
     let transformer = 
-        (Level2Balance.action TestingStubs.logger hiveEngineNode)
-        >> (StakeToken.action TestingStubs.logger hive "ONEUP" (AmountCalator.bind "*"))
-        >> (StakeToken.action TestingStubs.logger hive "CENT" (AmountCalator.bind "*"))
+        (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
+        >> (DelegateStake.action TestingStubs.logger hive "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
-    let objectUnderTest = results |> Seq.item 0
+    let underTestObject =
+        results
+        |> Seq.collect (fun x-> x.results)
+        |> Seq.item 0
 
-    PipelineProcessData.readProperty objectUnderTest "userdata" |> extractSome |> should equal ("ultimate-bot", "", "")
-    PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M
+    underTestObject 
+    |> TestingStubs.extractCustomJson 
+
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"delegate","contractPayload":{"to":"delegation-target-user","symbol":"ONEUP","quantity":"%s"}}""" result)

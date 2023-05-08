@@ -5,10 +5,14 @@ open Functional.ETL.Pipeline
 let logger a b c =
     ()
 
-
 let mockedBalanceAction balanceLevles entity = 
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity tokenSymbol tokenBalance) entity
+
+let mockedStakedBalanceAction balanceLevles entity = 
+    let stakedTokenSymbole = sprintf "%s_stake"
+    balanceLevles
+    |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity (stakedTokenSymbole tokenSymbol) tokenBalance) entity
 
 let extractCustomJson underTestObject =
     match underTestObject with 
