@@ -2,6 +2,7 @@
 
 open System.Net.Http
 open HiveAPI
+open System.Text.Json
 
 type Hive (hiveNodeUrl) = 
     let hive = new CHived(new HttpClient(), hiveNodeUrl)
