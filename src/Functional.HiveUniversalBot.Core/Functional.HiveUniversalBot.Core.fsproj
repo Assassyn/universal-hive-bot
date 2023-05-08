@@ -8,9 +8,11 @@
 
     <ItemGroup>
         <Compile Include="Hive.fs" />
+        <Compile Include="HiveEngine.fs" />
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="AmountCalator.fs" />
+        <Compile Include="Actions\SellTokens.fs" />
         <Compile Include="Actions\FlushTokens.fs" />
         <Compile Include="Actions\DelegateStake.fs" />
         <Compile Include="Actions\StakeToken.fs" />
