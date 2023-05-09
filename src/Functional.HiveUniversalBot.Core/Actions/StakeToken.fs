@@ -1,6 +1,5 @@
-﻿module StakeToken 
+﻿module StakeToken
 
-open Core
 open PipelineResult
 open Functional.ETL.Pipeline
 
@@ -12,20 +11,20 @@ let private getTokenBalance tokensName entity =
     | Some x -> x
     | _ -> 0M
 
-let private buildCustomJson (hive: Hive) username tokenSymbol tokenBalance =
+let private buildCustomJson  username tokenSymbol tokenBalance =
     let json =
         sprintf 
             """{"contractName":"tokens","contractAction":"stake","contractPayload": {"to": "%s","symbol": "%s","quantity": "%M"}}""" 
             username 
             tokenSymbol 
             tokenBalance
-    hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
+    Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
 let private stakeTokens logger tokenSymbol operation = 
     logger ModuleName tokenSymbol "Scheduled"
     HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
 
-let action logger hive tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action logger tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -33,14 +32,14 @@ let action logger hive tokenSymbol amountCalcualtor (entity: PipelineProcessData
         let tokenBalance = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
         if tokenBalance > 0M
         then 
-            let customJson = buildCustomJson hive username tokenSymbol tokenBalance
+            let customJson = buildCustomJson username tokenSymbol tokenBalance
             stakeTokens logger tokenSymbol customJson |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger hive urls (parameters: Map<string, string>) = 
+let bind logger urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let amount = parameters.["amount"] |> AmountCalator.bind
-    action logger hive token amount
+    action logger token amount

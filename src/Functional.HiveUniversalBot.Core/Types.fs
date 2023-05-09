@@ -2,7 +2,6 @@
 
 open System.Collections.Generic
 open Functional.ETL.Pipeline
-open Core
 open PipelineResult
 
 type Urls =
@@ -47,5 +46,4 @@ type Configuration =
         actions: UserActionsDefinition seq
     }
     
-type BindAction = Hive -> Urls -> Map<string, string> -> ( PipelineProcessData<UniversalHiveBotResutls> ->  PipelineProcessData<UniversalHiveBotResutls>)
-    
+type BindAction = Urls -> Map<string, string> -> ( PipelineProcessData<UniversalHiveBotResutls> ->  PipelineProcessData<UniversalHiveBotResutls>)

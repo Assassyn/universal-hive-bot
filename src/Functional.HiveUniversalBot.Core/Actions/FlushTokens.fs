@@ -1,8 +1,8 @@
 ﻿module FlushTokens 
 
-open Core
 open PipelineResult
 open Functional.ETL.Pipeline
+open Types
 
 [<Literal>]
 let private ModuleName = "Flush"
@@ -24,30 +24,28 @@ let private extractOperations entity =
     |> Seq.map (fun x -> x.Value)
     |> Seq.groupBy (fun (_, _, requiredKey, _) -> requiredKey)
 
-let private executeOperations (hive: Hive) keyRequired operations = 
-    hive.brodcastTransactions operations keyRequired
+let private executeOperations hiveUrl keyRequired operations = 
+    Hive.brodcastTransactions hiveUrl operations keyRequired 
 
 let private extractCustomJson hiveOperationRequest = 
     let (_, _, _, customJson) = hiveOperationRequest
     customJson
 
-let private processHiveOperations hive requiredKey key (operations: Map<KeyRequired,seq<Module * Token * KeyRequired * obj>>) = 
+let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRequired,seq<Module * Token * KeyRequired * obj>>) = 
     if operations.ContainsKey (requiredKey)
     then 
         let ops =
             operations.[requiredKey] 
             |> Seq.map extractCustomJson
             |> Array.ofSeq 
-        executeOperations hive key ops |> Array.ofSeq |> ignore
+        executeOperations hiveUrl key ops |> Array.ofSeq |> ignore
 
         operations.[requiredKey] 
         |> Seq.map (fun (moduleName, tokenSymbol, _, _) -> Processed (moduleName, tokenSymbol))
     else 
         Array.empty
 
-        // need to add info about processed items as they are lost now
-
-let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -55,9 +53,9 @@ let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) =
         let operations = extractOperations entity |> Map.ofSeq
 
         let activeOperationResults = 
-            operations |> processHiveOperations hive KeyRequired.Active activeKey 
+            operations |> processHiveOperations hiveUrl KeyRequired.Active activeKey 
         let postingOperationResults =
-            operations |> processHiveOperations hive KeyRequired.Posting postingKey
+            operations |> processHiveOperations hiveUrl KeyRequired.Posting postingKey
 
         let results = 
             entity.results 
@@ -70,5 +68,5 @@ let action (hive: Hive) (entity: PipelineProcessData<UniversalHiveBotResutls>) =
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger hive urls (parameters: Map<string, string>) = 
-    action hive
+let bind logger urls (parameters: Map<string, string>) = 
+    action urls.hiveNodeUrl

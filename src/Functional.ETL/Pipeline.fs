@@ -57,7 +57,7 @@ module Pipeline =
         }
     module Pipeline = 
         let bind reader transformers = 
-            {
+            { 
                 extractor = reader 
                 transformers = transformers
             }

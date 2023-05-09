@@ -3,7 +3,6 @@
 open Xunit
 open FsUnit.Xunit
 open Functional.ETL.Pipeline
-open Core
 open TestingStubs
 
 let private hiveNodeUrl = "https://anyx.io"
@@ -19,10 +18,9 @@ let testData =
 [<MemberData("testData")>]
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
-    let hive = Hive (hiveNodeUrl)
     let transformer = 
         (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (DelegateStake.action TestingStubs.logger hive "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
+        >> (DelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
