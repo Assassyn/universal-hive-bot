@@ -1,6 +1,5 @@
 ﻿module Level2Balance
 
-open System
 open System.Text.Json
 open PipelineResult
 open Functional.ETL.Pipeline
@@ -10,17 +9,9 @@ open HiveEngine
     
 [<Literal>]
 let private ModuleName = "Balance"
-
-let stringAsDecimal (input: string) =
-    let mutable number = 0M
-    if Decimal.TryParse  (input, &number)
-    then 
-        number
-    else 
-        0M
     
 let private addTokenBalanceAsProperty entity (tokenInfo: TokenBalance) =
-    let tokenBalance = tokenInfo.balance |> stringAsDecimal
+    let tokenBalance = tokenInfo.balance |> String.asDecimal
     let newEntity = 
         if tokenBalance > 0M 
         then 
@@ -28,7 +19,7 @@ let private addTokenBalanceAsProperty entity (tokenInfo: TokenBalance) =
         else 
             entity
 
-    let stakeBalance = tokenInfo.stake |> stringAsDecimal
+    let stakeBalance = tokenInfo.stake |> String.asDecimal
     let newEntity = 
         if stakeBalance > 0M 
         then 
