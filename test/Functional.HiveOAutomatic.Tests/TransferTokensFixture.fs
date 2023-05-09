@@ -1,4 +1,4 @@
-﻿module SellTokensFixture
+﻿module TransferTokensFixture
 
 open Xunit
 open FsUnit.Xunit
@@ -6,7 +6,6 @@ open Functional.ETL.Pipeline
 open TestingStubs
 
 let private hiveNodeUrl = "https://anyx.io"
-let private hiveEngineNode = "http://engine.alamut.uk:5000"
 
 let testData =
     [|
@@ -17,11 +16,11 @@ let testData =
     
 [<Theory>]
 [<MemberData("testData")>]
-let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
+let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (SellToken.action TestingStubs.logger hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind))
+        >> (TransferToken.action TestingStubs.logger "ONEUP" "ultimate-bot" (AmountCalator.bind amountToBind)) ""
     let pipelineDefinition = Pipeline.bind reader transformer
    
     let results = processPipeline pipelineDefinition
@@ -32,4 +31,4 @@ let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: s
 
     underTestObject 
     |> TestingStubs.extractCustomJson 
-    |> should startWith (sprintf """{"contractName":"market","contractAction":"sell","contractPayload": {"symbol": "ONEUP","quantity": "%s""" result)
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"transfer","contractPayload":{"to":"ultimate-bot","symbol":"ONEUP","quantity":"%s","memo":""}}""" result)

@@ -19,6 +19,7 @@
     <Compile Include="Level2BalanceFixture.fs" />
     <Compile Include="StakeTokensFixture.fs" />
     <Compile Include="SellTokensFixture.fs" />
+    <Compile Include="TransferTokensFixture.fs" />
     <Compile Include="DelegateStakeTokensFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
