@@ -19,7 +19,7 @@ let testData =
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
-        (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
+        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (UndelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    
@@ -32,4 +32,4 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     underTestObject 
     |> TestingStubs.extractCustomJson 
 
-    |> should equal (sprintf """{"contractName":"tokens","contractAction":"delegate","contractPayload":{"from":"delegation-target-user","symbol":"ONEUP","quantity":"%s"}}""" result)
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"undelegate","contractPayload":{"from":"delegation-target-user","symbol":"ONEUP","quantity":"%s"}}""" result)
