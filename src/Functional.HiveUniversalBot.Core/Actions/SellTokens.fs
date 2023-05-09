@@ -1,6 +1,5 @@
 ﻿module SellToken 
 
-open Core
 open PipelineResult
 open Types
 open Functional.ETL.Pipeline
@@ -8,9 +7,19 @@ open Functional.ETL.Pipeline
 [<Literal>]
 let ModuleName = "Sell"
 
+//{
+//   "contractName": "market",
+//   "contractAction": "sell",
+//   "contractPayload": {
+//      "symbol": "VOCUP",
+//      "quantity": "0.2",
+//      "price": "1.0000015"
+//   }
+//}
+
 let action logger hive hiveEngineUrl tokenSymbol (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     ()
 
-let bind logger hive (urls: Urls) (parameters: Map<string, string>) = 
+let bind logger (urls: Urls) (parameters: Map<string, string>) = 
     let token = parameters.["token"]
-    action logger hive urls.hiveEngineNodeUrl token
+    action logger urls.hiveNodeUrl urls.hiveEngineNodeUrl token

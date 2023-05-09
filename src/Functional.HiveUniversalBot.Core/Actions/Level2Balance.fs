@@ -50,5 +50,5 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
         NoUserDetails ModuleName 
         |> PipelineProcessData.withResult entity 
 
-let bind logger hive (urls: Urls) (parameters: Map<string, string>) = 
+let bind logger (urls: Urls) (parameters: Map<string, string>) = 
     action logger urls.hiveEngineNodeUrl
