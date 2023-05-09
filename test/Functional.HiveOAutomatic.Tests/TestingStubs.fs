@@ -2,7 +2,7 @@
 
 open Functional.ETL.Pipeline
 
-let logger a b c =
+let logger a b =
     ()
 
 let mockedBalanceAction balanceLevles entity = 
