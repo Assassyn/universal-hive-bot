@@ -10,31 +10,35 @@ open HiveEngine
 [<Literal>]
 let private ModuleName = "Balance"
     
+let private addProperty tokenSymbol tokenBalance entity = 
+    if tokenBalance > 0M 
+    then 
+        PipelineProcessData.withProperty entity tokenSymbol tokenBalance
+    else 
+        entity
+
+let calculateStake tokenInfo = 
+    let stake = tokenInfo.stake |> String.asDecimal
+    let pendingUnstake =  tokenInfo.pendingUnstake |> String.asDecimal 
+    stake - pendingUnstake
+
+let calculateDelegatedStake tokenInfo = 
+    let stake = tokenInfo.delegationsIn |> String.asDecimal
+    let pendingUnstake =  tokenInfo.pendingUndelegations |> String.asDecimal 
+    stake - pendingUnstake
+
 let private addTokenBalanceAsProperty entity (tokenInfo: TokenBalance) =
-    let tokenBalance = tokenInfo.balance |> String.asDecimal
-    let newEntity = 
-        if tokenBalance > 0M 
-        then 
-            PipelineProcessData.withProperty entity tokenInfo.symbol tokenBalance
-        else 
-            entity
-
-    let stakeBalance = tokenInfo.stake |> String.asDecimal
-    let newEntity = 
-        if stakeBalance > 0M 
-        then 
-            PipelineProcessData.withProperty newEntity (tokenInfo.symbol+"_stake") stakeBalance
-        else 
-            newEntity
-
-    newEntity
+    entity
+    |> addProperty tokenInfo.symbol (tokenInfo.balance |> String.asDecimal)
+    |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo)
+    |> addProperty (tokenInfo.symbol+"_delegatedstake") (calculateDelegatedStake tokenInfo)
 
 let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let username  = PipelineProcessData.readPropertyAsString entity "username"
 
     match username with 
     | Some username -> 
-        logger ModuleName "Balance" ""
+        logger username "Balance"
         getBalance hiveEngineUrl username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
@@ -42,4 +46,4 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
         |> PipelineProcessData.withResult entity 
 
 let bind logger (urls: Urls) (parameters: Map<string, string>) = 
-    action logger urls.hiveEngineNodeUrl
+    action (logger ModuleName) urls.hiveEngineNodeUrl

@@ -22,7 +22,7 @@ let private buildCustomJson username delegateTo tokenSymbol tokenBalance =
     Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
 let private delegateStakeTokens logger tokenSymbol operation = 
-    logger ModuleName tokenSymbol "Scheduled"
+    logger tokenSymbol
     HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
 
 let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
@@ -34,7 +34,7 @@ let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProce
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson username delegateTo tokenSymbol tokenBalance
-            delegateStakeTokens logger tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            delegateStakeTokens (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
@@ -44,4 +44,4 @@ let bind logger  urls (parameters: Map<string, string>) =
     let token = parameters.["token"]
     let delegateTo = parameters.["delegateTo"]
     let amount = parameters.["amount"] |> AmountCalator.bind
-    action logger token delegateTo amount
+    action (logger ModuleName) token delegateTo amount

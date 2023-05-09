@@ -12,8 +12,8 @@ let getlastResult (entity:PipelineProcessData<UniversalHiveBotResutls>) =
     | false -> Some entity.results.[^0]
     | _ -> None
 
-let logger moduleName token action =
-    printfn "%s: %s: %s" moduleName action token
+let logger moduleName user token =
+    printfn "%s: %s: %s" moduleName user token
 
 let config = getConfiguration ()
 let pipelines = createPipelines config logger 
