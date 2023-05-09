@@ -45,7 +45,7 @@ let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRe
     else 
         Array.empty
 
-let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action logger hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -69,4 +69,4 @@ let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) =
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
 let bind logger urls (parameters: Map<string, string>) = 
-    action urls.hiveNodeUrl
+    action (logger ModuleName) urls.hiveNodeUrl

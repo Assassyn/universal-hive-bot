@@ -23,7 +23,7 @@ let private buildCustomJson  username tokenSymbol tokenBalance price =
     Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
 
 let private createOperation logger tokenSymbol operation = 
-    logger ModuleName tokenSymbol "Scheduled"
+    logger tokenSymbol
     HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
 
 let private getTokenPrice hiveEngineUrl tokenSymbol quantityToSell = 
@@ -42,7 +42,7 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
         then 
             let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
             let customJson = buildCustomJson username tokenSymbol amountToSell tokenPrice
-            createOperation logger tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            createOperation (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
@@ -51,4 +51,4 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
 let bind logger (urls: Urls) (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let amountToSell = parameters.["amountToSell"] |> AmountCalator.bind
-    action logger urls.hiveNodeUrl urls.hiveEngineNodeUrl token amountToSell
+    action (logger ModuleName) urls.hiveNodeUrl urls.hiveEngineNodeUrl token amountToSell

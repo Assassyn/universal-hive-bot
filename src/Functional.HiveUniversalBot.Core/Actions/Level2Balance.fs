@@ -39,7 +39,7 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
 
     match username with 
     | Some username -> 
-        logger ModuleName "Balance" ""
+        logger username "Balance"
         getBalance hiveEngineUrl username
         |> Seq.fold addTokenBalanceAsProperty entity
     | _ -> 
@@ -47,4 +47,4 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
         |> PipelineProcessData.withResult entity 
 
 let bind logger (urls: Urls) (parameters: Map<string, string>) = 
-    action logger urls.hiveEngineNodeUrl
+    action (logger ModuleName) urls.hiveEngineNodeUrl
