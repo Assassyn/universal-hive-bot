@@ -96,6 +96,7 @@ Task("Test")
     {
         Configuration = configuration,
         NoBuild = true,
+        ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"TestResults.xml\"")
     });
 });
 
