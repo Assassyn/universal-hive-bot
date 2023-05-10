@@ -25,8 +25,9 @@ let getConfiguration () =
 let private getActionByName (name: string) = 
     match name.ToLower() with 
     | "stake" -> StakeToken.bind
-    | "balance" -> Level2Balance.bind
     | "delegatestake" -> DelegateStake.bind
+    | "undelegateStake" -> UndelegateStake.bind
+    | "balance" -> Level2Balance.bind
     | "flush" -> FlushTokens.bind
     | "sell" -> SellToken.bind
     | "transfer" -> TransferToken.bind

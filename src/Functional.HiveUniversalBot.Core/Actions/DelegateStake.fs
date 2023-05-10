@@ -40,7 +40,7 @@ let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProce
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger  urls (parameters: Map<string, string>) = 
+let bind logger urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let delegateTo = parameters.["delegateTo"]
     let amount = parameters.["amount"] |> AmountCalator.bind
