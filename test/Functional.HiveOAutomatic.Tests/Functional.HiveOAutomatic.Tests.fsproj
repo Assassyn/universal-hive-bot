@@ -18,6 +18,7 @@
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="Level2BalanceFixture.fs" />
     <Compile Include="StakeTokensFixture.fs" />
+    <Compile Include="UnstakeTokensFixture.fs" />
     <Compile Include="SellTokensFixture.fs" />
     <Compile Include="TransferTokensFixture.fs" />
     <Compile Include="DelegateStakeTokensFixture.fs" />
@@ -26,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FsUnit.xUnit" Version="5.2.0" />
+    <PackageReference Include="FsUnit.xUnit" Version="5.3.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -42,6 +43,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Functional.ETL\Functional.ETL.fsproj" />
     <ProjectReference Include="..\..\src\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="7.0.200" />
   </ItemGroup>
 
 </Project>
