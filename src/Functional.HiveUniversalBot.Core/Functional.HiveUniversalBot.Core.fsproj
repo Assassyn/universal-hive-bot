@@ -20,6 +20,7 @@
         <Compile Include="Actions\FlushTokens.fs" />
         <Compile Include="Actions\SellToken.fs" />
         <Compile Include="Actions\StakeToken.fs" />
+        <Compile Include="Actions\UnstakeToken.fs" />
         <Compile Include="Actions\TransferToken.fs" />
         <Compile Include="Actions\UserReader.fs" />
         <Compile Include="Configuration.fs" />

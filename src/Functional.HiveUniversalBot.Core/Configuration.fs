@@ -25,6 +25,7 @@ let getConfiguration () =
 let private getActionByName (name: string) = 
     match name.ToLower() with 
     | "stake" -> StakeToken.bind
+    | "unstake" -> UnstakeToken.bind
     | "delegatestake" -> DelegateStake.bind
     | "undelegateStake" -> UndelegateStake.bind
     | "balance" -> Level2Balance.bind
