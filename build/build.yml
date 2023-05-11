@@ -42,6 +42,10 @@ stages:
             inputs:
               testResultsFormat: VSTest
               testResultsFiles: '**/*TestResults*.xml'
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              testResultsFiles: '**/coverage.cobertura.xml'
   - stage: Publish 
     dependsOn: BuildAndTest
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
