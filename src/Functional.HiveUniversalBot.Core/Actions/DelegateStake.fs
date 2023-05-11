@@ -1,44 +1,36 @@
 ﻿module DelegateStake 
 
+open Action
+open FunctionalString
+open Some
 open PipelineResult
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "DelegateStake"
 
-let private getTokenStakeBalance tokensName entity = 
-    let key = sprintf "%s_stake" tokensName
-    match (PipelineProcessData.readPropertyAsDecimal entity key) with 
-    | Some x -> x
-    | _ -> 0M
-
-let private buildCustomJson username delegateTo tokenSymbol tokenBalance =
-    let json =
-        sprintf 
-            """{"contractName":"tokens","contractAction":"delegate","contractPayload":{"to":"%s","symbol":"%s","quantity":"%M"}}"""
-            delegateTo 
-            tokenSymbol 
-            tokenBalance
-    Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-
-let private delegateStakeTokens logger tokenSymbol operation = 
-    logger tokenSymbol
-    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
-
 let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
+    let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
 
     match userDetails with 
     | Some (username, activeKey, _) -> 
-        let tokenBalance = entity |> getTokenStakeBalance tokenSymbol |> amountCalcualtor
+        let tokenBalance =
+            sprintf "%s_stake" tokenSymbol
+            |> readPropertyAsDecimal entity
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
+
         if tokenBalance > 0M
         then 
-            let customJson = buildCustomJson username delegateTo tokenSymbol tokenBalance
-            delegateStakeTokens (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = asString tokenBalance|}
+            |> buildCustomJson username "ssc-mainnet-hive" 
+            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
+            |> withResult entity 
         else 
-            TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
+            TokenBalanceTooLow (ModuleName, tokenSymbol) |> withResult entity
     | _ -> 
-        NoUserDetails ModuleName |> PipelineProcessData.withResult entity
+        NoUserDetails ModuleName |> withResult entity
 
 let bind logger urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]

@@ -1,4 +1,4 @@
-﻿module String
+﻿module FunctionalString
 
 open System
 
@@ -7,3 +7,6 @@ let asDecimal (input: string) =
     if Decimal.TryParse  (input, &number)
     then number
     else 0M
+
+let asString input = 
+    input.ToString()

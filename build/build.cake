@@ -1,3 +1,5 @@
+#tool "nuget:?package=ReportGenerator"
+
 var target = Argument("target", "Test");
 var configuration = Argument("configuration", "Release");
 var version = Argument("build", "0.1.0");

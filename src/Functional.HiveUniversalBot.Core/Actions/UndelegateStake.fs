@@ -1,45 +1,36 @@
 ﻿module UndelegateStake 
 
+open Action
+open FunctionalString
+open Some
 open PipelineResult
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "UndelegateStake"
 
-let private getTokenStakeBalance tokensName entity = 
-    let key = sprintf "%s_delegatedstake" tokensName
-    match (PipelineProcessData.readPropertyAsDecimal entity key) with 
-    | Some x -> x
-    | _ -> 0M
-
-let private buildCustomJson username undelegateFrom tokenSymbol tokenBalance =
-    let json =
-        sprintf 
-            """{"contractName":"tokens","contractAction":"undelegate","contractPayload":{"from":"%s","symbol":"%s","quantity":"%M"}}"""
-            undelegateFrom 
-            tokenSymbol 
-            tokenBalance
-    Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-
-let private delegateStakeTokens logger tokenSymbol operation = 
-    logger tokenSymbol
-    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
-
 let action logger tokenSymbol undelegateFrom amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
+    let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, activeKey, _) -> 
-        let tokenBalance = entity |> getTokenStakeBalance tokenSymbol |> amountCalcualtor
-        if tokenBalance > 0M
-        then 
-            let customJson = buildCustomJson username undelegateFrom tokenSymbol tokenBalance
-            delegateStakeTokens (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
-        else 
-            TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
-    | _ -> 
-        NoUserDetails ModuleName |> PipelineProcessData.withResult entity
+    | Some (username, _, _) when username <> "" -> 
+        let tokenBalance = 
+            sprintf "%s_delegatedstake" tokenSymbol
+            |> readPropertyAsDecimal entity
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
 
+        if tokenBalance > 0M
+        then
+            bindCustomJson "tokens" "undelegate" {|from = undelegateFrom;symbol = tokenSymbol;quantity = asString tokenBalance|}
+            |> buildCustomJson username "ssc-mainnet-hive" 
+            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
+            |> withResult entity 
+        else 
+            TokenBalanceTooLow (ModuleName, tokenSymbol) |> withResult entity
+    | _ -> 
+        NoUserDetails ModuleName |> withResult entity
 let bind logger urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let undelegateFrom = parameters.["undelegateFrom"]

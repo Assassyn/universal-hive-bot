@@ -1,15 +1,12 @@
 ﻿module TransferToken 
 
 open PipelineResult
+open Some
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Transfer"
-
-let private getTokenStakeBalance tokensName entity = 
-    match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
-    | Some x -> x
-    | _ -> 0M
 
 let private buildCustomJson username delegateTo tokenSymbol tokenBalance memo =
     let json =
@@ -29,8 +26,12 @@ let action logger tokenSymbol transferTo amountCalcualtor memo (entity: Pipeline
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, activeKey, _) -> 
-        let tokenBalance = entity |> getTokenStakeBalance tokenSymbol |> amountCalcualtor
+    | Some (username, _, _) when username <> "" -> 
+        let tokenBalance = 
+            readPropertyAsDecimal entity tokenSymbol 
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
+
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson username transferTo tokenSymbol tokenBalance memo

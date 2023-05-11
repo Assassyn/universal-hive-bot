@@ -1,6 +1,8 @@
 ﻿module TestingStubs
 
+open PipelineResult
 open Functional.ETL.Pipeline
+open FSharp.Control
 
 let logger a b =
     ()
@@ -25,3 +27,6 @@ let extractCustomJson underTestObject =
     | _ -> ""
 
 let inline (~~) x = x :> obj
+
+let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = UserReader.bind [ ("ultimate-bot", "", "") ]
+let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = UserReader.bind [ ("", "", "") ]

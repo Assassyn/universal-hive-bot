@@ -1,5 +1,6 @@
 ﻿module UserReader
 
+open PipelineResult
 open Functional.ETL.Pipeline
 open FSharp.Control
 
