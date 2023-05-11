@@ -26,7 +26,7 @@ let action logger tokenSymbol transferTo amountCalcualtor memo (entity: Pipeline
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, activeKey, _) -> 
+    | Some (username, _, _) when username <> "" -> 
         let tokenBalance = 
             readPropertyAsDecimal entity tokenSymbol 
             |> defaultWhenNone 0M

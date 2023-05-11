@@ -22,7 +22,7 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, _, _) -> 
+    | Some (username, _, _) when username <> "" -> 
         let amountToSell = 
             tokenSymbol
             |> readPropertyAsDecimal entity

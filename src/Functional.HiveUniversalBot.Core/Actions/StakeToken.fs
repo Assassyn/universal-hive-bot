@@ -14,7 +14,7 @@ let action logger tokenSymbol amountCalcualtor (entity: PipelineProcessData<Univ
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, _, _) -> 
+    | Some (username, _, _) when username <> "" -> 
         let tokenBalance =
             tokenSymbol
             |> readPropertyAsDecimal entity

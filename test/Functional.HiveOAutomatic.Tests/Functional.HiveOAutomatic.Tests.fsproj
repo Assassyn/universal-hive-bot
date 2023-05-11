@@ -16,13 +16,13 @@
     <Compile Include="AmountCalatorFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
-    <Compile Include="Level2BalanceFixture.fs" />
-    <Compile Include="StakeTokensFixture.fs" />
-    <Compile Include="UnstakeTokensFixture.fs" />
-    <Compile Include="SellTokensFixture.fs" />
-    <Compile Include="TransferTokensFixture.fs" />
-    <Compile Include="DelegateStakeTokensFixture.fs" />
-    <Compile Include="UndelegateStakeTokensFixturey.fs" />
+    <Compile Include="Actions\Level2BalanceFixture.fs" />
+    <Compile Include="Actions\StakeTokensFixture.fs" />
+    <Compile Include="Actions\UnstakeTokensFixture.fs" />
+    <Compile Include="Actions\SellTokensFixture.fs" />
+    <Compile Include="Actions\TransferTokensFixture.fs" />
+    <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
+    <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

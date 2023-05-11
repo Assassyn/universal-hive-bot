@@ -14,7 +14,7 @@ let action logger tokenSymbol undelegateFrom amountCalcualtor (entity: PipelineP
     let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, activeKey, _) -> 
+    | Some (username, _, _) when username <> "" -> 
         let tokenBalance = 
             sprintf "%s_delegatedstake" tokenSymbol
             |> readPropertyAsDecimal entity
@@ -31,7 +31,6 @@ let action logger tokenSymbol undelegateFrom amountCalcualtor (entity: PipelineP
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> withResult entity
     | _ -> 
         NoUserDetails ModuleName |> withResult entity
-
 let bind logger urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let undelegateFrom = parameters.["undelegateFrom"]
