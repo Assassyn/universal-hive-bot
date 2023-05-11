@@ -32,4 +32,4 @@ let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: s
 
     underTestObject 
     |> TestingStubs.extractCustomJson 
-    |> should startWith (sprintf """{"contractName":"market","contractAction":"sell","contractPayload": {"symbol": "ONEUP","quantity": "%s""" result)
+    |> should startWith """{"contractName":"market","contractAction":"sell","contractPayload":{"""

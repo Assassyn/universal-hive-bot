@@ -1,33 +1,22 @@
 ﻿module SellToken 
 
+open Action
+open FunctionalString
 open HiveEngine
-open PipelineResult
 open Some
 open Types
+open PipelineResult
 open Functional.ETL.Pipeline
 open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Sell"
 
-let private buildCustomJson  username tokenSymbol tokenBalance price =
-    let json =
-        sprintf 
-            """{"contractName":"market","contractAction":"sell","contractPayload": {"symbol": "%s","quantity": "%M","price":"%M"}}""" 
-            tokenSymbol 
-            tokenBalance
-            price
-    Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-
-let private createOperation logger tokenSymbol operation = 
-    logger tokenSymbol
-    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
-
 let private getTokenPrice hiveEngineUrl tokenSymbol quantityToSell = 
     let priceItem =
         getMarketBuyBook hiveEngineUrl tokenSymbol
-        |> Seq.find (fun marketBook -> (marketBook.quantity |> String.asDecimal) >= quantityToSell)
-    priceItem.price |> String.asDecimal
+        |> Seq.find (fun marketBook -> (marketBook.quantity |> asDecimal) >= quantityToSell)
+    priceItem.price |> asDecimal
 
 let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
@@ -39,11 +28,14 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
             |> readPropertyAsDecimal entity
             |> defaultWhenNone 0M
             |> amountCalcualtor
+
         if amountToSell > 0M
         then 
             let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
-            let customJson = buildCustomJson username tokenSymbol amountToSell tokenPrice
-            createOperation (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = asString amountToSell; price = asString tokenPrice; |}
+            |> buildCustomJson username "ssc-mainnet-hive"
+            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
+            |> withResult entity
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 

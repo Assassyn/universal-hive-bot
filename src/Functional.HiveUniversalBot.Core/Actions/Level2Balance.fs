@@ -1,11 +1,12 @@
 ﻿module Level2Balance
 
-open System.Text.Json
-open PipelineResult
-open Functional.ETL.Pipeline
+open FunctionalString
 open FsHttp
-open Types
 open HiveEngine
+open Types
+open PipelineResult
+open System.Text.Json
+open Functional.ETL.Pipeline
     
 [<Literal>]
 let private ModuleName = "Balance"
@@ -18,18 +19,18 @@ let private addProperty tokenSymbol tokenBalance entity =
         entity
 
 let calculateStake tokenInfo = 
-    let stake = tokenInfo.stake |> String.asDecimal
-    let pendingUnstake =  tokenInfo.pendingUnstake |> String.asDecimal 
+    let stake = tokenInfo.stake |> asDecimal
+    let pendingUnstake =  tokenInfo.pendingUnstake |> asDecimal 
     stake - pendingUnstake
 
 let calculateDelegatedStake tokenInfo = 
-    let stake = tokenInfo.delegationsIn |> String.asDecimal
-    let pendingUnstake =  tokenInfo.pendingUndelegations |> String.asDecimal 
+    let stake = tokenInfo.delegationsIn |> asDecimal
+    let pendingUnstake =  tokenInfo.pendingUndelegations |> asDecimal 
     stake - pendingUnstake
 
 let private addTokenBalanceAsProperty entity (tokenInfo: TokenBalance) =
     entity
-    |> addProperty tokenInfo.symbol (tokenInfo.balance |> String.asDecimal)
+    |> addProperty tokenInfo.symbol (tokenInfo.balance |> asDecimal)
     |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo)
     |> addProperty (tokenInfo.symbol+"_delegatedstake") (calculateDelegatedStake tokenInfo)
 

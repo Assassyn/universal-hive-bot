@@ -32,4 +32,4 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     underTestObject 
     |> TestingStubs.extractCustomJson 
 
-    |> should equal (sprintf """{"contractName":"tokens","contractAction":"undelegate","contractPayload":{"from":"delegation-target-user","symbol":"ONEUP","quantity":"%s"}}""" result)
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"undelegate","contractPayload":{"from":"delegation-target-user","quantity":"%s","symbol":"ONEUP"}}""" result)
