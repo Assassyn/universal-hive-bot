@@ -17,7 +17,7 @@ pool:
 name: 0.3.0-$(Rev:r)
 
 stages:
-  - stage: Build
+  - stage: BuildAndTest
     jobs:
       - job: 
         steps:
@@ -37,9 +37,17 @@ stages:
               command: 'custom'
               custom: 'cake'
               arguments: './build/build.cake --target=test'
-
+          - task: PublishTestResults@2
+            displayName: 'Publish Test Results'
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: '**/*TestResults*.xml'
+          - task: PublishCodeCoverageResults@1
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: '**/coverage.cobertura.xml'
   - stage: Publish 
-    dependsOn: Build
+    dependsOn: BuildAndTest
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs: 
       - job: create_packages 
