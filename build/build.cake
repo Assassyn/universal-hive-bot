@@ -5,6 +5,7 @@ var solution = "../universal-hive-bot.sln";
 var cliProject = "../src/Functional.UltimateHiveBot.CLI/Functional.UltimateHiveBot.CLI.fsproj";
 var publishDir = "./publish/";
 var artifacts = "./artifacts/";
+var tests = "./tests/";
 
 Task("Clean")
     .Does(() =>
@@ -96,7 +97,7 @@ Task("Test")
     {
         Configuration = configuration,
         NoBuild = true,
-        ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"TestResults.xml\"")
+        ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"TestResults.xml\" --collect:\"XPlat Code Coverage\"")
     });
 });
 
