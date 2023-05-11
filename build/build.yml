@@ -43,7 +43,7 @@ stages:
               testResultsFormat: VSTest
               testResultsFiles: '**/*TestResults*.xml'
   - stage: Publish 
-    dependsOn: Build
+    dependsOn: BuildAndTest
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs: 
       - job: create_packages 
