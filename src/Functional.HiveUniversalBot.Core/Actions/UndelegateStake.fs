@@ -1,16 +1,12 @@
 ﻿module UndelegateStake 
 
 open PipelineResult
+open Some
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "UndelegateStake"
-
-let private getTokenStakeBalance tokensName entity = 
-    let key = sprintf "%s_delegatedstake" tokensName
-    match (PipelineProcessData.readPropertyAsDecimal entity key) with 
-    | Some x -> x
-    | _ -> 0M
 
 let private buildCustomJson username undelegateFrom tokenSymbol tokenBalance =
     let json =
@@ -30,7 +26,11 @@ let action logger tokenSymbol undelegateFrom amountCalcualtor (entity: PipelineP
 
     match userDetails with 
     | Some (username, activeKey, _) -> 
-        let tokenBalance = entity |> getTokenStakeBalance tokenSymbol |> amountCalcualtor
+        let tokenBalance = 
+            sprintf "%s_delegatedstake" tokenSymbol
+            |> readPropertyAsDecimal entity
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson username undelegateFrom tokenSymbol tokenBalance

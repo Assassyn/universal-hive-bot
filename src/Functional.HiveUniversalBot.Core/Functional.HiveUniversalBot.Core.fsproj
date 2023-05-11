@@ -10,6 +10,7 @@
         <Compile Include="Hive.fs" />
         <Compile Include="HiveEngine.fs" />
         <Compile Include="Map.fs" />
+        <Compile Include="Some.fs" />
         <Compile Include="String.fs" />
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Types.fs" />

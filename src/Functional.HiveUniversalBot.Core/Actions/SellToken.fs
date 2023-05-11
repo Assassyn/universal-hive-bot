@@ -1,17 +1,14 @@
 ﻿module SellToken 
 
+open HiveEngine
 open PipelineResult
+open Some
 open Types
 open Functional.ETL.Pipeline
-open HiveEngine
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Sell"
-
-let private getTokenBalance tokensName entity = 
-    match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
-    | Some x -> x
-    | _ -> 0M
 
 let private buildCustomJson  username tokenSymbol tokenBalance price =
     let json =
@@ -37,7 +34,11 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
 
     match userDetails with 
     | Some (username, _, _) -> 
-        let amountToSell = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
+        let amountToSell = 
+            tokenSymbol
+            |> readPropertyAsDecimal entity
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
         if amountToSell > 0M
         then 
             let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell

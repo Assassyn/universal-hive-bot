@@ -1,15 +1,12 @@
 ﻿module StakeToken
 
 open PipelineResult
+open Some
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Stake"
-
-let private getTokenBalance tokensName entity = 
-    match (PipelineProcessData.readPropertyAsDecimal entity tokensName) with 
-    | Some x -> x
-    | _ -> 0M
 
 let private buildCustomJson  username tokenSymbol tokenBalance =
     let json =
@@ -29,7 +26,11 @@ let action logger tokenSymbol amountCalcualtor (entity: PipelineProcessData<Univ
 
     match userDetails with 
     | Some (username, _, _) -> 
-        let tokenBalance = entity |> getTokenBalance tokenSymbol |> amountCalcualtor
+        let tokenBalance =
+            tokenSymbol
+            |> readPropertyAsDecimal entity
+            |> defaultWhenNone 0M
+            |> amountCalcualtor
         if tokenBalance > 0M
         then 
             let customJson = buildCustomJson username tokenSymbol tokenBalance
