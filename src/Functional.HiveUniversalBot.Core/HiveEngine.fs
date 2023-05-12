@@ -93,3 +93,27 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
         |}
 
     runContractsQuery<MarketBuyBook> hiveEngineUrl "find" (payload :> obj)
+
+type PendingUnstakes = 
+    {
+        _id: int64
+        account: string
+        symbol: string
+        quantity: string
+        quantityLeft: string
+        nextTransactionTimestamp: int64
+        numberTransactionsLeft: int16
+        millisecPerPeriod: string
+        txID: string
+    }
+let getPendingUnstakes hiveEngineUrl username tokenSymbol =
+    let payload = 
+        {|
+            contract = "tokens"
+            table = "pendingUnstakes"
+            query = {|
+                account = username
+            |}
+        |}
+
+    runContractsQuery<PendingUnstakes> hiveEngineUrl "find" (payload :> obj)
