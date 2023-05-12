@@ -15,8 +15,8 @@ let ModuleName = "Sell"
 let private getTokenPrice hiveEngineUrl tokenSymbol quantityToSell = 
     let priceItem =
         getMarketBuyBook hiveEngineUrl tokenSymbol
-        |> Seq.find (fun marketBook -> (marketBook.quantity |> asDecimal) >= quantityToSell)
-    priceItem.price |> asDecimal
+        |> Seq.find (fun marketBook -> marketBook.quantity >= quantityToSell)
+    priceItem.price
 
 let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
