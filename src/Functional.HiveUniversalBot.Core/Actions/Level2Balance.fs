@@ -18,20 +18,30 @@ let private addProperty tokenSymbol tokenBalance entity =
     else 
         entity
 
-let calculateStake tokenInfo = 
+let calculateStake hiveEngineUrl tokenInfo = 
     let stake = tokenInfo.stake |> asDecimal
-    let pendingUnstake =  tokenInfo.pendingUnstake |> asDecimal 
-    stake - pendingUnstake
+    let getPendingStakes = HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account tokenInfo.symbol
+    let quantityLeft = 
+        getPendingStakes
+        |> Seq.map (fun x -> x.quantityLeft)
+        |> Seq.map FunctionalString.asDecimal
+        |> Seq.fold (fun acc next -> acc + next)  0M
+    let quantity = 
+        getPendingStakes
+        |> Seq.map (fun x -> x.quantity)
+        |> Seq.map FunctionalString.asDecimal
+        |> Seq.fold (fun acc next -> acc + next)  0M
+    stake + quantityLeft - quantity
 
 let calculateDelegatedStake tokenInfo = 
     let stake = tokenInfo.delegationsIn |> asDecimal
     let pendingUnstake =  tokenInfo.pendingUndelegations |> asDecimal 
     stake - pendingUnstake
 
-let private addTokenBalanceAsProperty entity (tokenInfo: TokenBalance) =
+let private addTokenBalanceAsProperty hiveEngineUrl entity (tokenInfo: TokenBalance) =
     entity
     |> addProperty tokenInfo.symbol (tokenInfo.balance |> asDecimal)
-    |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo)
+    |> addProperty (tokenInfo.symbol+"_stake") (calculateStake hiveEngineUrl tokenInfo)
     |> addProperty (tokenInfo.symbol+"_delegatedstake") (calculateDelegatedStake tokenInfo)
 
 let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
@@ -41,7 +51,7 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
     | Some username -> 
         logger username "Balance"
         getBalance hiveEngineUrl username
-        |> Seq.fold addTokenBalanceAsProperty entity
+        |> Seq.fold (addTokenBalanceAsProperty hiveEngineUrl) entity
     | _ -> 
         NoUserDetails ModuleName 
         |> PipelineProcessData.withResult entity 
