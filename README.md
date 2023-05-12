@@ -12,6 +12,119 @@ Because bot is doing token operation it requires the ActiveKey to be able to aut
 
 I am aware that there are a few places where I cna improve the bot. For example, I am sure if Balance and Flush action should be explicity declared or not. 
 
+# List of available tasks
+
+ 1. Balance - get the lsit of available level 2 tokens
+ ```
+{
+    "name": "Balance" 
+}
+```
+
+ 2. Flush - gathered all scheduled operations and passes them to HIVE Blockchain. That way the bot can control the maximum number of operations per block. 
+ ```
+{
+    "name": "Flush"
+}
+ ```
+
+  3. Transfer - allows to transfer tokens to another acount 
+
+  Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+    * transferTo - account to which token ahas to be transfer 
+```
+{
+    "name": "Transfer",
+    "parameters": {
+        "token": "BEE",
+        "amount": "*",
+        "transferTo": "alamut-he"
+    }
+}
+```
+
+ 4. Stake - transfer tokesn to stake
+
+ Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+```
+{
+    "name": "Stake",
+    "parameters": {
+    "token": "ONEUP",
+    "amount": "*"
+    }
+}
+```
+
+ 5. Unstake - transfer tokens out of stake 
+
+ Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+```
+{
+    "name": "Unstake",
+    "parameters": {
+        "token": "BEE",
+        "amount": "*"
+}
+```
+
+ 6. DelegateStake - delegates staked tokens 
+
+ Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+    * delegateTo - accoutn to which tokens will be delegated 
+```
+{
+    "name": "DelegateStake",
+    "parameters": {
+        "token": "PGM",
+        "amount": "* - 50",
+        "delegateTo": "lolz.pgm"
+    }
+}
+```
+
+ 7. UndelegateStake - undelegates token 
+
+ Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+    * undelegateFrom - account from which tokens will be undelegated 
+
+```
+{
+    "name": "UndelegateStake",
+    "parameters": {
+    "token": "PGM",
+    "amount": "* - 50",
+    "undelegateFrom": "lolz.pgm"
+    }
+}
+```
+
+ 8. Sell - opening the order on the market, the query is simple and is trying to find the fist amount larger than the requested one
+
+ Parameters:
+    * token - the name of the token
+    * amount - the computable desired amount, check #AmountCalculation to see what can be used
+
+```
+{
+    "name": "Sell",
+    "parameters": {
+    "token": "WOO",
+    "amountToSell": "*"
+    }
+}
+```
+
 # Example configuration
 
 ``` JSON
@@ -22,17 +135,17 @@ I am aware that there are a few places where I cna improve the bot. For example,
   },
   "actions": [
     {
-      "username": "assassyn",
-      "activeKey": "",
-      "postingKey": "",
+      "username": "universal-bot",
+      "activeKey": "<activeKey here>",
+      "postingKey": "<postingKey here>",
       "tasks": [
         {
-          "name": "Balance"
+          "name": "Balance" 
         },
         {
-          "name": "Stake",
+          "name": "Unstake",
           "parameters": {
-            "token": "ONEUP",
+            "token": "BEE",
             "amount": "*"
           }
         },
@@ -43,24 +156,20 @@ I am aware that there are a few places where I cna improve the bot. For example,
           "name": "Balance"
         },
         {
-          "name": "DelegateStake",
+          "name": "Sell",
           "parameters": {
-            "token": "PGM",
-            "amount": "* - 50",
-            "reciever": "lolz.pgm"
+            "token": "BEE",
+            "amountToSell": "*"
           }
+        },
+        {
+          "name": "Flush"
         }
       ]
     }
   ]
 }
 ```
-
-Avaible actions: 
- * Balance -> reading all the lelve 2 tokens balance and staked balance
- * Stake -> moves desired amount to stake.
- * DelegateStake -> delegate desired amount to a give account could
- * Flush -> all actions, like stake and delegate stake, does not execute on the spot so the bot does not have the problem of trying to write multiple message in the same block which can cause error
 
 # Amount Calculation 
 
