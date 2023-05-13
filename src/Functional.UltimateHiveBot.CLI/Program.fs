@@ -15,11 +15,17 @@ let getlastResult (entity:PipelineProcessData<UniversalHiveBotResutls>) =
 let logger moduleName user token =
     printfn "%s: %s: %s" moduleName user token
 
-let config = getConfiguration ()
-let pipelines = createPipelines config logger 
-
 printfn "Starting UniveralHiveBot processs"
-pipelines 
-|> Seq.iter (fun x -> processPipeline x |> ignore)
-//|> Seq.iter printResults
+
+let config = getConfiguration ()
+
+match config.actions with 
+| null -> 
+    printfn "no actions found"
+| _ -> 
+    printfn "found %i actions to execute" (config.actions |> Seq.length)
+    let pipelines = createPipelines config logger 
+    pipelines 
+    |> Seq.iter (fun x -> processPipeline x |> ignore)
+
 printfn "Finshed UniveralHiveBot processs"
