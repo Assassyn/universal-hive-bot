@@ -31,20 +31,21 @@ Task("Publish")
     .Does(() =>
 {
     var noBuild = false;
+    var compressOutput = true;
     var msBuildSettings = new DotNetMSBuildSettings 
     {
         Version = version,
     };
 
-    DotNetPublish(cliProject, new DotNetPublishSettings 
+  DotNetPublish(cliProject, new DotNetPublishSettings 
         {
             Configuration = configuration,
             OutputDirectory = $"{publishDir}/linux",
-            PublishReadyToRun = true,
-            PublishReadyToRunShowWarnings = true,
-            PublishSingleFile = true,
-            PublishTrimmed = true,
-            SelfContained = true,
+            PublishReadyToRun = compressOutput,
+            PublishReadyToRunShowWarnings = compressOutput,
+            PublishSingleFile = compressOutput,
+            PublishTrimmed = false,
+            SelfContained = compressOutput,
             Runtime = "linux-x64",
             NoBuild = noBuild,
             MSBuildSettings = msBuildSettings,
@@ -53,11 +54,11 @@ Task("Publish")
         {
             Configuration = configuration,
             OutputDirectory = $"{publishDir}/win",
-            PublishReadyToRun = true,
-            PublishReadyToRunShowWarnings = true,
-            PublishSingleFile = true,
-            PublishTrimmed = true,
-            SelfContained = true,
+            PublishReadyToRun = compressOutput,
+            PublishReadyToRunShowWarnings = compressOutput,
+            PublishSingleFile = compressOutput,
+            PublishTrimmed = false,
+            SelfContained = compressOutput,
             Runtime = "win-x64",
             NoBuild = noBuild,
             MSBuildSettings = msBuildSettings,
@@ -66,11 +67,11 @@ Task("Publish")
         {
             Configuration = configuration,
             OutputDirectory = $"{publishDir}/mac",
-            PublishReadyToRun = true,
-            PublishReadyToRunShowWarnings = true,
-            PublishSingleFile = true,
-            PublishTrimmed = true,
-            SelfContained = true,
+            PublishReadyToRun = compressOutput,
+            PublishReadyToRunShowWarnings = compressOutput,
+            PublishSingleFile = compressOutput,
+            PublishTrimmed = false,
+            SelfContained = compressOutput,
             Runtime = "osx-x64",
             NoBuild = noBuild,
             MSBuildSettings = msBuildSettings,
