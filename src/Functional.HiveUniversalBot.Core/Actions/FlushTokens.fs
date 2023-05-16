@@ -38,6 +38,7 @@ let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRe
             operations.[requiredKey] 
             |> Seq.map extractCustomJson
             |> Array.ofSeq 
+
         executeOperations hiveUrl key ops |> Array.ofSeq |> ignore
 
         operations.[requiredKey] 
