@@ -22,7 +22,7 @@ let action logger tokenSymbol amountCalcualtor (entity: PipelineProcessData<Univ
             |> amountCalcualtor
         if tokenBalance > 0M
         then 
-            bindCustomJson "tokens" "unstake" {|symbol = tokenSymbol;quantity = asString tokenBalance|}
+            bindCustomJson "tokens" "unstake" {|symbol = tokenSymbol;quantity = asStringWithPrecision tokenBalance|}
             |> buildCustomJson username "ssc-mainnet-hive" 
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
             |> withResult entity 

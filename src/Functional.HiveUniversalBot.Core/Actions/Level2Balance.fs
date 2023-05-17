@@ -21,7 +21,8 @@ let private addProperty tokenSymbol tokenBalance entity =
 
 let calculateStake hiveEngineUrl tokenInfo = 
     let stake = tokenInfo.stake
-    let getPendingStakes = HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account tokenInfo.symbol
+    let getPendingStakes =
+        HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account tokenInfo.symbol
     let quantityLeft = 
         getPendingStakes
         |> Seq.map (fun x -> x.quantityLeft)

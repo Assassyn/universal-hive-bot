@@ -10,3 +10,7 @@ let asDecimal (input: string) =
 
 let asString input = 
     input.ToString()
+
+let asStringWithPrecision (input: decimal) = 
+    input.ToString("F3")
+
