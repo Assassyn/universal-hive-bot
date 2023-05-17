@@ -76,3 +76,4 @@ let getPendingUnstakes hiveEngineUrl username tokenSymbol =
 
     runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
+    |> Seq.filter (fun token -> token.symbol = tokenSymbol)
