@@ -64,7 +64,7 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
     runContractsQuery<RawMarketBuyBook> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map MarketBuyBook.bind
 
-let getPendingUnstakes hiveEngineUrl username tokenSymbol =
+let getPendingUnstakes hiveEngineUrl username =
     let payload = 
         {|
             contract = "tokens"
@@ -76,4 +76,3 @@ let getPendingUnstakes hiveEngineUrl username tokenSymbol =
 
     runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
-    |> Seq.filter (fun token -> token.symbol = tokenSymbol)
