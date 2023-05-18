@@ -120,3 +120,46 @@ module PendingUnstakes =
             nextTransactionTimestamp = raw.nextTransactionTimestamp
             numberTransactionsLeft = raw.numberTransactionsLeft
         }
+
+
+type RawLiqudityPools = 
+   {
+       //_id: int64
+       precision: int32
+       tokenPair: string
+       baseQuantity: string
+       baseVolume: obj
+       basePrice: string
+       quoteQuantity: string
+       quoteVolume: obj
+       quotePrice: string
+       totalShares: string
+       creator: string
+   }
+type LiqudityPools = 
+    {
+        precision: int32
+        tokenPair: string
+        baseQuantity: decimal
+        baseVolume: decimal
+        basePrice: decimal
+        quoteQuantity: decimal
+        quoteVolume: decimal
+        quotePrice: decimal
+        totalShares: decimal
+        creator: string
+    }
+module LiqudityPools =
+    let bind (raw: RawLiqudityPools) = 
+        {
+            precision = raw.precision 
+            tokenPair = raw.tokenPair 
+            baseQuantity = raw.baseQuantity |> asDecimal
+            baseVolume = raw.baseVolume.ToString() |> asDecimal
+            basePrice = raw.basePrice |> asDecimal
+            quoteQuantity = raw.quoteQuantity |> asDecimal
+            quoteVolume = raw.quoteVolume.ToString() |> asDecimal
+            quotePrice = raw.quotePrice |> asDecimal
+            totalShares = raw.totalShares |> asDecimal
+            creator = raw.creator 
+        }

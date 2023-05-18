@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="Map.fs" />
+        <Compile Include="Decimal.fs" />
         <Compile Include="Some.fs" />
         <Compile Include="FunctionalString.fs" />
         <Compile Include="Hive.fs" />
