@@ -125,6 +125,24 @@ I am aware that there are a few places where I cna improve the bot. For example,
 }
 ```
 
+ 9. Add Liqiditity to a pool - allows to add a liqidity to a provided pool. Action is calculating the amount for two scenarions, when left or right amount can be processed 
+
+ Parameters:
+    * tokenPair - a name of the liqidity pool express as pair of tokes eg. SPORTS:AFIT
+    * leftAmount - the computable desired amount of left token, check #AmountCalculation to see what can be used 
+    * rightAmount - the computable desired amount of right token, check #AmountCalculation to see what can be used 
+
+```   leftAmount"
+{     rightAmount
+    "name": "AddToPool",
+    "parameters": {
+        "tokenPair": "PKM:SPS",
+        "leftAmount": "*",
+        "rightAmount": "*"
+    }
+}
+```
+
 # Example configuration
 
 ``` JSON
