@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Compile Include="Map.fs" />
+        <Compile Include="Decimal.fs" />
         <Compile Include="Some.fs" />
         <Compile Include="FunctionalString.fs" />
         <Compile Include="Hive.fs" />
@@ -17,6 +18,7 @@
         <Compile Include="Types.fs" />
         <Compile Include="AmountCalator.fs" />
         <Compile Include="Actions\Action.fs" />
+        <Compile Include="Actions\AddTokenToPool.fs" />
         <Compile Include="Actions\Level2Balance.fs" />
         <Compile Include="Actions\DelegateStake.fs" />
         <Compile Include="Actions\UndelegateStake.fs" />

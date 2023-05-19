@@ -56,7 +56,7 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
                     descending=true
                 |}
             ]
-            limit = 100
+            limit = 1000
             offset = 0
             table = "buyBook"
         |}
@@ -64,7 +64,7 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
     runContractsQuery<RawMarketBuyBook> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map MarketBuyBook.bind
 
-let getPendingUnstakes hiveEngineUrl username tokenSymbol =
+let getPendingUnstakes hiveEngineUrl username =
     let payload = 
         {|
             contract = "tokens"
@@ -76,3 +76,20 @@ let getPendingUnstakes hiveEngineUrl username tokenSymbol =
 
     runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
+
+
+let getAvailableMarketPools hiveEngineUrl tokenPair = 
+    let payload offset: obj = 
+        {|  
+            contract = "marketpools"
+            table = "pools"
+            query = {||}
+            limit = 1000
+            offset = offset
+        |}
+
+    seq { 0 .. 5 }
+    |> Seq.map (fun x -> x * 1000)
+    |> Seq.collect (fun offset ->  runContractsQuery<RawLiqudityPools> hiveEngineUrl "find" (payload offset))
+    |> Seq.find (fun result -> result.tokenPair = tokenPair)
+    |> LiqudityPools.bind

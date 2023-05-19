@@ -19,15 +19,17 @@ let private addProperty tokenSymbol tokenBalance entity =
     else 
         entity
 
-let calculateStake hiveEngineUrl tokenInfo = 
+let calculateStake tokenInfo pendingUnstakes = 
     let stake = tokenInfo.stake
-    let getPendingStakes = HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account tokenInfo.symbol
+    let tokenUnstakes = 
+        pendingUnstakes 
+        |> Seq.filter (fun token -> token.symbol = tokenInfo.symbol)
     let quantityLeft = 
-        getPendingStakes
+        tokenUnstakes
         |> Seq.map (fun x -> x.quantityLeft)
         |> Seq.fold (fun acc next -> acc + next)  0M
     let quantity = 
-        getPendingStakes
+        tokenUnstakes
         |> Seq.map (fun x -> x.quantity)
         |> Seq.fold (fun acc next -> acc + next)  0M
     stake + quantityLeft - quantity
@@ -44,9 +46,10 @@ let private addTokenBalanceAsProperty logger hiveEngineUrl entity (tokenInfo: To
     match hasAnyBalance tokenInfo with 
     | true -> 
         logger (sprintf "Loading token %s" tokenInfo.symbol)
+        let pendingUnstakes = HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account
         entity
         |> addProperty tokenInfo.symbol tokenInfo.balance
-        |> addProperty (tokenInfo.symbol+"_stake") (calculateStake hiveEngineUrl tokenInfo)
+        |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo pendingUnstakes)
         |> addProperty (tokenInfo.symbol+"_delegatedstake") (calculateDelegatedStake tokenInfo)
     | _ -> 
         entity

@@ -32,7 +32,7 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
         if amountToSell > 0M
         then 
             let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
-            bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = asString amountToSell; price = asString tokenPrice; |}
+            bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = asString amountToSell; price = asStringWithPrecision tokenPrice; |}
             |> buildCustomJson username "ssc-mainnet-hive"
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
             |> withResult entity

@@ -32,6 +32,7 @@ let private getActionByName (name: string) =
     | "flush" -> FlushTokens.bind
     | "sell" -> SellToken.bind
     | "transfer" -> TransferToken.bind
+    | "addtopool" -> AddTokenToPool.bind
     | _ -> (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
 
 let private bindActions logger url parameters bindingFunctionName =
