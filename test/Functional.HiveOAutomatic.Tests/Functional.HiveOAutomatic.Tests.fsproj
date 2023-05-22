@@ -12,6 +12,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestingStubs.fs" />
+    <Compile Include="SeriesToActionsRewriterFixture.fs" />
     <Compile Include="ConfigurationFixture.fs" />
     <Compile Include="AmountCalatorFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />

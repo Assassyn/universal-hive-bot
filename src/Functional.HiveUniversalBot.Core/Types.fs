@@ -12,14 +12,14 @@ type Urls =
 
 type ActionDefinition () = 
     let mutable name = ""
-    let mutable parameters = new Dictionary<string, string>()
+    let mutable parameters: IDictionary<string, string> = new Dictionary<string, string>()
 
     member this.Name 
         with get () = name
         and set (value) = name <- value
-    member this.Parameters 
+    member this.Parameters
         with get () = parameters
-        and set (value) = parameters <- value
+        and set (value) = parameters <- value 
         
 type UserActionsDefinition () =
     let mutable username = ""

@@ -7,6 +7,9 @@ open FSharp.Control
 let logger a b =
     ()
 
+let pipelineLogger a b c = 
+    ()
+
 let mockedBalanceAction balanceLevles entity = 
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity tokenSymbol tokenBalance) entity

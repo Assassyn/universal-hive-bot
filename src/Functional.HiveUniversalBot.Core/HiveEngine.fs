@@ -4,7 +4,6 @@ open System.Net.Http
 open HiveAPI
 open System.Text.Json
 open FsHttp
-open FunctionalString
 open HiveEngineTypes
 
 let private deserialize<'ResponsePayload> (json: JsonElement) = 
@@ -76,6 +75,7 @@ let getPendingUnstakes hiveEngineUrl username =
 
     runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
+    |> Array.ofSeq
 
 
 let getAvailableMarketPools hiveEngineUrl tokenPair = 

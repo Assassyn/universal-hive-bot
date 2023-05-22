@@ -2,8 +2,8 @@
 
 open Microsoft.Extensions.Configuration
 open Types
+open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
-open PipelineResult
 
 let getConfiguration () = 
     let config = 
@@ -33,6 +33,7 @@ let private getActionByName (name: string) =
     | "sell" -> SellToken.bind
     | "transfer" -> TransferToken.bind
     | "addtopool" -> AddTokenToPool.bind
+    | "flushandbalance" -> FlushAndBalanceAction.bind
     | _ -> (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
 
 let private bindActions logger url parameters bindingFunctionName =
@@ -45,6 +46,7 @@ let private bindTransfomers logger url (config: UserActionsDefinition) =
         let (bindingFunctionName, parameters ) = fromConfig
         bindActions logger url parameters bindingFunctionName
     config.Tasks
+    |> Seq.collect splitToActualActionConfigurationItems
     |> List.ofSeq
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)

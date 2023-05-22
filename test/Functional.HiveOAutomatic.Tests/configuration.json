@@ -4,6 +4,9 @@
         "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
     },
     "actions": [
+        {},
+        {},
+        {},
         {
             "username": "ultimate-bot",
             "activeKey": "",
@@ -23,6 +26,23 @@
                     "name": "Flush"
                 }
             ]
+        },
+        {
+            "username": "series-test",
+            "activeKey": "",
+            "postingKey": "",
+            "tasks": [
+                {
+                    "name": "Series",
+                    "parameters": {
+                        "action": "Stake",
+                        "splitParameterName": "token",
+                        "splitOn": "ONEUP;CENT;PGM;ALIVE;NEOXAG;PIMP;COM",
+                        "amount": "*"
+                    }
+                }
+            ]
         }
+
     ]
 }

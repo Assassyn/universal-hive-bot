@@ -1,7 +1,6 @@
 ﻿module UndelegateStake 
 
 open Action
-open FunctionalString
 open Some
 open PipelineResult
 open Functional.ETL.Pipeline
@@ -23,7 +22,7 @@ let action logger tokenSymbol undelegateFrom amountCalcualtor (entity: PipelineP
 
         if tokenBalance > 0M
         then
-            bindCustomJson "tokens" "undelegate" {|from = undelegateFrom;symbol = tokenSymbol;quantity = asStringWithPrecision tokenBalance|}
+            bindCustomJson "tokens" "undelegate" {|from = undelegateFrom;symbol = tokenSymbol;quantity = String.asStringWithPrecision tokenBalance|}
             |> buildCustomJson username "ssc-mainnet-hive" 
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
             |> withResult entity 

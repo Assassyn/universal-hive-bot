@@ -1,5 +1,6 @@
 ﻿module TransferToken 
 
+open Action
 open PipelineResult
 open Some
 open Functional.ETL.Pipeline
@@ -7,20 +8,6 @@ open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Transfer"
-
-let private buildCustomJson username delegateTo tokenSymbol tokenBalance memo =
-    let json =
-        sprintf 
-            """{"contractName":"tokens","contractAction":"transfer","contractPayload":{"to":"%s","symbol":"%s","quantity":"%M","memo":"%s"}}"""
-            delegateTo 
-            tokenSymbol 
-            tokenBalance
-            memo
-    Hive.createCustomJsonActiveKey username "ssc-mainnet-hive" json
-
-let private delegateStakeTokens logger tokenSymbol operation = 
-    logger tokenSymbol
-    HiveOperation (ModuleName, tokenSymbol, KeyRequired.Active, operation)
 
 let action logger tokenSymbol transferTo amountCalcualtor memo (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
@@ -34,8 +21,10 @@ let action logger tokenSymbol transferTo amountCalcualtor memo (entity: Pipeline
 
         if tokenBalance > 0M
         then 
-            let customJson = buildCustomJson username transferTo tokenSymbol tokenBalance memo
-            delegateStakeTokens (logger username) tokenSymbol customJson |> PipelineProcessData.withResult entity 
+            bindCustomJson "tokens" "transfer" {| ``to`` = username;symbol = tokenSymbol;quantity = String.asString tokenBalance; memo = memo|}
+            |> buildCustomJson username "ssc-mainnet-hive" 
+            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
+            |> withResult entity 
         else 
             TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 

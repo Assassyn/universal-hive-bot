@@ -1,7 +1,6 @@
 ﻿module StakeToken
 
 open Action
-open FunctionalString
 open Some
 open PipelineResult
 open Functional.ETL.Pipeline
@@ -22,7 +21,7 @@ let action logger tokenSymbol amountCalcualtor (entity: PipelineProcessData<Univ
             |> amountCalcualtor
         if tokenBalance > 0M
         then 
-            bindCustomJson "tokens" "stake" {| ``to`` = username;symbol = tokenSymbol;quantity = asStringWithPrecision tokenBalance|}
+            bindCustomJson "tokens" "stake" {| ``to`` = username;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
             |> buildCustomJson username "ssc-mainnet-hive" 
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
             |> withResult entity 

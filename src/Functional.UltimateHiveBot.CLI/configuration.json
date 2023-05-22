@@ -1,8 +1,9 @@
 ﻿{
-  "urls": {
-    "hiveNodeUrl": "https://anyx.io",
-    "hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
-  },
+    "urls": {
+        "hiveNodeUrl": "https://anyx.io",
+        "hiveEngineNodeUrl": "https://enginerpc.com"
+        //"hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
+    },
   "actions": [
   ]
 }
