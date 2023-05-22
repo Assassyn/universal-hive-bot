@@ -162,3 +162,60 @@ module LiqudityPools =
             totalShares = raw.totalShares |> Decimal.fromString |> Some.defaultWhenNone 0M
             creator = raw.creator 
         }
+
+type RawTokenInfo =
+    {
+        _id: int32
+        issuer: string
+        symbol: string
+        name: string
+        precision: int32
+        maxSupply: string
+        supply: string
+        circulatingSupply: string
+        stakingEnabled: bool
+        unstakingCooldown:  int32
+        delegationEnabled: bool
+        undelegationCooldown: int32
+        numberTransactions: int32
+        totalStaked: string
+    }
+type TokenInfo =
+    {
+        issuer: string
+        symbol: string
+        name: string
+        precision: int32
+        maxSupply: decimal
+        supply: decimal
+        circulatingSupply: decimal
+        stakingEnabled: bool
+        unstakingCooldown:  int32
+        delegationEnabled: bool
+        undelegationCooldown: int32
+        numberTransactions: int32
+        totalStaked: decimal
+    }
+
+module TokenInfo =
+    let bind (raw: RawTokenInfo) = 
+        {
+            issuer = raw.issuer
+            symbol = raw.symbol
+            name = raw.name
+            precision = raw.precision
+            maxSupply = raw.maxSupply |> Decimal.fromString |> Some.defaultWhenNone 0M
+            supply = raw.supply|> Decimal.fromString |> Some.defaultWhenNone 0M
+            circulatingSupply = raw.circulatingSupply|> Decimal.fromString |> Some.defaultWhenNone 0M
+            stakingEnabled = raw.stakingEnabled
+            unstakingCooldown = raw.unstakingCooldown
+            delegationEnabled = raw.delegationEnabled
+            undelegationCooldown = raw.undelegationCooldown
+            numberTransactions = raw.numberTransactions
+            totalStaked = raw.totalStaked|> Decimal.fromString |> Some.defaultWhenNone 0M
+        }
+    let getTokenPrecision (tokens: TokenInfo seq) tokenSymbol =
+        let token = 
+            tokens
+            |> Seq.find (fun x -> x.symbol = tokenSymbol)
+        token.precision

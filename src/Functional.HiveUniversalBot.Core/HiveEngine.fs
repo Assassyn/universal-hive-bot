@@ -93,3 +93,20 @@ let getAvailableMarketPools hiveEngineUrl tokenPair =
     |> Seq.collect (fun offset ->  runContractsQuery<RawLiqudityPools> hiveEngineUrl "find" (payload offset))
     |> Seq.find (fun result -> result.tokenPair = tokenPair)
     |> LiqudityPools.bind
+
+
+let getTokenDetails hiveEngineUrl = 
+    let payload offset: obj = 
+        {|  
+            contract = "tokens"
+            table = "tokens"
+            query = {||}
+            limit = 1000
+            offset = offset
+        |}
+    
+    seq { 0 .. 5 }
+    |> Seq.map (fun x -> x * 1000)
+    |> Seq.collect (fun offset ->  runContractsQuery<RawTokenInfo> hiveEngineUrl "find" (payload offset))
+    |> Seq.map TokenInfo.bind
+    |> Array.ofSeq
