@@ -132,8 +132,8 @@ I am aware that there are a few places where I cna improve the bot. For example,
     * leftAmount - the computable desired amount of left token, check #AmountCalculation to see what can be used 
     * rightAmount - the computable desired amount of right token, check #AmountCalculation to see what can be used 
 
-```   leftAmount"
-{     rightAmount
+```
+{     
     "name": "AddToPool",
     "parameters": {
         "tokenPair": "PKM:SPS",
@@ -142,7 +142,25 @@ I am aware that there are a few places where I cna improve the bot. For example,
     }
 }
 ```
+ 10. Swap tokens - allows to sent the token swap request to block chain 
 
+ Parameters: 
+    * tokenPair - a selection of tokens to convert following the pool syntach <left token>:<right token>
+    * token - a token to be a input for swap
+    * amountToSwap - the computable desired amount of source token 
+    * maxSlippage - amaximun diffrence desired, for now it has to be provided but I will try to make it automatic if possible
+
+```
+{
+    "name": "SwapToken",
+    "parameters": {
+        "tokenPair": "SPORTS:AFIT",
+        "token": "SPORTS",
+        "amountToSwap": "*",
+        "maxSlippage": "0.673619"
+    }
+}
+```
 
 # Actions Series
 
