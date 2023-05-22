@@ -32,7 +32,7 @@ let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (resul
 
     underTestObject 
     |> TestingStubs.extractCustomJson 
-    |> should equal (sprintf """{"contractName":"tokens","contractAction":"transfer","contractPayload":{"to":"ultimate-bot","symbol":"ONEUP","quantity":"%s","memo":""}}""" result)
+    |> should equal (sprintf """{"contractName":"tokens","contractAction":"transfer","contractPayload":{"memo":"","quantity":"%s","symbol":"ONEUP","to":"ultimate-bot"}}""" result)
 
 [<Fact>]
 let ``Check that balance is too low`` () =
