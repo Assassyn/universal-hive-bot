@@ -41,11 +41,10 @@ let calculateDelegatedStake tokenInfo =
 let private hasAnyBalance (tokenInfo: TokenBalance) = 
     (tokenInfo.balance > 0M) || (tokenInfo.stake > 0M) || (tokenInfo.delegationsIn > 0M)
 
-let private addTokenBalanceAsProperty logger hiveEngineUrl entity (tokenInfo: TokenBalance) =
+let private addTokenBalanceAsProperty logger pendingUnstakes entity  (tokenInfo: TokenBalance) =
     match hasAnyBalance tokenInfo with 
     | true -> 
         logger (sprintf "Loading token %s" tokenInfo.symbol)
-        let pendingUnstakes = HiveEngine.getPendingUnstakes hiveEngineUrl tokenInfo.account
         entity
         |> addProperty tokenInfo.symbol tokenInfo.balance
         |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo pendingUnstakes)
@@ -60,7 +59,7 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
     | Some username -> 
         logger username "Balance"
         getBalance hiveEngineUrl username
-        |> Seq.fold (addTokenBalanceAsProperty (logger username) hiveEngineUrl) entity
+        |> Seq.fold (addTokenBalanceAsProperty (logger username) (getPendingUnstakes hiveEngineUrl username)) entity
     | _ -> 
         NoUserDetails ModuleName 
         |> PipelineProcessData.withResult entity 
