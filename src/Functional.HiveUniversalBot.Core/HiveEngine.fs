@@ -75,6 +75,7 @@ let getPendingUnstakes hiveEngineUrl username =
 
     runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
+    |> Array.ofSeq
 
 
 let getAvailableMarketPools hiveEngineUrl tokenPair = 
