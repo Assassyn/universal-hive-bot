@@ -55,9 +55,9 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
 
 
         match (leftTokenBaseAmount, leftTokenQuoteAmount, rightTokenBaseAmount, rightTokenQuoteAmount) with 
-        | (leftBase, leftQuote, _, _) when leftBase <= leftTokenBaseAmount && leftQuote <= rightTokenBaseAmount ->
+        | (leftBase, leftQuote, _, _) when leftBase > 0M && leftQuote > 0M && leftBase <= leftTokenBaseAmount && leftQuote <= rightTokenBaseAmount ->
             scheduleTokenToPoolTransfer logger username tokenPair leftBase leftQuote |> withResult entity
-        | (_, _, rightBase, rightQuote) when rightBase <= rightTokenBaseAmount && rightQuote <= leftTokenBaseAmount ->
+        | (_, _, rightBase, rightQuote) when rightBase > 0M && rightQuote > 0M && rightBase <= rightTokenBaseAmount && rightQuote <= leftTokenBaseAmount ->
             scheduleTokenToPoolTransfer logger username tokenPair rightBase rightQuote |> withResult entity
         | _ -> 
             TokenBalanceTooLow (ModuleName, tokenPair) |> withResult entity

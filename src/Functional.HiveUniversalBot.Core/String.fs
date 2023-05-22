@@ -6,7 +6,7 @@ let asString input =
     input.ToString()
 
 let asStringWithPrecision (input: decimal) = 
-    input.ToString("F3")
+    input.ToString("F5")
 
 let split (character: string) (input: string) =
     input.Split(character)

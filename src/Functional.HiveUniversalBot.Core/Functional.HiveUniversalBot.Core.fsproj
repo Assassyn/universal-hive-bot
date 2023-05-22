@@ -28,6 +28,7 @@
         <Compile Include="Actions\SellToken.fs" />
         <Compile Include="Actions\AddTokenToPool.fs" />
         <Compile Include="Actions\UserReader.fs" />
+        <Compile Include="Actions\FlushAndBalanceAction.fs" />
         <Compile Include="SeriesToActionsRewriter.fs" />
         <Compile Include="Configuration.fs" />
     </ItemGroup>
