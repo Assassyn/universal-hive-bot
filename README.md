@@ -143,6 +143,35 @@ I am aware that there are a few places where I cna improve the bot. For example,
 }
 ```
 
+
+# Actions Series
+
+There is a new way to write the similar task now. So instead of writing 5 times to stake the five various tokens you can create a one Series action definition and specify the **splitOn** to include all 5 tokens. As a result there will be 5 actinon which will have it onw token used by amount will be the same for all of them. In a case there are other parametesr they will be copied as well to a child actions.
+
+Required parameters:
+  * action - a name of the action which will be used for the child ones
+  * splitParameterName - as there can be various handlers for the token this one specify what is the ": "token",
+  * splitOn - put the series of parameter values in here. You can separate with comma (,) or semicolon (;)
+
+```
+{
+    "name": "Series",
+    "parameters": {
+        "action": "Stake",
+        "splitParameterName": "token",
+        "splitOn": "ONEUP;CENT;PGM;ALIVE;NEOXAG;PIMP;COM",
+        "amount": "*"
+    }
+}
+```
+# Amount Calculation 
+
+To allow slightly more advanced aproach to amont which have to be transfer there are 3 possible setting for it:
+ * fixed amount like 100, it will transfer up to selected amount only
+ * * -> it will transfer all availble tokesn 
+ * * - 10 -> it will deduct 10 tokens from the availble amoutn and transfer the rest.
+
+
 # Example configuration
 
 ``` JSON
@@ -188,13 +217,6 @@ I am aware that there are a few places where I cna improve the bot. For example,
   ]
 }
 ```
-
-# Amount Calculation 
-
-To allow slightly more advanced aproach to amont which have to be transfer there are 3 possible setting for it:
- * fixed amount like 100, it will transfer up to selected amount only
- * * -> it will transfer all availble tokesn 
- * * - 10 -> it will deduct 10 tokens from the availble amoutn and transfer the rest.
 
 # How to support me
 
