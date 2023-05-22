@@ -1,6 +1,5 @@
 ﻿module Level2Balance
 
-open FunctionalString
 open FsHttp
 open HiveEngine
 open Types

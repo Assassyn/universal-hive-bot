@@ -4,7 +4,6 @@ open System.Net.Http
 open HiveAPI
 open System.Text.Json
 open FsHttp
-open FunctionalString
 open HiveEngineTypes
 
 let private deserialize<'ResponsePayload> (json: JsonElement) = 

@@ -4,7 +4,6 @@ open System.Net.Http
 open HiveAPI
 open System.Text.Json
 open FsHttp
-open FunctionalString
 
 type HiveResponse<'Result> =
     {
@@ -41,12 +40,12 @@ module TokenBalance =
         {
             account = raw.account
             symbol = raw.symbol
-            balance = raw.balance |> asDecimal
-            stake = raw.stake |> asDecimal
-            pendingUnstake = raw.pendingUnstake |> asDecimal
-            delegationsIn = raw.delegationsIn |> asDecimal
-            delegationsOut = raw.delegationsOut |> asDecimal
-            pendingUndelegations = raw.pendingUndelegations |> asDecimal
+            balance = raw.balance |> Decimal.fromString |> Some.defaultWhenNone 0M
+            stake = raw.stake |> Decimal.fromString |> Some.defaultWhenNone 0M
+            pendingUnstake = raw.pendingUnstake |> Decimal.fromString |> Some.defaultWhenNone 0M
+            delegationsIn = raw.delegationsIn |> Decimal.fromString |> Some.defaultWhenNone 0M
+            delegationsOut = raw.delegationsOut |> Decimal.fromString |> Some.defaultWhenNone 0M
+            pendingUndelegations = raw.pendingUndelegations |> Decimal.fromString |> Some.defaultWhenNone 0M
         }
 
 type RawMarketBuyBook = 
@@ -82,10 +81,10 @@ module MarketBuyBook =
             timestamp = raw.timestamp 
             account = raw.account 
             symbol = raw.symbol 
-            quantity = raw.quantity |> asDecimal
-            price = raw.price |> asDecimal
+            quantity = raw.quantity |> Decimal.fromString |> Some.defaultWhenNone 0M
+            price = raw.price |> Decimal.fromString |> Some.defaultWhenNone 0M
             priceDec = {|
-                ``$numberDecimal`` = raw.priceDec.``$numberDecimal`` |> asDecimal
+                ``$numberDecimal`` = raw.priceDec.``$numberDecimal`` |> Decimal.fromString |> Some.defaultWhenNone 0M
             |}
         }
 
@@ -115,8 +114,8 @@ module PendingUnstakes =
         {
             account = raw.account
             symbol = raw.symbol
-            quantity = raw.quantity |> asDecimal
-            quantityLeft = raw.quantityLeft |> asDecimal
+            quantity = raw.quantity |> Decimal.fromString |> Some.defaultWhenNone 0M
+            quantityLeft = raw.quantityLeft |> Decimal.fromString |> Some.defaultWhenNone 0M
             nextTransactionTimestamp = raw.nextTransactionTimestamp
             numberTransactionsLeft = raw.numberTransactionsLeft
         }
@@ -154,12 +153,12 @@ module LiqudityPools =
         {
             precision = raw.precision 
             tokenPair = raw.tokenPair 
-            baseQuantity = raw.baseQuantity |> asDecimal
-            baseVolume = raw.baseVolume.ToString() |> asDecimal
-            basePrice = raw.basePrice |> asDecimal
-            quoteQuantity = raw.quoteQuantity |> asDecimal
-            quoteVolume = raw.quoteVolume.ToString() |> asDecimal
-            quotePrice = raw.quotePrice |> asDecimal
-            totalShares = raw.totalShares |> asDecimal
+            baseQuantity = raw.baseQuantity |> Decimal.fromString |> Some.defaultWhenNone 0M
+            baseVolume = raw.baseVolume.ToString() |> Decimal.fromString |> Some.defaultWhenNone 0M
+            basePrice = raw.basePrice |> Decimal.fromString |> Some.defaultWhenNone 0M
+            quoteQuantity = raw.quoteQuantity |> Decimal.fromString |> Some.defaultWhenNone 0M
+            quoteVolume = raw.quoteVolume.ToString() |> Decimal.fromString |> Some.defaultWhenNone 0M
+            quotePrice = raw.quotePrice |> Decimal.fromString |> Some.defaultWhenNone 0M
+            totalShares = raw.totalShares |> Decimal.fromString |> Some.defaultWhenNone 0M
             creator = raw.creator 
         }

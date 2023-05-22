@@ -10,13 +10,14 @@
         <Compile Include="Map.fs" />
         <Compile Include="Decimal.fs" />
         <Compile Include="Some.fs" />
-        <Compile Include="FunctionalString.fs" />
+        <Compile Include="String.fs" />
         <Compile Include="Hive.fs" />
         <Compile Include="HiveEngine.Types.fs" />
         <Compile Include="HiveEngine.fs" />
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="AmountCalator.fs" />
+        <Compile Include="Actions\SeriesBinder.fs" />
         <Compile Include="Actions\Action.fs" />
         <Compile Include="Actions\Level2Balance.fs" />
         <Compile Include="Actions\FlushTokens.fs" />
@@ -27,6 +28,7 @@
         <Compile Include="Actions\UndelegateStake.fs" />
         <Compile Include="Actions\SellToken.fs" />
         <Compile Include="Actions\AddTokenToPool.fs" />
+        <Compile Include="Actions\SeriesAction.fs" />
         <Compile Include="Actions\UserReader.fs" />
         <Compile Include="Configuration.fs" />
     </ItemGroup>

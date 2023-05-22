@@ -1,7 +1,6 @@
 ﻿module AddTokenToPool 
 
 open Action
-open FunctionalString
 open HiveEngine
 open Some
 open Decimal
@@ -24,8 +23,8 @@ let private scheduleTokenToPoolTransfer logger username tokenPair baseQuantity q
         "addLiquidity" 
         {| 
             tokenPair = tokenPair
-            baseQuantity = asString baseQuantity
-            quoteQuantity = asString quoteQuantity
+            baseQuantity = String.asString baseQuantity
+            quoteQuantity = String.asString quoteQuantity
             maxSlippage = "1"
             maxDeviation = "0"
         |}
@@ -78,7 +77,7 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
         //if amountToSell > 0M
         //then 
         //    let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
-        //    bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = asString amountToSell; price = asString tokenPrice; |}
+        //    bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = String.asString amountToSell; price = String.asString tokenPrice; |}
         //    |> buildCustomJson username "ssc-mainnet-hive"
         //    |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
         //    |> withResult entity
