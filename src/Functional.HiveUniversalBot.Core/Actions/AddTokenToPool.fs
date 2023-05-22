@@ -1,7 +1,7 @@
 ﻿module AddTokenToPool 
 
 open Action
-open HiveEngine
+open HiveEngineTypes
 open Some
 open Decimal
 open Types
@@ -15,7 +15,6 @@ let ModuleName = "AddToPool"
 let private splitPair (tokenPair: string) = 
     let parts = tokenPair.Split(":")
     (parts[0], parts[1])
-
 
 let private scheduleTokenToPoolTransfer logger username tokenPair baseQuantity quoteQuantity =
     bindCustomJson 
@@ -39,19 +38,23 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
         let marketPosition = HiveEngine.getAvailableMarketPools hiveEngineUrl tokenPair
         let (leftToken, rightToken) = splitPair tokenPair
         
+        let tokensDetails = entity.properties.["tokenDetails"] :?> TokenInfo seq
+        let leftTokenPrecision = TokenInfo.getTokenPrecision tokensDetails leftToken
+        let rightTokenPrecision = TokenInfo.getTokenPrecision tokensDetails rightToken
+
         let leftTokenBaseAmount =
             readPropertyAsDecimal entity leftToken 
             |> defaultWhenNone 0M
             |> leftAmountCalculator
-            |> roundToPrecision marketPosition.precision
-        let leftTokenQuoteAmount = (leftTokenBaseAmount * marketPosition.basePrice) |> roundToPrecision marketPosition.precision 
+            |> roundToPrecision leftTokenPrecision
+        let leftTokenQuoteAmount = (leftTokenBaseAmount * marketPosition.basePrice) |> roundToPrecision rightTokenPrecision
 
         let rightTokenBaseAmount = 
             readPropertyAsDecimal entity rightToken
             |> defaultWhenNone 0M
             |> rightAmountCalculator
-            |> roundToPrecision marketPosition.precision
-        let rightTokenQuoteAmount = (rightTokenBaseAmount * marketPosition.quotePrice) |> roundToPrecision marketPosition.precision
+            |> roundToPrecision rightTokenPrecision
+        let rightTokenQuoteAmount = (rightTokenBaseAmount * marketPosition.quotePrice) |> roundToPrecision leftTokenPrecision
 
 
         match (leftTokenBaseAmount, leftTokenQuoteAmount, rightTokenBaseAmount, rightTokenQuoteAmount) with 
@@ -60,28 +63,7 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
         | (_, _, rightBase, rightQuote) when rightBase > 0M && rightQuote > 0M && rightBase <= rightTokenBaseAmount && rightQuote <= leftTokenBaseAmount ->
             scheduleTokenToPoolTransfer logger username tokenPair rightBase rightQuote |> withResult entity
         | _ -> 
-            TokenBalanceTooLow (ModuleName, tokenPair) |> withResult entity
-        //if baseTokenQuantity <= marketPosition.
-
-        //let leftValueInWallet = PipelineProcessData.readPropertyAsDecimal entity leftToken |> defaultWhenNone 0M
-        //let rightValueInWallet = PipelineProcessData.readPropertyAsDecimal entity rightToken |> defaultWhenNone 0M
-
-        //if baseToken <= leftValueInWallet 
-        //then 
-        //    let quoteQuantity = (leftValueInWallet * marketPosition.basePrice) |> roundToPrecision marketPosition.precision 
-        //    scheduleTokenToPoolTransfer tokenPair leftValueInWallet quoteQuantity |> withResult entity
-        //else if( )
-        //    let quoteQuantity = (rightValueInWallet * marketPosition.quotePrice) |> roundToPrecision marketPosition.precision
-        //    scheduleTokenToPoolTransfer tokenPair baseQuantity quoteQuantity |> withResult entity
-
-        //if amountToSell > 0M
-        //then 
-        //    let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
-        //    bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = String.asString amountToSell; price = String.asString tokenPrice; |}
-        //    |> buildCustomJson username "ssc-mainnet-hive"
-        //    |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
-        //    |> withResult entity
-        //else 
+            TokenBalanceTooLow (ModuleName, tokenPair) |> withResult entity 
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 

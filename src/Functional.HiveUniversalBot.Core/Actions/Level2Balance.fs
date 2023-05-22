@@ -18,9 +18,12 @@ let private addProperty tokenSymbol tokenBalance entity =
     else 
         entity
 
+let private addTokensDetails tokenDetails entity = 
+    PipelineProcessData.withProperty entity "tokenDetails" tokenDetails
+
 let calculateStake tokenInfo pendingUnstakes = 
     let stake = tokenInfo.stake
-    let tokenUnstakes = 
+    let tokenUnstakes: PendingUnstakes seq = 
         pendingUnstakes 
         |> Seq.filter (fun token -> token.symbol = tokenInfo.symbol)
     let quantityLeft = 
@@ -60,6 +63,7 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
         logger username "Balance"
         getBalance hiveEngineUrl username
         |> Seq.fold (addTokenBalanceAsProperty (logger username) (getPendingUnstakes hiveEngineUrl username)) entity
+        |> addTokensDetails (getTokenDetails hiveEngineUrl)
     | _ -> 
         NoUserDetails ModuleName 
         |> PipelineProcessData.withResult entity 
