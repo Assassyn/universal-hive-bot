@@ -32,8 +32,8 @@
       <Folder Include="Properties\" />
     </ItemGroup>
 
-    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-      <Exec Command="dotnet build $(SolutionDir)\src\Functional.UniversalBot.HiveEngine\Functional.UniversalBot.HiveEngine.fsproj" />
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='DEBUG'">
+        <Exec Command="dotnet build $(SolutionDir)\src\Functional.UniversalBot.HiveEngine\Functional.UniversalBot.HiveEngine.fsproj" />
     </Target>
 
 </Project>

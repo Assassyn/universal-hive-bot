@@ -5,6 +5,7 @@ var configuration = Argument("configuration", "Release");
 var version = Argument("build", "0.1.0");
 var solution = "../universal-hive-bot.sln";
 var cliProject = "../src/Functional.UltimateHiveBot.CLI/Functional.UltimateHiveBot.CLI.fsproj";
+var hiveEngineProject = "../src/Functional.UniversalBot.HiveEngine/Functional.UniversalBot.HiveEngine.fsproj";
 var publishDir = "./publish/";
 var artifacts = "./artifacts/";
 var tests = "./tests/";
@@ -37,45 +38,52 @@ Task("Publish")
         Version = version,
     };
 
-  DotNetPublish(cliProject, new DotNetPublishSettings 
-        {
-            Configuration = configuration,
-            OutputDirectory = $"{publishDir}/linux",
-            PublishReadyToRun = compressOutput,
-            PublishReadyToRunShowWarnings = compressOutput,
-            PublishSingleFile = compressOutput,
-            PublishTrimmed = false,
-            SelfContained = compressOutput,
-            Runtime = "linux-x64",
-            NoBuild = noBuild,
-            MSBuildSettings = msBuildSettings,
-        });
-    DotNetPublish(cliProject, new DotNetPublishSettings 
-        {
-            Configuration = configuration,
-            OutputDirectory = $"{publishDir}/win",
-            PublishReadyToRun = compressOutput,
-            PublishReadyToRunShowWarnings = compressOutput,
-            PublishSingleFile = compressOutput,
-            PublishTrimmed = false,
-            SelfContained = compressOutput,
-            Runtime = "win-x64",
-            NoBuild = noBuild,
-            MSBuildSettings = msBuildSettings,
-        });
-    DotNetPublish(cliProject, new DotNetPublishSettings 
-        {
-            Configuration = configuration,
-            OutputDirectory = $"{publishDir}/mac",
-            PublishReadyToRun = compressOutput,
-            PublishReadyToRunShowWarnings = compressOutput,
-            PublishSingleFile = compressOutput,
-            PublishTrimmed = false,
-            SelfContained = compressOutput,
-            Runtime = "osx-x64",
-            NoBuild = noBuild,
-            MSBuildSettings = msBuildSettings,
-        });
+    var projects = new [] {
+        cliProject,
+        hiveEngineProject 
+    };
+
+    foreach(var project in projects){
+        DotNetPublish(project, new DotNetPublishSettings 
+            {
+                Configuration = configuration,
+                OutputDirectory = $"{publishDir}/linux",
+                PublishReadyToRun = compressOutput,
+                PublishReadyToRunShowWarnings = compressOutput,
+                PublishSingleFile = compressOutput,
+                PublishTrimmed = false,
+                SelfContained = compressOutput,
+                Runtime = "linux-x64",
+                NoBuild = noBuild,
+                MSBuildSettings = msBuildSettings,
+            });
+        DotNetPublish(project, new DotNetPublishSettings 
+            {
+                Configuration = configuration,
+                OutputDirectory = $"{publishDir}/win",
+                PublishReadyToRun = compressOutput,
+                PublishReadyToRunShowWarnings = compressOutput,
+                PublishSingleFile = compressOutput,
+                PublishTrimmed = false,
+                SelfContained = compressOutput,
+                Runtime = "win-x64",
+                NoBuild = noBuild,
+                MSBuildSettings = msBuildSettings,
+            });
+        DotNetPublish(project, new DotNetPublishSettings 
+            {
+                Configuration = configuration,
+                OutputDirectory = $"{publishDir}/mac",
+                PublishReadyToRun = compressOutput,
+                PublishReadyToRunShowWarnings = compressOutput,
+                PublishSingleFile = compressOutput,
+                PublishTrimmed = false,
+                SelfContained = compressOutput,
+                Runtime = "osx-x64",
+                NoBuild = noBuild,
+                MSBuildSettings = msBuildSettings,
+            });
+        }
 });
 
 Task("Pack")

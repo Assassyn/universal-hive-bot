@@ -219,7 +219,10 @@ module TokenInfo =
         let tokensDetails = entity.properties.["tokenDetails"] :?> TokenInfo seq
         let token = 
             tokensDetails
-            |> Seq.find (fun x -> x.symbol = tokenSymbol)
-        token.precision
+            |> Seq.tryFind (fun x -> x.symbol = tokenSymbol)
+
+        match token with 
+        | Some token -> token.precision 
+        | _ -> 8
 
 
