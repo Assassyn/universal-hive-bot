@@ -736,3 +736,6 @@ users.yml
 /test/Functional.HiveOAutomatic.Tests/settings.json
 /test/Functional.HiveOAutomatic.Tests/configuration.json
 /src/Functional.UltimateHiveBot.CLI/Properties
+/build/tools/ReportGenerator.5.1.21/tools
+/build/tools/ReportGenerator.5.1.21/build/netstandard2.0
+/build/tools/ReportGenerator.5.1.21
