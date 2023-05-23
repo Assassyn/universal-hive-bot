@@ -10,15 +10,14 @@ let private hiveNodeUrl = "https://anyx.io"
 
 let testData =
     [|
-        [| ~~123M; ~~"*"; ~~"123.00000" |]
-        [| ~~123M; ~~"100"; ~~"100.00000" |]
-        [| ~~99M; ~~"100"; ~~"99.00000" |]
+        [| ~~123M; ~~"*"; ~~"123" |]
+        [| ~~123M; ~~"100"; ~~"100" |]
+        [| ~~99M; ~~"100"; ~~"99" |]
     |]
     
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
-    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (DelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))

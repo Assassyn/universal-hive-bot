@@ -4,6 +4,8 @@ open Microsoft.Extensions.Configuration
 open Types
 open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
+open Lamar
+open ConfigurationTypes
 
 let getConfiguration () = 
     let config = 
@@ -16,26 +18,20 @@ let getConfiguration () =
 
     let actions = config.GetSection("actions").Get<UserActionsDefinition array> ()
     let urls = config.GetSection("urls").Get<Urls>()
-
     {
         urls = urls
         actions = actions
     }
+    
+let private container = 
+    new Container (fun service -> 
+        service.Scan (fun scanner -> 
+            scanner.AssembliesAndExecutablesFromApplicationBaseDirectory ()
+            scanner.LookForRegistries ()))
 
 let private getActionByName (name: string) = 
-    match name.ToLower() with 
-    | "stake" -> StakeToken.bind
-    | "unstake" -> UnstakeToken.bind
-    | "delegatestake" -> DelegateStake.bind
-    | "undelegateStake" -> UndelegateStake.bind
-    | "balance" -> Level2Balance.bind
-    | "flush" -> FlushTokens.bind
-    | "sell" -> SellToken.bind
-    | "transfer" -> TransferToken.bind
-    | "addtopool" -> AddTokenToPool.bind
-    | "flushandbalance" -> FlushAndBalanceAction.bind
-    | "swaptoken" -> TokenSwapAction.bind
-    | _ -> (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
+    let actionBuilder = container.GetInstance<Binder> (name.ToLower ())
+    actionBuilder 
 
 let private bindActions logger url parameters bindingFunctionName =
     let prototypeFunction = (getActionByName bindingFunctionName) 
@@ -54,10 +50,10 @@ let private bindTransfomers logger url (config: UserActionsDefinition) =
     |> List.fold (fun state next -> state >> next) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
 
 let private bindPipeline logger urls (config: UserActionsDefinition) =
-    let reader = UserReader.bind [ (config.Username, config.ActiveKey, config.PostingKey) ]
+    let reader = container.GetInstance<UserActionReader>()
     let transforms = bindTransfomers logger urls config
 
-    Pipeline.bind reader transforms
+    Pipeline.bind (reader [config]) transforms
 
 let createPipelines (config: Configuration) logger = 
     let urls = config.urls

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <BaseOutputPath>..\..\build\debugBuild</BaseOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="HiveEngine.Types.fs" />
+    <Compile Include="HiveEngine.fs" />
+    <Compile Include="UserReader.fs" />
+    <Compile Include="Actions\Action.fs" />
+    <Compile Include="Actions\AddTokenToPool.fs" />
+    <Compile Include="Actions\DelegateStake.fs" />
+    <Compile Include="Actions\FlushTokens.fs" />
+    <Compile Include="Actions\Balance.fs" />
+    <Compile Include="Actions\FlushAndBalanceAction.fs" />
+    <Compile Include="Actions\SellToken.fs" />
+    <Compile Include="Actions\StakeToken.fs" />
+    <Compile Include="Actions\TokenSwapAction.fs" />
+    <Compile Include="Actions\TransferToken.fs" />
+    <Compile Include="Actions\UndelegateStake.fs" />
+    <Compile Include="Actions\UnstakeToken.fs" />
+    <Compile Include="ActionRegistry.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lamar" Version="12.0.0" />
+  </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
+      <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj" />
+    </ItemGroup>
+</Project>

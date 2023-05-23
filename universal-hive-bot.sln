@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{4F9303
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UniversalBot.HiveEngine", "src\Functional.UniversalBot.HiveEngine\Functional.UniversalBot.HiveEngine.fsproj", "{778C755D-6331-43D6-8E1B-29025338F9E3}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UniversalBot.Hive", "src\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj", "{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +59,14 @@ Global
 		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{778C755D-6331-43D6-8E1B-29025338F9E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{778C755D-6331-43D6-8E1B-29025338F9E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{778C755D-6331-43D6-8E1B-29025338F9E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{778C755D-6331-43D6-8E1B-29025338F9E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +78,8 @@ Global
 		{03814A17-2B1F-4F1F-8FD4-EE54F0F10B50} = {44706128-3DC7-4205-AC6E-AE625A5C9C4D}
 		{E3E861B4-F7E5-47CD-86EA-60F6F9EF7633} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{4F9303C1-20D0-4A7A-B871-B238020C1DCB} = {44706128-3DC7-4205-AC6E-AE625A5C9C4D}
+		{778C755D-6331-43D6-8E1B-29025338F9E3} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F60D737-597D-4CE0-94EB-0CE960EF3735}

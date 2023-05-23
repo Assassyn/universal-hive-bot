@@ -18,7 +18,6 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
-    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (TransferToken.action TestingStubs.logger "ONEUP" "ultimate-bot" (AmountCalator.bind amountToBind)) ""

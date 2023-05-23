@@ -19,11 +19,10 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
-    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (SellToken.action TestingStubs.logger hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind))
-    let pipelineDefinition = Pipeline.bind reader transformer
+    let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
     let results = processPipeline pipelineDefinition
     let underTestObject =
@@ -40,7 +39,7 @@ let ``Check that balance is too low`` () =
     let transformer = 
         (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
         >> (UndelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
-    let pipelineDefinition = Pipeline.bind reader transformer
+    let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
 
     processPipeline pipelineDefinition
     |> Seq.collect (fun x-> x.results)
