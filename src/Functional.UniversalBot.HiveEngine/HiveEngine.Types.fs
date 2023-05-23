@@ -4,6 +4,7 @@ open System.Net.Http
 open HiveAPI
 open System.Text.Json
 open FsHttp
+open Functional.ETL.Pipeline
 
 type HiveResponse<'Result> =
     {
@@ -214,8 +215,11 @@ module TokenInfo =
             numberTransactions = raw.numberTransactions
             totalStaked = raw.totalStaked|> Decimal.fromString |> Some.defaultWhenNone 0M
         }
-    let getTokenPrecision (tokens: TokenInfo seq) tokenSymbol =
+    let getTokenPrecision<'Result> (entity: PipelineProcessData<'Result>) tokenSymbol =
+        let tokensDetails = entity.properties.["tokenDetails"] :?> TokenInfo seq
         let token = 
-            tokens
+            tokensDetails
             |> Seq.find (fun x -> x.symbol = tokenSymbol)
         token.precision
+
+

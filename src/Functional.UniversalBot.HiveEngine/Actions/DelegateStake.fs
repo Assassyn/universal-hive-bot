@@ -1,6 +1,8 @@
 ﻿module DelegateStake 
 
 open Action
+open Decimal
+open HiveEngineTypes
 open Some
 open PipelineResult
 open Functional.ETL.Pipeline
@@ -14,15 +16,17 @@ let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProce
 
     match userDetails with 
     | Some (username, activeKey, _) -> 
+        let precision = TokenInfo.getTokenPrecision entity tokenSymbol
         let tokenBalance =
             sprintf "%s_stake" tokenSymbol
             |> readPropertyAsDecimal entity
             |> defaultWhenNone 0M
             |> amountCalcualtor
+            |> roundToPrecision precision
 
         if tokenBalance > 0M
         then 
-            bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asStringWithPrecision tokenBalance|}
+            bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
             |> buildCustomJson username "ssc-mainnet-hive" 
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
             |> withResult entity 

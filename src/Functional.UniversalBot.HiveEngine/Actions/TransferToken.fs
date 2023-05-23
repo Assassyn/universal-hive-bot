@@ -5,6 +5,8 @@ open PipelineResult
 open Some
 open Functional.ETL.Pipeline
 open Functional.ETL.Pipeline.PipelineProcessData
+open HiveEngineTypes
+open Decimal
 
 [<Literal>]
 let ModuleName = "Transfer"
@@ -13,15 +15,17 @@ let action logger tokenSymbol transferTo amountCalcualtor memo (entity: Pipeline
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
-    | Some (username, _, _) when username <> "" -> 
+    | Some (username, _, _) when username <> "" ->
+        let precision = TokenInfo.getTokenPrecision entity tokenSymbol
         let tokenBalance = 
             readPropertyAsDecimal entity tokenSymbol 
             |> defaultWhenNone 0M
             |> amountCalcualtor
+            |> roundToPrecision precision
 
         if tokenBalance > 0M
         then 
-            bindCustomJson "tokens" "transfer" {| ``to`` = username;symbol = tokenSymbol;quantity = String.asString tokenBalance; memo = memo|}
+            bindCustomJson "tokens" "transfer" {| ``to`` = transferTo;symbol = tokenSymbol;quantity = String.asString tokenBalance; memo = memo|}
             |> buildCustomJson username "ssc-mainnet-hive" 
             |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
             |> withResult entity 

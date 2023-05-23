@@ -41,7 +41,7 @@ let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
 
 let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
     let userDefinition = new UserActionsDefinition ()
-    userDefinition.Username <- "ultimate-bot"
+    userDefinition.Username <- ""
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
     

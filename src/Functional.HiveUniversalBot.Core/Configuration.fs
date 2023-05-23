@@ -26,11 +26,12 @@ let getConfiguration () =
 let private container = 
     new Container (fun service -> 
         service.Scan (fun scanner -> 
-            scanner.AssembliesFromApplicationBaseDirectory ()
+            scanner.AssembliesAndExecutablesFromApplicationBaseDirectory ()
             scanner.LookForRegistries ()))
 
 let private getActionByName (name: string) = 
-    container.GetInstance<Binder> (name.ToLower ())
+    let actionBuilder = container.GetInstance<Binder> (name.ToLower ())
+    actionBuilder 
 
 let private bindActions logger url parameters bindingFunctionName =
     let prototypeFunction = (getActionByName bindingFunctionName) 

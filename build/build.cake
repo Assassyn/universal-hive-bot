@@ -83,9 +83,8 @@ Task("Pack")
     .Does(() =>
 {
 
-    DeleteFiles($"{publishDir}linux/*.pdb");
-    DeleteFiles($"{publishDir}win/*.pdb");
-    DeleteFiles($"{publishDir}mac/*.pdb");
+    DeleteFiles($"{publishDir}*/*.pdb");
+    DeleteFiles($"{publishDir}*/*.xml");
 
     Zip($"{publishDir}linux", $"{artifacts}linux-{version}.zip");
     Zip($"{publishDir}win", $"{artifacts}win-{version}.zip");

@@ -39,8 +39,8 @@ let getBalance hiveEngineUrl username =
                 account = username
             |}
         |}
-    runContractsQuery<RawTokenBalance> hiveEngineUrl "find" (payload :> obj)
-    |> Seq.map TokenBalance.bind
+    let result = runContractsQuery<RawTokenBalance> hiveEngineUrl "find" (payload :> obj)
+    result |> Seq.map TokenBalance.bind
 
 let getMarketBuyBook hiveEngineUrl tokenSymbol =
     let payload = 

@@ -38,9 +38,8 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
         let marketPosition = HiveEngine.getAvailableMarketPools hiveEngineUrl tokenPair
         let (leftToken, rightToken) = splitPair tokenPair
         
-        let tokensDetails = entity.properties.["tokenDetails"] :?> TokenInfo seq
-        let leftTokenPrecision = TokenInfo.getTokenPrecision tokensDetails leftToken
-        let rightTokenPrecision = TokenInfo.getTokenPrecision tokensDetails rightToken
+        let leftTokenPrecision = TokenInfo.getTokenPrecision entity leftToken
+        let rightTokenPrecision = TokenInfo.getTokenPrecision entity rightToken
 
         let leftTokenBaseAmount =
             readPropertyAsDecimal entity leftToken 
@@ -61,7 +60,7 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
         | (leftBase, leftQuote, _, _) when leftBase > 0M && leftQuote > 0M && leftBase <= leftTokenBaseAmount && leftQuote <= rightTokenBaseAmount ->
             scheduleTokenToPoolTransfer logger username tokenPair leftBase leftQuote |> withResult entity
         | (_, _, rightBase, rightQuote) when rightBase > 0M && rightQuote > 0M && rightBase <= rightTokenBaseAmount && rightQuote <= leftTokenBaseAmount ->
-            scheduleTokenToPoolTransfer logger username tokenPair rightBase rightQuote |> withResult entity
+            scheduleTokenToPoolTransfer logger username tokenPair rightQuote rightBase |> withResult entity
         | _ -> 
             TokenBalanceTooLow (ModuleName, tokenPair) |> withResult entity 
     | _ -> 

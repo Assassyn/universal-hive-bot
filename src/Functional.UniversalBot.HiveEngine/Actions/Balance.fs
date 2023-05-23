@@ -45,7 +45,7 @@ let private hasAnyBalance (tokenInfo: TokenBalance) =
 let private addTokenBalanceAsProperty logger pendingUnstakes entity  (tokenInfo: TokenBalance) =
     match hasAnyBalance tokenInfo with 
     | true -> 
-        logger (sprintf "Loading token %s" tokenInfo.symbol)
+        logger (sprintf ", %s" tokenInfo.symbol)
         entity
         |> addProperty tokenInfo.symbol tokenInfo.balance
         |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo pendingUnstakes)
@@ -58,7 +58,7 @@ let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotRes
 
     match username with 
     | Some username -> 
-        logger username "Balance"
+        logger username "Load balance for:"
         getBalance hiveEngineUrl username
         |> Seq.fold (addTokenBalanceAsProperty (logger username) (getPendingUnstakes hiveEngineUrl username)) entity
         |> addTokensDetails (getTokenDetails hiveEngineUrl)

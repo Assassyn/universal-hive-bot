@@ -11,10 +11,12 @@ let private ModuleName = "FlushAndBalance"
 
 let private waitTime = TimeSpan.FromSeconds (3)
 
-let action logger hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let entity = FlushTokens.action logger hiveUrl entity
-    Thread.Sleep (waitTime)
-    Balance.action logger hiveUrl (PipelineProcessData.bind 0)
+let action logger hiveUrl hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    FlushTokens.action logger hiveUrl entity
+    |> (fun entity ->
+        Thread.Sleep (waitTime)
+        entity)
+    |> Balance.action logger hiveEngineUrl
 
 let bind logger urls (parameters: Map<string, string>) = 
-    action (logger ModuleName) urls.hiveNodeUrl
+    action (logger ModuleName) urls.hiveNodeUrl urls.hiveEngineNodeUrl
