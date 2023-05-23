@@ -44,6 +44,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Functional.ETL\Functional.ETL.fsproj" />
     <ProjectReference Include="..\..\src\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.UltimateHiveBot.CLI\Functional.UltimateHiveBot.CLI.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.UniversalBot.HiveEngine\Functional.UniversalBot.HiveEngine.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

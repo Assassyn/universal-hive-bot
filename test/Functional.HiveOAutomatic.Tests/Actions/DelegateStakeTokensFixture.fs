@@ -18,7 +18,6 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
-    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (DelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))

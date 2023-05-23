@@ -18,7 +18,6 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can stake tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
-    let reader = UserReader.bind [ ("ultimate-bot", "", "") ]
     let transformer = 
         (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
         >> (StakeToken.action TestingStubs.logger "ONEUP" (AmountCalator.bind amountToBind))

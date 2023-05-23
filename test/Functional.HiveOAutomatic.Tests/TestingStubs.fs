@@ -3,6 +3,7 @@
 open PipelineResult
 open Functional.ETL.Pipeline
 open FSharp.Control
+open Types
 
 let logger a b =
     ()
@@ -31,5 +32,17 @@ let extractCustomJson underTestObject =
 
 let inline (~~) x = x :> obj
 
-let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = UserReader.bind [ ("ultimate-bot", "", "") ]
-let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = UserReader.bind [ ("", "", "") ]
+let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
+    let userDefinition = new UserActionsDefinition ()
+    userDefinition.Username <- "ultimate-bot"
+    userDefinition.ActiveKey <- ""
+    userDefinition.PostingKey <- ""
+    UserReader.bind [ userDefinition ]
+
+let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
+    let userDefinition = new UserActionsDefinition ()
+    userDefinition.Username <- "ultimate-bot"
+    userDefinition.ActiveKey <- ""
+    userDefinition.PostingKey <- ""
+    
+    UserReader.bind [userDefinition ]

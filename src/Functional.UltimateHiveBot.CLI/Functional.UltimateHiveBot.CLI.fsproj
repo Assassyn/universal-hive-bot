@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
+      <ProjectReference Include="..\Functional.UniversalBot.HiveEngine\Functional.UniversalBot.HiveEngine.fsproj" />
     </ItemGroup>
 
     <ItemGroup>
