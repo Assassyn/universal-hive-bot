@@ -4,6 +4,8 @@ open Microsoft.Extensions.Configuration
 open Types
 open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
+open Lamar.Scanning.Conventions
+open Lamar
 
 let getConfiguration () = 
     let config = 
@@ -21,21 +23,38 @@ let getConfiguration () =
         urls = urls
         actions = actions
     }
+    
+type Loger = string -> string -> string -> unit
+type Binder = Loger -> Urls -> Map<string, string> -> Transformer<PipelineResult.UniversalHiveBotResutls>
+type ActinoRegistry () as self =
+    inherit ServiceRegistry ()
+    do 
+        let defaultBinder = (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
+        self.For<Binder>().Use(StakeToken.bind).Named("stake") |> ignore
+        self.For<Binder>().Use(UnstakeToken.bind).Named("unstake") |> ignore
+        self.For<Binder>().Use(DelegateStake.bind).Named("delegatestake") |> ignore
+        self.For<Binder>().Use(UndelegateStake.bind).Named("undelegateStake") |> ignore
+        self.For<Binder>().Use(Level2Balance.bind).Named("balance") |> ignore
+        self.For<Binder>().Use(FlushTokens.bind).Named("flush") |> ignore
+        self.For<Binder>().Use(SellToken.bind).Named("sell") |> ignore
+        self.For<Binder>().Use(TransferToken.bind).Named("transfer") |> ignore
+        self.For<Binder>().Use(AddTokenToPool.bind).Named("addtopool") |> ignore
+        self.For<Binder>().Use(FlushAndBalanceAction.bind).Named("flushandbalance") |> ignore
+        self.For<Binder>().Use(TokenSwapAction.bind).Named("swaptoken") |> ignore     
+        self.For<Binder>().UseIfNone(defaultBinder) 
+
+        
+
+let private container = 
+    new Lamar.Container (fun service -> 
+        service.Scan (fun scanner -> 
+            scanner.AssembliesFromApplicationBaseDirectory ()
+            scanner.LookForRegistries ()))
+
 
 let private getActionByName (name: string) = 
-    match name.ToLower() with 
-    | "stake" -> StakeToken.bind
-    | "unstake" -> UnstakeToken.bind
-    | "delegatestake" -> DelegateStake.bind
-    | "undelegateStake" -> UndelegateStake.bind
-    | "balance" -> Level2Balance.bind
-    | "flush" -> FlushTokens.bind
-    | "sell" -> SellToken.bind
-    | "transfer" -> TransferToken.bind
-    | "addtopool" -> AddTokenToPool.bind
-    | "flushandbalance" -> FlushAndBalanceAction.bind
-    | "swaptoken" -> TokenSwapAction.bind
-    | _ -> (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
+    let action = container.GetInstance<Binder> (name.ToLower ())
+    action
 
 let private bindActions logger url parameters bindingFunctionName =
     let prototypeFunction = (getActionByName bindingFunctionName) 
@@ -54,6 +73,7 @@ let private bindTransfomers logger url (config: UserActionsDefinition) =
     |> List.fold (fun state next -> state >> next) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
 
 let private bindPipeline logger urls (config: UserActionsDefinition) =
+    let test = container.GetAllInstances<Binder> ();
     let reader = UserReader.bind [ (config.Username, config.ActiveKey, config.PostingKey) ]
     let transforms = bindTransfomers logger urls config
 
