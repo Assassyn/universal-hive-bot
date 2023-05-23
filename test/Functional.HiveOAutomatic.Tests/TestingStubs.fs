@@ -2,8 +2,10 @@
 
 open PipelineResult
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 open FSharp.Control
 open Types
+open HiveEngineTypes
 
 let logger a b =
     ()
@@ -14,16 +16,19 @@ let pipelineLogger a b c =
 let mockedBalanceAction balanceLevles entity = 
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity tokenSymbol tokenBalance) entity
+    |> addProperty TokenInfo.TokenDetailsKey Seq.empty<TokenInfo>
 
 let mockedStakedBalanceAction balanceLevles entity = 
     let stakedTokenSymbole = sprintf "%s_stake"
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity (stakedTokenSymbole tokenSymbol) tokenBalance) entity
+    |> addProperty TokenInfo.TokenDetailsKey Seq.empty<TokenInfo>
     
 let mockedDelegatedStakedBalanceAction balanceLevles entity = 
     let stakedTokenSymbole = sprintf "%s_delegatedstake"
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity (stakedTokenSymbole tokenSymbol) tokenBalance) entity
+    |> addProperty TokenInfo.TokenDetailsKey Seq.empty<TokenInfo>
     
 let extractCustomJson underTestObject =
     match underTestObject with 

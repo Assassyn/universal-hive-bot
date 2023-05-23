@@ -215,8 +215,10 @@ module TokenInfo =
             numberTransactions = raw.numberTransactions
             totalStaked = raw.totalStaked|> Decimal.fromString |> Some.defaultWhenNone 0M
         }
+    [<Literal>]
+    let TokenDetailsKey = "tokenDetails"
     let getTokenPrecision<'Result> (entity: PipelineProcessData<'Result>) tokenSymbol =
-        let tokensDetails = entity.properties.["tokenDetails"] :?> TokenInfo seq
+        let tokensDetails = entity.properties.[TokenDetailsKey] :?> TokenInfo seq
         let token = 
             tokensDetails
             |> Seq.tryFind (fun x -> x.symbol = tokenSymbol)

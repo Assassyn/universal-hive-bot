@@ -17,7 +17,7 @@ let private addProperty tokenSymbol tokenBalance entity =
         entity
 
 let private addTokensDetails tokenDetails entity = 
-    PipelineProcessData.withProperty entity "tokenDetails" tokenDetails
+    PipelineProcessData.withProperty entity TokenInfo.TokenDetailsKey tokenDetails
 
 let calculateStake tokenInfo pendingUnstakes = 
     let stake = tokenInfo.stake

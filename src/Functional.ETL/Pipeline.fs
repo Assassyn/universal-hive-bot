@@ -20,6 +20,8 @@ module Pipeline =
         let withProperty entity key value =
             let properties = entity.properties.Add (key, value)
             { entity with properties = properties }
+        let addProperty key value entity =
+            withProperty entity key value
         let withResult<'Result> (entity: PipelineProcessData<'Result>) (value: 'Result) =
             let results = value::entity.results
             { entity with results = results }
