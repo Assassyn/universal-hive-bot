@@ -4,6 +4,7 @@ open HiveEngine
 open Types
 open PipelineResult
 open Functional.ETL.Pipeline
+open Functional.ETL.Pipeline.PipelineProcessData
 open HiveEngineTypes
     
 [<Literal>]
@@ -19,7 +20,7 @@ let private addProperty tokenSymbol tokenBalance entity =
 let private addTokensDetails tokenDetails entity = 
     PipelineProcessData.withProperty entity TokenInfo.TokenDetailsKey tokenDetails
 
-let calculateStake tokenInfo pendingUnstakes = 
+let private calculateStake tokenInfo pendingUnstakes = 
     let stake = tokenInfo.stake
     let tokenUnstakes: PendingUnstakes seq = 
         pendingUnstakes 
@@ -34,7 +35,7 @@ let calculateStake tokenInfo pendingUnstakes =
         |> Seq.fold (fun acc next -> acc + next)  0M
     stake + quantityLeft - quantity
 
-let calculateDelegatedStake tokenInfo = 
+let private calculateDelegatedStake tokenInfo = 
     let stake = tokenInfo.delegationsIn
     let pendingUnstake =  tokenInfo.pendingUndelegations
     stake - pendingUnstake
@@ -42,10 +43,9 @@ let calculateDelegatedStake tokenInfo =
 let private hasAnyBalance (tokenInfo: TokenBalance) = 
     (tokenInfo.balance > 0M) || (tokenInfo.stake > 0M) || (tokenInfo.delegationsIn > 0M)
 
-let private addTokenBalanceAsProperty logger pendingUnstakes entity  (tokenInfo: TokenBalance) =
+let private addTokenBalanceAsProperty pendingUnstakes entity  (tokenInfo: TokenBalance) =
     match hasAnyBalance tokenInfo with 
     | true -> 
-        logger (sprintf "Loading balance for %s" tokenInfo.symbol)
         entity
         |> addProperty tokenInfo.symbol tokenInfo.balance
         |> addProperty (tokenInfo.symbol+"_stake") (calculateStake tokenInfo pendingUnstakes)
@@ -53,17 +53,17 @@ let private addTokenBalanceAsProperty logger pendingUnstakes entity  (tokenInfo:
     | _ -> 
         entity
 
-let action logger hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let username  = PipelineProcessData.readPropertyAsString entity "username"
 
     match username with 
     | Some username -> 
         getBalance hiveEngineUrl username
-        |> Seq.fold (addTokenBalanceAsProperty (logger username) (getPendingUnstakes hiveEngineUrl username)) entity
+        |> Seq.fold (addTokenBalanceAsProperty (getPendingUnstakes hiveEngineUrl username)) entity
         |> addTokensDetails (getTokenDetails hiveEngineUrl)
+        |>= TokenBalanceLoaded username
     | _ -> 
-        NoUserDetails ModuleName 
-        |> PipelineProcessData.withResult entity 
+        NoUserDetails ModuleName <=< entity
 
-let bind logger (urls: Urls) (parameters: Map<string, string>) = 
-    action (logger ModuleName) urls.hiveEngineNodeUrl
+let bind (urls: Urls) (parameters: Map<string, string>) = 
+    action urls.hiveEngineNodeUrl

@@ -7,7 +7,7 @@ open FSharp.Control
 open Types
 open HiveEngineTypes
 
-let logger a b =
+let a b =
     ()
 
 let pipelineLogger a b c = 

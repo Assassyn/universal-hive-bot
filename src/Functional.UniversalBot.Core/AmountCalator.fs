@@ -30,7 +30,7 @@ let private (|Calculation|_|) (str: string) =
         else None
     else None
 
-let bind (value: string) =
+let bind (value: string): decimal -> decimal =
     let calculation = 
         match value with 
         | StaticValue x -> x

@@ -30,33 +30,48 @@ let private container =
             scanner.LookForRegistries ()))
 
 let private getActionByName (name: string) = 
-    let actionBuilder = container.GetInstance<Binder> (name.ToLower ())
-    actionBuilder 
+    let binder = container.TryGetInstance<Binder> (name.ToLower ())
+    if binder :> obj = null
+    then 
+        fun urls properties -> (fun entity -> entity)
+    else 
+        binder
 
-let private bindActions logger url parameters bindingFunctionName =
+let private getActionDecorator () =
+    let actionDecorator = container.TryGetInstance<Transformer<PipelineResult.UniversalHiveBotResutls>> ("decorator")
+    if actionDecorator :> obj = null
+    then 
+        fun entity -> entity
+    else 
+        actionDecorator
+
+let private bindActions url parameters bindingFunctionName =
     let prototypeFunction = (getActionByName bindingFunctionName) 
-    let pipelineAction = prototypeFunction logger url parameters
+    let pipelineAction = prototypeFunction url parameters
     pipelineAction
 
-let private bindTransfomers logger url (config: UserActionsDefinition) =
+let private bindTransfomers url (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
-        bindActions logger url parameters bindingFunctionName
+        bindActions url parameters bindingFunctionName
+
+    let actionDecorator = getActionDecorator ()
+
     config.Tasks
     |> Seq.collect splitToActualActionConfigurationItems
     |> List.ofSeq
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)
-    |> List.fold (fun state next -> state >> next) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
+    |> List.fold (fun state next -> state >> next >> actionDecorator) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
 
-let private bindPipeline logger urls (config: UserActionsDefinition) =
+let private bindPipeline urls (config: UserActionsDefinition) =
     let reader = container.GetInstance<UserActionReader>()
-    let transforms = bindTransfomers logger urls config
+    let transforms = bindTransfomers urls config 
 
     Pipeline.bind (reader [config]) transforms
 
-let createPipelines (config: Configuration) logger = 
+let createPipelines (config: Configuration)  = 
     let urls = config.urls
     
     config.actions
-    |> Seq.map (bindPipeline logger urls)
+    |> Seq.map (bindPipeline urls)

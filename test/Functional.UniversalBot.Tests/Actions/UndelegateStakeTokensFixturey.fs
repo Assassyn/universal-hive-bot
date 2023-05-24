@@ -20,7 +20,7 @@ let testData =
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let transformer = 
         (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (UndelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
+        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind))
     let pipelineDefinition = Pipeline.bind reader transformer
    
     processPipeline pipelineDefinition
@@ -33,20 +33,20 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
 let ``Check that balance is too low`` () =
     let transformer = 
         (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
+        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
     let pipelineDefinition = Pipeline.bind reader transformer
     
     processPipeline pipelineDefinition
     |> Seq.collect (fun x-> x.results)
     |> Seq.item 0
-    |> should equal (TokenBalanceTooLow ("UndelegateStake", "ONEUP"))
+    |> should equal (TokenBalanceTooLow ("UndelegateStake", "ultimate-bot", "ONEUP"))
 
     
 [<Fact>]
 let ``Check that username is required`` () =
     let transformer = 
         (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action TestingStubs.logger "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
+        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
     let pipelineDefinition = Pipeline.bind noUserReader transformer
         
     processPipeline pipelineDefinition
