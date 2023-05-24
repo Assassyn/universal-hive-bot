@@ -15,11 +15,7 @@ let action () =
         let pipelines = createPipelines config
         pipelines 
         |> Seq.iter (fun x -> processPipeline x |> ignore)
-        "Finshed UniveralHiveBot processs"
-
-//let action = fun _ ->
-//    Console.Write "\nEnter input: "
-//    Console.ReadLine()
+        "Finshed UniveralHiveBot processs"  
  
 let readlines = Seq.initInfinite (fun _ -> action())
  
@@ -27,4 +23,3 @@ let run item =
     item = "quit"
  
 Seq.find run readlines |> ignore
-//Console.WriteLine "Thanks! Come Again"

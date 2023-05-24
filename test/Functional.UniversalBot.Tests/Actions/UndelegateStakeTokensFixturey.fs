@@ -39,7 +39,7 @@ let ``Check that balance is too low`` () =
     processPipeline pipelineDefinition
     |> Seq.collect (fun x-> x.results)
     |> Seq.item 0
-    |> should equal (TokenBalanceTooLow ("UndelegateStake", "delegation-target-user", "ONEUP"))
+    |> should equal (TokenBalanceTooLow ("UndelegateStake", "ultimate-bot", "ONEUP"))
 
     
 [<Fact>]
