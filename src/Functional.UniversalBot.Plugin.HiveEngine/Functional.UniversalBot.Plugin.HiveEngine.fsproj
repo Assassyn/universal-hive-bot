@@ -30,7 +30,11 @@
   </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Functional.HiveUniversalBot.Core\Functional.HiveUniversalBot.Core.fsproj" />
+      <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
       <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="FSharp.Core" Version="7.0.300" />
     </ItemGroup>
 </Project>

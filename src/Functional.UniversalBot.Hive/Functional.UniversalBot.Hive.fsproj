@@ -13,4 +13,8 @@
     <PackageReference Include="HiveAPI" Version="0.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="FSharp.Core" Version="7.0.300" />
+  </ItemGroup>
+
 </Project>
