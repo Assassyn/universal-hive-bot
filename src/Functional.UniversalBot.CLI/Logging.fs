@@ -1,4 +1,4 @@
-﻿module LoggingDecorator
+﻿module Logging
 
 open Functional.ETL.Pipeline
 open PipelineResult
