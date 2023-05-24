@@ -16,7 +16,7 @@ let private splitPair (tokenPair: string) =
     let parts = tokenPair.Split(":")
     (parts[0], parts[1])
 
-let private scheduleTokenToPoolTransfer logger username tokenPair baseQuantity quoteQuantity =
+let private scheduleTokenToPoolTransfer username tokenPair baseQuantity quoteQuantity =
     bindCustomJson 
         "marketpools" 
         "addLiquidity" 
@@ -28,9 +28,9 @@ let private scheduleTokenToPoolTransfer logger username tokenPair baseQuantity q
             maxDeviation = "0"
         |}
     |> buildCustomJson username "ssc-mainnet-hive"
-    |> scheduleActiveOperation (logger username) ModuleName tokenPair
+    |> scheduleActiveOperation ModuleName tokenPair
 
-let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountCalculator (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountCalculator (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -58,16 +58,16 @@ let action logger hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountC
 
         match (leftTokenBaseAmount, leftTokenQuoteAmount, rightTokenBaseAmount, rightTokenQuoteAmount) with 
         | (leftBase, leftQuote, _, _) when leftBase > 0M && leftQuote > 0M && leftBase <= leftTokenBaseAmount && leftQuote <= rightTokenBaseAmount ->
-            scheduleTokenToPoolTransfer logger username tokenPair leftBase leftQuote |> withResult entity
+            scheduleTokenToPoolTransfer username tokenPair leftBase leftQuote |> withResult entity
         | (_, _, rightBase, rightQuote) when rightBase > 0M && rightQuote > 0M && rightBase <= rightTokenBaseAmount && rightQuote <= leftTokenBaseAmount ->
-            scheduleTokenToPoolTransfer logger username tokenPair rightQuote rightBase |> withResult entity
+            scheduleTokenToPoolTransfer username tokenPair rightQuote rightBase |> withResult entity
         | _ -> 
-            TokenBalanceTooLow (ModuleName, tokenPair) |> withResult entity 
+            TokenBalanceTooLow (ModuleName, username, tokenPair) |> withResult entity 
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger (urls: Urls) (parameters: Map<string, string>) = 
+let bind (urls: Urls) (parameters: Map<string, string>) = 
     let tokenPair = parameters.["tokenPair"]
     let leftAmount = parameters.["leftAmount"] |> AmountCalator.bind
     let rightAmount = parameters.["rightAmount"] |> AmountCalator.bind
-    action (logger ModuleName) urls.hiveNodeUrl urls.hiveEngineNodeUrl tokenPair leftAmount rightAmount
+    action urls.hiveNodeUrl urls.hiveEngineNodeUrl tokenPair leftAmount rightAmount

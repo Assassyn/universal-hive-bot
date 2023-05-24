@@ -7,7 +7,7 @@ open Functional.ETL.Pipeline
 type ActionRegistry () as self =
     inherit ServiceRegistry ()
     do 
-        let defaultBinder = (fun logger url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
+        let defaultBinder = (fun url properties -> Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>)
         self.For<Binder>().Use(StakeToken.bind).Named("stake") |> ignore
         self.For<Binder>().Use(UnstakeToken.bind).Named("unstake") |> ignore
         self.For<Binder>().Use(DelegateStake.bind).Named("delegatestake") |> ignore

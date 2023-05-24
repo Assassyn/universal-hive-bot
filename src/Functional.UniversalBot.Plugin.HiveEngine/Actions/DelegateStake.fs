@@ -11,7 +11,7 @@ open Functional.ETL.Pipeline.PipelineProcessData
 [<Literal>]
 let ModuleName = "DelegateStake"
 
-let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action tokenSymbol delegateTo amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -28,15 +28,15 @@ let action logger tokenSymbol delegateTo amountCalcualtor (entity: PipelineProce
         then 
             bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
             |> buildCustomJson username "ssc-mainnet-hive" 
-            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol 
+            |> scheduleActiveOperation ModuleName tokenSymbol 
             |> withResult entity 
         else 
-            TokenBalanceTooLow (ModuleName, tokenSymbol) |> withResult entity
+            TokenBalanceTooLow (ModuleName, username, tokenSymbol) |> withResult entity
     | _ -> 
         NoUserDetails ModuleName |> withResult entity
 
-let bind logger urls (parameters: Map<string, string>) = 
+let bind urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let delegateTo = parameters.["delegateTo"]
     let amount = parameters.["amount"] |> AmountCalator.bind
-    action (logger ModuleName) token delegateTo amount
+    action token delegateTo amount

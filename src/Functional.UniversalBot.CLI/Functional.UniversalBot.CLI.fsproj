@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="LoggingDecorator.fs" />
         <Content Include="configuration.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
@@ -17,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Lamar" Version="12.0.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
     </ItemGroup>
 

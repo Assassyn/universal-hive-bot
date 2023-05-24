@@ -3,6 +3,7 @@
 open PipelineResult
 open Functional.ETL.Pipeline
 open Types
+open Functional.ETL.Pipeline.PipelineProcessData
 
 [<Literal>]
 let private ModuleName = "Flush"
@@ -46,7 +47,7 @@ let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRe
     else 
         Array.empty
 
-let action logger hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -66,8 +67,9 @@ let action logger hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>)
             |> List.ofSeq
 
         { entity with results = results }
+        |>= FlushingFinshed (username, results)
     | _ -> 
-        NoUserDetails ModuleName |> PipelineProcessData.withResult entity
+        NoUserDetails ModuleName <=< entity
 
-let bind logger urls (parameters: Map<string, string>) = 
-    action (logger ModuleName) urls.hiveNodeUrl
+let bind urls (parameters: Map<string, string>) = 
+    action urls.hiveNodeUrl

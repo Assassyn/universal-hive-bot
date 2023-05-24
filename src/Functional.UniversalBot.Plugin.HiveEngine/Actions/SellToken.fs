@@ -17,7 +17,7 @@ let private getTokenPrice hiveEngineUrl tokenSymbol quantityToSell =
         |> Seq.find (fun marketBook -> marketBook.quantity >= quantityToSell)
     priceItem.price
 
-let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -33,14 +33,14 @@ let action logger hive hiveEngineUrl tokenSymbol amountCalcualtor (entity: Pipel
             let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
             bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = String.asString amountToSell; price = String.asString tokenPrice; |}
             |> buildCustomJson username "ssc-mainnet-hive"
-            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
+            |> scheduleActiveOperation ModuleName tokenSymbol
             |> withResult entity
         else 
-            TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
+            TokenBalanceTooLow (ModuleName, username, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger (urls: Urls) (parameters: Map<string, string>) = 
+let bind (urls: Urls) (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let amountToSell = parameters.["amountToSell"] |> AmountCalator.bind
-    action (logger ModuleName) urls.hiveNodeUrl urls.hiveEngineNodeUrl token amountToSell
+    action urls.hiveNodeUrl urls.hiveEngineNodeUrl token amountToSell

@@ -10,7 +10,7 @@ open Functional.ETL.Pipeline.PipelineProcessData
 [<Literal>]
 let ModuleName = "SwapToken"
 
-let action logger hive hiveEngineUrl tokenPair tokenSymbol maxSlippage amountToSwapCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let action hive hiveEngineUrl tokenPair tokenSymbol maxSlippage amountToSwapCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
 
     match userDetails with 
@@ -25,16 +25,16 @@ let action logger hive hiveEngineUrl tokenPair tokenSymbol maxSlippage amountToS
         then 
             bindCustomJson "marketpools" "swapTokens" {| tokenPair = tokenPair; tokenSymbol = tokenSymbol; tokenAmount = String.asString amountToSwap; tradeType = "exactInput"; maxSlippage = maxSlippage |}
             |> buildCustomJson username "ssc-mainnet-hive"
-            |> scheduleActiveOperation (logger username) ModuleName tokenSymbol
+            |> scheduleActiveOperation ModuleName tokenSymbol
             |> withResult entity
         else 
-            TokenBalanceTooLow (ModuleName, tokenSymbol) |> PipelineProcessData.withResult entity
+            TokenBalanceTooLow (ModuleName, username, tokenSymbol) |> PipelineProcessData.withResult entity
     | _ -> 
         NoUserDetails ModuleName |> PipelineProcessData.withResult entity
 
-let bind logger (urls: Urls) (parameters: Map<string, string>) = 
+let bind (urls: Urls) (parameters: Map<string, string>) = 
     let tokenPair = parameters.["tokenPair"]
     let tokenSymbol = parameters.["token"]
     let maxSlippage = parameters.["maxSlippage"]
     let amountToSwap = parameters.["amountToSwap"] |> AmountCalator.bind
-    action (logger ModuleName) urls.hiveNodeUrl urls.hiveEngineNodeUrl tokenPair tokenSymbol maxSlippage amountToSwap
+    action urls.hiveNodeUrl urls.hiveEngineNodeUrl tokenPair tokenSymbol maxSlippage amountToSwap

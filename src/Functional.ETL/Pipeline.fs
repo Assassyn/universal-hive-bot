@@ -25,6 +25,12 @@ module Pipeline =
         let withResult<'Result> (entity: PipelineProcessData<'Result>) (value: 'Result) =
             let results = value::entity.results
             { entity with results = results }
+        
+        let (|>=) entity result = withResult entity result
+        let (|=>) result entity = withResult entity result   
+        let (>=>) entity result = withResult entity result   
+        let (<=<) result entity = withResult entity result   
+
         let readProperty entity key =
             match entity.properties.ContainsKey (key) with 
             | true -> Some entity.properties.[key]
