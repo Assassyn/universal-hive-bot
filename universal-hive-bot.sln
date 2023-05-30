@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{4F9303
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Hive", "src\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj", "{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.Hive", "src\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj", "{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Core", "src\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj", "{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}"
 EndProject
