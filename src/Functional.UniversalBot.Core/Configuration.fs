@@ -6,6 +6,8 @@ open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
 open Lamar
 open ConfigurationTypes
+open NCrontab
+open System
 
 let getConfiguration () = 
     let config = 
@@ -50,10 +52,20 @@ let private bindActions url parameters bindingFunctionName =
     let pipelineAction = prototypeFunction url parameters
     pipelineAction
 
+let startDate = DateTime.Now.AddDays(-1)
+let endDate = startDate.AddYears(1)
+
+let triggerActionWrapper (action: Transformer<PipelineResult.UniversalHiveBotResutls>) trigger (entity:  PipelineProcessData<PipelineResult.UniversalHiveBotResutls>):  PipelineProcessData<PipelineResult.UniversalHiveBotResutls> = 
+    let schedule = CrontabSchedule.Parse trigger
+    let occurrences = schedule.GetNextOccurrences(startDate, endDate)
+    let now = DateTime.Now
+    action entity
+
 let private bindTransfomers url (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
-        bindActions url parameters bindingFunctionName
+        let action = bindActions url parameters bindingFunctionName
+        triggerActionWrapper action (Map.getValueWithDefault parameters "trigger" "* * * * *")
 
     let actionDecorator = getActionDecorator ()
 
