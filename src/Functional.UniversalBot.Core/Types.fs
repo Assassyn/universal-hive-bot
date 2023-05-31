@@ -21,11 +21,14 @@ type ActionDefinition () =
         with get () = parameters
         and set (value) = parameters <- value 
         
+[<Literal>]
+let private defaultTrigger = "0 0 */1 * * *"
+
 type UserActionsDefinition () =
     let mutable username = ""
     let mutable activeKey = ""
     let mutable postingKey = ""
-    let mutable trigger = ""
+    let mutable trigger = defaultTrigger
     let mutable tasks = new List<ActionDefinition>()
 
     member this.Username 

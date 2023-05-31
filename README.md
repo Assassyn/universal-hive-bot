@@ -182,13 +182,14 @@ Required parameters:
     }
 }
 ```
+
+# Time based trigger 
 # Amount Calculation 
 
 To allow slightly more advanced aproach to amont which have to be transfer there are 3 possible setting for it:
  * fixed amount like 100, it will transfer up to selected amount only
  * * -> it will transfer all availble tokesn 
  * * - 10 -> it will deduct 10 tokens from the availble amoutn and transfer the rest.
-
 
 # Example configuration
 
@@ -203,6 +204,7 @@ To allow slightly more advanced aproach to amont which have to be transfer there
       "username": "universal-bot",
       "activeKey": "<activeKey here>",
       "postingKey": "<postingKey here>",
+      "trigger": "0 0 */1 * * *",
       "tasks": [
         {
           "name": "Balance" 
