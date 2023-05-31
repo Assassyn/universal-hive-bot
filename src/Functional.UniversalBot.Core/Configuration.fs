@@ -6,6 +6,7 @@ open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
 open Lamar
 open ConfigurationTypes
+open System
 
 let getConfiguration () = 
     let config = 
@@ -53,7 +54,8 @@ let private bindActions url parameters bindingFunctionName =
 let private bindTransfomers url (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
-        bindActions url parameters bindingFunctionName
+        let action = bindActions url parameters bindingFunctionName
+        action 
 
     let actionDecorator = getActionDecorator ()
 
@@ -63,6 +65,20 @@ let private bindTransfomers url (config: UserActionsDefinition) =
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)
     |> List.fold (fun state next -> state >> next >> actionDecorator) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
+    
+//type ScheduledPipeline = 
+//    {
+//        schedule: string 
+//        pipeline: Pipeline<PipelineResult.UniversalHiveBotResutls>
+//    }
+
+let private bindScheduledPipeline urls (config: UserActionsDefinition) =
+    let reader = container.GetInstance<UserActionReader>()
+    let transforms = bindTransfomers urls config 
+
+    let pipeline = Pipeline.bind (reader [config]) transforms
+
+    (config.Trigger, pipeline)
 
 let private bindPipeline urls (config: UserActionsDefinition) =
     let reader = container.GetInstance<UserActionReader>()
@@ -75,3 +91,9 @@ let createPipelines (config: Configuration)  =
     
     config.actions
     |> Seq.map (bindPipeline urls)
+
+let createScheduledPipelines (config: Configuration)  = 
+    let urls = config.urls
+        
+    config.actions
+    |> Seq.map (bindScheduledPipeline urls)

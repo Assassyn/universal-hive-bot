@@ -25,6 +25,7 @@ type UserActionsDefinition () =
     let mutable username = ""
     let mutable activeKey = ""
     let mutable postingKey = ""
+    let mutable trigger = ""
     let mutable tasks = new List<ActionDefinition>()
 
     member this.Username 
@@ -39,6 +40,10 @@ type UserActionsDefinition () =
     member this.Tasks
         with get () = tasks
         and set (value) = tasks <- value
+    member this.Trigger 
+        with get () = trigger
+        and set (value) = trigger <- value
+        
 
 type Configuration = 
     {
