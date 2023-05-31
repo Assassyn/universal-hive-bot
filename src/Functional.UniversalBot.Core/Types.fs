@@ -25,7 +25,7 @@ type UserActionsDefinition () =
     let mutable username = ""
     let mutable activeKey = ""
     let mutable postingKey = ""
-    let mutable trigger = ""
+    let mutable trigger = "0 0 */1 * * *"
     let mutable tasks = new List<ActionDefinition>()
 
     member this.Username 
