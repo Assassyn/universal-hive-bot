@@ -13,7 +13,6 @@ type ActionRegistry () as self =
         self.For<Binder>().Use(DelegateStake.bind).Named("delegatestake") |> ignore
         self.For<Binder>().Use(UndelegateStake.bind).Named("undelegateStake") |> ignore
         self.For<Binder>().Use(Balance.bind).Named("balance") |> ignore
-        self.For<Binder>().Use(FlushTokens.bind).Named("flush") |> ignore
         self.For<Binder>().Use(SellToken.bind).Named("sell") |> ignore
         self.For<Binder>().Use(TransferToken.bind).Named("transfer") |> ignore
         self.For<Binder>().Use(AddTokenToPool.bind).Named("addtopool") |> ignore
