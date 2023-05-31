@@ -10,6 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <EmbeddedResource Remove="Properties\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Include="Logging.fs" />
         <Content Include="configuration.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -24,10 +28,6 @@
 
     <ItemGroup>
       <PackageReference Update="FSharp.Core" Version="7.0.300" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Properties\" />
     </ItemGroup>
 
     <ItemGroup>
