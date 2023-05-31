@@ -184,6 +184,9 @@ Required parameters:
 ```
 
 # Time based trigger 
+
+Every action has ability to be trigger on timely manner. For that there is a new property which contains the 6 items syntax sumilar to CRON one. The reaons there are six items is that the first one is for seconds. Seconds are important to allow bot to fullfill role of HIVE observer to react to various events. 
+
 # Amount Calculation 
 
 To allow slightly more advanced aproach to amont which have to be transfer there are 3 possible setting for it:
