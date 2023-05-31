@@ -1,6 +1,7 @@
 ﻿module TransferToken 
 
 open Action
+open Hive
 open PipelineResult
 open Some
 open Functional.ETL.Pipeline

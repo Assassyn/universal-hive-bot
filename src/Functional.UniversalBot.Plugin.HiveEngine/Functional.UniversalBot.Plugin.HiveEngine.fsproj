@@ -22,7 +22,7 @@
     <Compile Include="Actions\TransferToken.fs" />
     <Compile Include="Actions\UndelegateStake.fs" />
     <Compile Include="Actions\UnstakeToken.fs" />
-    <Compile Include="ActionRegistry.fs" />
+    <Compile Include="Actions\ActionRegistry.fs" />
   </ItemGroup>
 
   <ItemGroup>

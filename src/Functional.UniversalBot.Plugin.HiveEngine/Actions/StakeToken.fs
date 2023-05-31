@@ -1,6 +1,7 @@
 ﻿module StakeToken
 
 open Action
+open Hive
 open Some
 open PipelineResult
 open Functional.ETL.Pipeline

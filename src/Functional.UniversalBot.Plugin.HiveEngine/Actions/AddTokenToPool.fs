@@ -1,11 +1,13 @@
 ﻿module AddTokenToPool 
 
 open Action
+open Hive
 open HiveEngineTypes
 open Some
 open Decimal
 open Types
 open PipelineResult
+open Hive
 open Functional.ETL.Pipeline
 open Functional.ETL.Pipeline.PipelineProcessData
 
