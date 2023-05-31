@@ -38,7 +38,8 @@ Task("Publish")
     };
 
     var projects = new [] {
-        "../src/Functional.UniversalBot.Plugin.HiveEngine/Functional.UniversalBot.Plugin.HiveEngine.fsproj"
+        "../src/Functional.UniversalBot.Plugin.HiveEngine/Functional.UniversalBot.Plugin.HiveEngine.fsproj",
+        "../src/Functional.UniversalBot.Hive/Functional.UniversalBot.Plugin.Hive.fsproj",
     };
 
     foreach(var project in projects){
@@ -92,29 +93,26 @@ Task("Publish")
         });
 });
 
-Task("Pack")
+Task("CopyFiles")
     .IsDependentOn("Publish")
     .Does(() =>
+    {
+        DeleteFiles($"{publishDir}*/*.pdb");
+        DeleteFiles($"{publishDir}*/*.xml");
+
+        CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/linux");
+        CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/win");
+        CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/mac");
+    });
+
+Task("Pack")
+    .IsDependentOn("CopyFiles")
+    .Does(() =>
 {
-    DeleteFiles($"{publishDir}*/*.pdb");
-    DeleteFiles($"{publishDir}*/*.xml");
-
-    CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/linux");
-    CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/win");
-    CopyFiles($"{publishDir}plugins/*.Plugin.*.dll", $"{publishDir}/mac");
-
     Zip($"{publishDir}linux", $"{artifacts}linux-{version}.zip");
     Zip($"{publishDir}win", $"{artifacts}win-{version}.zip");
     Zip($"{publishDir}mac", $"{artifacts}mac-{version}.zip");
 });
-
-Task("CopyFiles")
-    .Does(() =>
-    {
-        CopyFiles($"{publishDir}/plugins/*.Plugin.*.dll", $"{publishDir}/linux");
-        CopyFiles($"{publishDir}/plugins/*.Plugin.*.dll", $"{publishDir}/win");
-        CopyFiles($"{publishDir}/plugins/*.Plugin.*.dll", $"{publishDir}/mac");
-    });
 
 Task("Test")
     .IsDependentOn("Build")
