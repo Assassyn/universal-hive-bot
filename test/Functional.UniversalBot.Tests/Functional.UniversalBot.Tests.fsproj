@@ -24,6 +24,7 @@
     <Compile Include="Actions\TransferTokensFixture.fs" />
     <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
     <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
+    <Compile Include="TerracoreFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -46,6 +47,7 @@
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
