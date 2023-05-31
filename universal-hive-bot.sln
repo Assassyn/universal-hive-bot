@@ -37,6 +37,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.CLI
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.HiveEngine", "src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj", "{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UniversalBot.Plugin.Terracore", "src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj", "{558BFC4F-052B-4A40-8D15-C9397AF8404D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +86,7 @@ Global
 		{B2226B4C-1332-44D9-BD70-CBB3EAC6D150} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{DEECBB21-1C4E-494D-A4DC-571507FE759B} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F60D737-597D-4CE0-94EB-0CE960EF3735}

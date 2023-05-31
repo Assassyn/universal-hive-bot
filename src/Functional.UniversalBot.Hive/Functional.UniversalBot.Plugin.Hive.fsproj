@@ -7,10 +7,16 @@
 
   <ItemGroup>
     <Compile Include="Hive.fs" />
+    <Compile Include="Actions\FlushTokens.fs" />
+    <Compile Include="Actions\ActionRegistry.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="HiveAPI" Version="0.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

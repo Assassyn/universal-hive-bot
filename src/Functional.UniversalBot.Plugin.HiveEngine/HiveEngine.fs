@@ -5,9 +5,7 @@ open HiveAPI
 open System.Text.Json
 open FsHttp
 open HiveEngineTypes
-
-let private deserialize<'ResponsePayload> (json: JsonElement) = 
-    JsonSerializer.Deserialize<HiveResponse<'ResponsePayload>> json
+open Json
 
 let private runContractsQuery<'ResponsePayload> hiveEngineUrl method (parameters: obj) = 
    let contractsUri = sprintf "%s/contracts" hiveEngineUrl
@@ -26,7 +24,7 @@ let private runContractsQuery<'ResponsePayload> hiveEngineUrl method (parameters
        }
        |> Request.send
        |> Response.toJson
-       |> deserialize<'ResponsePayload>
+       |> deserialize<HiveResponse<'ResponsePayload>>
        
    response.result
    

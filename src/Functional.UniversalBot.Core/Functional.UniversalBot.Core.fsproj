@@ -11,11 +11,13 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="Json.fs" />
         <Compile Include="Map.fs" />
         <Compile Include="Decimal.fs" />
         <Compile Include="Some.fs" />
         <Compile Include="String.fs" />
         <Compile Include="PipelineResult.fs" />
+        <Compile Include="Hive.fs" />
         <Compile Include="Types.fs" />
         <Compile Include="AmountCalator.fs" />
         <Compile Include="SeriesToActionsRewriter.fs" />

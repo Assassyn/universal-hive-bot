@@ -1,6 +1,7 @@
 ﻿module SellToken 
 
 open Action
+open Hive
 open HiveEngine
 open Some
 open Types

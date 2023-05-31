@@ -5,6 +5,7 @@ open HiveAPI
 open System
 
 type HiveUrl = string 
+
 let private setToUserNameWhenTrue username isTrue =
     match isTrue with 
     | true -> [| username |]
@@ -31,3 +32,7 @@ let brodcastTransactions hiveUrl operations key =
         let transactionId = hive.broadcast_transaction (op, [| key |])
         System.Threading.Thread.Sleep (3 |> TimeSpan.FromSeconds)
         transactionId)
+
+let buildCustomJson username method payload = 
+    let json = System.Text.Json.JsonSerializer.Serialize (payload)
+    createCustomJsonPostingKey username method json

@@ -1,6 +1,7 @@
 ﻿module DelegateStake 
 
 open Action
+open Hive
 open Decimal
 open HiveEngineTypes
 open Some

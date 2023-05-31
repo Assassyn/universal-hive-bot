@@ -162,6 +162,28 @@ I am aware that there are a few places where I cna improve the bot. For example,
 }
 ```
 
+11. Terracore balance - gets teh value of avaible SCRAPS for claim
+
+```
+{
+    "name": "terracore_balance"
+}
+```
+
+12. Terracore SCRAP claim - allows to sent the token swap request to block chain 
+
+ Parameters: 
+    * amountToSwap - the computable desired amount which will be claimed
+
+```
+{
+    "name": "terracore_claim",
+    "parameters": {
+        "amount": "*"
+    }
+}
+```
+
 # Actions Series
 
 There is a new way to write the similar task now. So instead of writing 5 times to stake the five various tokens you can create a one Series action definition and specify the **splitOn** to include all 5 tokens. As a result there will be 5 actinon which will have it onw token used by amount will be the same for all of them. In a case there are other parametesr they will be copied as well to a child actions.

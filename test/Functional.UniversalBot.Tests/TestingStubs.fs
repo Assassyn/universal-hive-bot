@@ -30,6 +30,10 @@ let mockedDelegatedStakedBalanceAction balanceLevles entity =
     balanceLevles
     |> Seq.fold (fun entity (tokenSymbol, tokenBalance) -> PipelineProcessData.withProperty entity (stakedTokenSymbole tokenSymbol) tokenBalance) entity
     |> addProperty TokenInfo.TokenDetailsKey Seq.empty<TokenInfo>
+
+let mockedTerracoreBalanceAction tokenBalance entity = 
+    PipelineProcessData.withProperty entity TerracoreBalance.scrapHandle tokenBalance
+    |> addProperty TokenInfo.TokenDetailsKey Seq.empty<TokenInfo>
     
 let extractCustomJson underTestObject =
     match underTestObject with 
@@ -53,3 +57,6 @@ let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.PostingKey <- ""
 
     UserReader.bind [userDefinition ]
+
+let bindAmount amount =
+    amount |> AmountCalator.bind
