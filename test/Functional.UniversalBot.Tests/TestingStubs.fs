@@ -6,6 +6,7 @@ open Functional.ETL.Pipeline.PipelineProcessData
 open FSharp.Control
 open Types
 open HiveEngineTypes
+open System.Collections.Generic
 
 let a b =
     ()
@@ -42,6 +43,7 @@ let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.Username <- "ultimate-bot"
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
+
     UserReader.bind [ userDefinition ]
 
 let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
@@ -49,5 +51,5 @@ let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.Username <- ""
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
-    
+
     UserReader.bind [userDefinition ]

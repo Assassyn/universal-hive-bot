@@ -6,7 +6,6 @@ open SeriesToActionsRewriter
 open Functional.ETL.Pipeline
 open Lamar
 open ConfigurationTypes
-open NCrontab
 open System
 
 let getConfiguration () = 
@@ -52,20 +51,11 @@ let private bindActions url parameters bindingFunctionName =
     let pipelineAction = prototypeFunction url parameters
     pipelineAction
 
-let startDate = DateTime.Now.AddDays(-1)
-let endDate = startDate.AddYears(1)
-
-let triggerActionWrapper (action: Transformer<PipelineResult.UniversalHiveBotResutls>) trigger (entity:  PipelineProcessData<PipelineResult.UniversalHiveBotResutls>):  PipelineProcessData<PipelineResult.UniversalHiveBotResutls> = 
-    let schedule = CrontabSchedule.Parse trigger
-    let occurrences = schedule.GetNextOccurrences(startDate, endDate)
-    let now = DateTime.Now
-    action entity
-
 let private bindTransfomers url (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
         let action = bindActions url parameters bindingFunctionName
-        triggerActionWrapper action (Map.getValueWithDefault parameters "trigger" "* * * * *")
+        action 
 
     let actionDecorator = getActionDecorator ()
 
@@ -75,6 +65,20 @@ let private bindTransfomers url (config: UserActionsDefinition) =
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)
     |> List.fold (fun state next -> state >> next >> actionDecorator) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
+    
+//type ScheduledPipeline = 
+//    {
+//        schedule: string 
+//        pipeline: Pipeline<PipelineResult.UniversalHiveBotResutls>
+//    }
+
+let private bindScheduledPipeline urls (config: UserActionsDefinition) =
+    let reader = container.GetInstance<UserActionReader>()
+    let transforms = bindTransfomers urls config 
+
+    let pipeline = Pipeline.bind (reader [config]) transforms
+
+    (config.Trigger, pipeline)
 
 let private bindPipeline urls (config: UserActionsDefinition) =
     let reader = container.GetInstance<UserActionReader>()
@@ -87,3 +91,9 @@ let createPipelines (config: Configuration)  =
     
     config.actions
     |> Seq.map (bindPipeline urls)
+
+let createScheduledPipelines (config: Configuration)  = 
+    let urls = config.urls
+        
+    config.actions
+    |> Seq.map (bindScheduledPipeline urls)
