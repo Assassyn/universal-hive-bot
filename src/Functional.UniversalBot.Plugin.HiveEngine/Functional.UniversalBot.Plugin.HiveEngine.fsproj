@@ -31,7 +31,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
-      <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Hive.fsproj" />
+      <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
     </ItemGroup>
 
     <ItemGroup>

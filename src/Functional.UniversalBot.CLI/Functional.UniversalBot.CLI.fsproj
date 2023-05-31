@@ -10,10 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="Properties\**" />
-    </ItemGroup>
-
-    <ItemGroup>
+		<Compile Include="Logging.fs" />
         <Content Include="configuration.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
