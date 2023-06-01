@@ -12,6 +12,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestingStubs.fs" />
+    <Compile Include="ActionFixture.fs" />
     <Compile Include="SeriesToActionsRewriterFixture.fs" />
     <Compile Include="ConfigurationFixture.fs" />
     <Compile Include="AmountCalatorFixture.fs" />
@@ -24,7 +25,6 @@
     <Compile Include="Actions\TransferTokensFixture.fs" />
     <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
     <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
-    <Compile Include="TerracoreFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

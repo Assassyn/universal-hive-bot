@@ -26,6 +26,7 @@ let private defaultTrigger = "0 0 */1 * * *"
 
 type UserActionsDefinition () =
     let mutable username = ""
+    let mutable name = ""
     let mutable activeKey = ""
     let mutable postingKey = ""
     let mutable trigger = defaultTrigger
@@ -34,6 +35,14 @@ type UserActionsDefinition () =
     member this.Username 
         with get () = username
         and set (value) = username <- value
+    member this.Name 
+        with get () = 
+            if System.String.IsNullOrEmpty(name)  
+            then
+                username
+            else 
+                name
+        and set (value) = name <- value
     member this.ActiveKey 
         with get () = activeKey
         and set (value) = activeKey <- value

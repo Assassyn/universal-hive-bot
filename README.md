@@ -226,6 +226,7 @@ To allow slightly more advanced aproach to amont which have to be transfer there
   },
   "actions": [
     {
+      "name": "CustomActionName", 
       "username": "universal-bot",
       "activeKey": "<activeKey here>",
       "postingKey": "<postingKey here>",

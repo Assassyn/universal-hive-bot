@@ -12,32 +12,27 @@ open Functional.ETL.Pipeline.PipelineProcessData
 [<Literal>]
 let ModuleName = "DelegateStake"
 
-let action tokenSymbol delegateTo amountCalcualtor (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = readPropertyAsType entity "userdata" 
+let action tokenSymbol delegateTo amountCalcualtor username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let precision = TokenInfo.getTokenPrecision entity tokenSymbol
+    let tokenBalance =
+        sprintf "%s_stake" tokenSymbol
+        |> readPropertyAsDecimal entity
+        |> defaultWhenNone 0M
+        |> amountCalcualtor
+        |> roundToPrecision precision
 
-    match userDetails with 
-    | Some (username, activeKey, _) -> 
-        let precision = TokenInfo.getTokenPrecision entity tokenSymbol
-        let tokenBalance =
-            sprintf "%s_stake" tokenSymbol
-            |> readPropertyAsDecimal entity
-            |> defaultWhenNone 0M
-            |> amountCalcualtor
-            |> roundToPrecision precision
-
-        if tokenBalance > 0M
-        then 
-            bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
-            |> buildCustomJson username "ssc-mainnet-hive" 
-            |> scheduleActiveOperation ModuleName tokenSymbol 
-            |> withResult entity 
-        else 
-            TokenBalanceTooLow (ModuleName, username, tokenSymbol) |> withResult entity
-    | _ -> 
-        NoUserDetails ModuleName |> withResult entity
+    if tokenBalance > 0M
+    then 
+        bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
+        |> buildCustomJson username "ssc-mainnet-hive" 
+        |> scheduleActiveOperation ModuleName tokenSymbol 
+        |> withResult entity 
+    else 
+        TokenBalanceTooLow (ModuleName, username, tokenSymbol) |> withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
     let token = parameters.["token"]
     let delegateTo = parameters.["delegateTo"]
     let amount = parameters.["amount"] |> AmountCalator.bind
-    action token delegateTo amount
+
+    Action.bindAction ModuleName (action token delegateTo amount)

@@ -21,7 +21,7 @@ let testData =
 let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
     let transformer = 
         (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind))
+        >> (SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
     let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
     let results = processPipeline pipelineDefinition
@@ -38,22 +38,10 @@ let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: s
 let ``Check that balance is too low`` () =
     let transformer = 
         (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
+        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot")
     let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
 
     processPipeline pipelineDefinition
     |> Seq.collect (fun x-> x.results)
     |> Seq.item 0
-    |> should equal (TokenBalanceTooLow ("UndelegateStake", "ultimate-bot", "ONEUP"))
-
-[<Fact>]
-let ``Check that username is required`` () =
-    let transformer = 
-        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100"))
-    let pipelineDefinition = Pipeline.bind noUserReader transformer
-    
-    processPipeline pipelineDefinition
-    |> Seq.collect (fun x-> x.results)
-    |> Seq.item 0
-    |> should equal (NoUserDetails ("UndelegateStake"))
+    |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))

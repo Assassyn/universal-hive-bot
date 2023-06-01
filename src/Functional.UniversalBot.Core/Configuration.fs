@@ -66,19 +66,13 @@ let private bindTransfomers url (config: UserActionsDefinition) =
     |> List.map (fun item -> binder item)
     |> List.fold (fun state next -> state >> next >> actionDecorator) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
     
-//type ScheduledPipeline = 
-//    {
-//        schedule: string 
-//        pipeline: Pipeline<PipelineResult.UniversalHiveBotResutls>
-//    }
-
 let private bindScheduledPipeline urls (config: UserActionsDefinition) =
     let reader = container.GetInstance<UserActionReader>()
     let transforms = bindTransfomers urls config 
 
     let pipeline = Pipeline.bind (reader [config]) transforms
 
-    (config.Trigger, pipeline)
+    (config.Name, config.Trigger, pipeline)
 
 let private bindPipeline urls (config: UserActionsDefinition) =
     let reader = container.GetInstance<UserActionReader>()
