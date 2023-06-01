@@ -1,27 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <BaseOutputPath>..\..\build\debugBuild</BaseOutputPath>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Compile Include="Terracore.Types.fs" />
-        <Compile Include="TerracoreAPI.fs" />
-        <Compile Include="Actions\TerracoreBalance.fs" />
-        <Compile Include="Actions\TerracoreClaim.fs" />
-        <Compile Include="Actions\ActionRegistry.fs" />
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Terracore.Types.fs" />
+    <Compile Include="TerracoreAPI.fs" />
+    <Compile Include="Actions\TerracoreBalance.fs" />
+    <Compile Include="Actions\TerracoreClaim.fs" />
+    <Compile Include="Actions\ActionRegistry.fs" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
-        <PackageReference Include="Lamar" Version="12.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
-        <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
+    <ProjectReference Include="..\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
+  </ItemGroup>
 
 </Project>

@@ -9,7 +9,8 @@ let config = getConfiguration ()
 printfn "Starting UniveralHiveBot processs"
 
 config
-|> Scheduler.bind 
-|> Scheduler.start
+|> Logging.logConfigurationFound
+|> Scheduler.bind Logging.writeToConsole
+|> Scheduler.start Logging.writeToConsole
 
 Loop.executeLoop ()

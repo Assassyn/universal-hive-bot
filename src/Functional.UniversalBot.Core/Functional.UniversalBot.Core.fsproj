@@ -23,6 +23,7 @@
         <Compile Include="SeriesToActionsRewriter.fs" />
         <Compile Include="Configuration.Types.fs" />
         <Compile Include="Configuration.fs" />
+        <Compile Include="Action.fs" />
     </ItemGroup>
 
     <ItemGroup>

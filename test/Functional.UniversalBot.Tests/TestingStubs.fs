@@ -44,7 +44,7 @@ let inline (~~) x = x :> obj
 
 let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     let userDefinition = new UserActionsDefinition ()
-    userDefinition.Username <- "ultimate-bot"
+    userDefinition.Username <- "universal-bot"
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
 
