@@ -7,7 +7,7 @@ open Lamar
 let writeToConsole message = 
     printfn "%O" message
 
-let logger (entity: PipelineProcessData<PipelineResult.UniversalHiveBotResutls>) = 
+let logger (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     if entity.results |> Seq.length > 0 
     then
         let lastMessage = entity.results.Head
@@ -22,4 +22,4 @@ let logConfigurationFound (config: Types.Configuration) =
 type ActionRegistry () as self =
     inherit ServiceRegistry ()
     do 
-        self.For<Transformer<PipelineResult.UniversalHiveBotResutls>>().Use(logger).Named("decorator") |> ignore     
+        self.For<Transformer<UniversalHiveBotResutls>>().Use(logger).Named("decorator") |> ignore     
