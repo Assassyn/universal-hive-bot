@@ -110,9 +110,9 @@ Task("Pack")
     .IsDependentOn("CopyFiles")
     .Does(() =>
 {
-    Zip($"{publishDir}linux", $"{artifacts}linux-{version}.zip");
-    Zip($"{publishDir}win", $"{artifacts}win-{version}.zip");
-    Zip($"{publishDir}mac", $"{artifacts}mac-{version}.zip");
+    Zip($"{publishDir}linux", $"{artifacts}ultimate-bot-linux-{version}.zip");
+    Zip($"{publishDir}win", $"{artifacts}ultimate-bot-win-{version}.zip");
+    Zip($"{publishDir}mac", $"{artifacts}ultimate-bot-mac-{version}.zip");
 });
 
 Task("Test")
