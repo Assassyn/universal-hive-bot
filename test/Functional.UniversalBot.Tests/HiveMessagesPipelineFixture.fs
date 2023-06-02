@@ -16,5 +16,4 @@ let extractSome (option: Option<obj>) =
 [<Fact>]
 let ``Can list all messages on the blockchain`` () =
     let headBlockNumber = CondenserApi.getHeadBlock hiveUrl
-
     headBlockNumber |> should greaterThan 0L
