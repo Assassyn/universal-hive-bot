@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Hive.Types.fs" />
+    <Compile Include="HttpQuery.fs" />
     <Compile Include="Hive.fs" />
+    <Compile Include="CondenserApi.fs" />
     <Compile Include="Actions\FlushTokens.fs" />
     <Compile Include="Actions\ActionRegistry.fs" />
   </ItemGroup>

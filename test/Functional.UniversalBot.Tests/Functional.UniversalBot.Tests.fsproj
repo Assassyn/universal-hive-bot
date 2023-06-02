@@ -26,6 +26,7 @@
     <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
     <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
     <Compile Include="TerracoreFixture.fs" />
+    <Compile Include="HiveMessagesPipelineFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

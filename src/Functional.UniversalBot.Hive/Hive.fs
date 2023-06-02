@@ -33,10 +33,6 @@ let brodcastTransactions hiveUrl operations key =
         System.Threading.Thread.Sleep (3 |> TimeSpan.FromSeconds)
         transactionId)
 
-let getMessages hiveUrl = 
-    let hive = new CHived(new HttpClient(), hiveUrl)
-    hive.get_feed_history ()
-
 let buildActiveKeyedCustomJson username method payload = 
     let json = System.Text.Json.JsonSerializer.Serialize (payload)
     createCustomJson username useActiveKey (not usePostingKey) method json
