@@ -1,4 +1,4 @@
-﻿module TerracoreFixture
+﻿module FlushTokenFixture
 
 open System
 open Xunit
@@ -7,16 +7,17 @@ open Functional.ETL.Pipeline
 open FSharp.Control
 
 let private hiveNodeUrl = "http://engine.alamut.uk"
+let private hiveUrl = "https://anyx.io"
 let private port = "5000"
 
 let extractSome (option: Option<obj>) =
     option.Value
 
 [<Fact>]
-let ``Claim Action is producing valid JSON`` () =
+let ``Can flush tokens`` () =
     let transformer = 
         (TestingStubs.mockedTerracoreBalanceAction 123M)
-        >> (TerracoreClaim.action ("*" |> AmountCalator.bind) "universal-bot")
+        >> (FlushTokens.action hiveUrl)
     let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
    
     let results = processPipeline pipelineDefinition
@@ -27,4 +28,4 @@ let ``Claim Action is producing valid JSON`` () =
 
     underTestObject 
     |> TestingStubs.extractCustomJson 
-    |> should startWith (sprintf """{"amount":"%s","tx-hash":""" "123")
+    |> should equal ""
