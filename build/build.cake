@@ -41,6 +41,7 @@ Task("Publish")
         "../src/Functional.UniversalBot.Plugin.HiveEngine/Functional.UniversalBot.Plugin.HiveEngine.fsproj",
         "../src/Functional.UniversalBot.Hive/Functional.UniversalBot.Plugin.Hive.fsproj",
         "../src/Functional.UniversalBot.Plugin.Terracore/Functional.UniversalBot.Plugin.Terracore.fsproj",
+        "../src/Functional.UniversalBot.Plugin.Logging/Functional.UniversalBot.Plugin.Logging.fsproj",        
     };
 
     foreach(var project in projects){
@@ -110,9 +111,9 @@ Task("Pack")
     .IsDependentOn("CopyFiles")
     .Does(() =>
 {
-    Zip($"{publishDir}linux", $"{artifacts}linux-{version}.zip");
-    Zip($"{publishDir}win", $"{artifacts}win-{version}.zip");
-    Zip($"{publishDir}mac", $"{artifacts}mac-{version}.zip");
+    Zip($"{publishDir}linux", $"{artifacts}ultimate-bot-linux-{version}.zip");
+    Zip($"{publishDir}win", $"{artifacts}ultimate-bot-win-{version}.zip");
+    Zip($"{publishDir}mac", $"{artifacts}ultimate-bot-mac-{version}.zip");
 });
 
 Task("Test")
