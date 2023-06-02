@@ -21,7 +21,7 @@ let action hive hiveEngineUrl tokenPair tokenSymbol maxSlippage amountToSwapCalc
     if amountToSwap > 0M
     then 
         bindCustomJson "marketpools" "swapTokens" {| tokenPair = tokenPair; tokenSymbol = tokenSymbol; tokenAmount = String.asString amountToSwap; tradeType = "exactInput"; maxSlippage = maxSlippage |}
-        |> buildCustomJson username "ssc-mainnet-hive"
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive"
         |> scheduleActiveOperation ModuleName tokenSymbol
         |> withResult entity
     else 

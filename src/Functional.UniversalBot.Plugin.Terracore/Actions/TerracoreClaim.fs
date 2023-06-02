@@ -24,7 +24,7 @@ let action amountCalcualtor username (entity: PipelineProcessData<UniversalHiveB
     if scrapBalance > 0M
     then 
         {| ``tx-hash`` = String.generateRandomString 22;amount = String.asString scrapBalance |}
-        |> buildCustomJson username "terracore_claim" 
+        |> buildPostingKeyedCustomJson username "terracore_claim" 
         |> schedulePostingOperation ModuleName tokenSymbol
         |> withResult entity 
     else 

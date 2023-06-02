@@ -23,7 +23,7 @@ let action tokenSymbol transferTo amountCalcualtor memo username (entity: Pipeli
     if tokenBalance > 0M
     then 
         bindCustomJson "tokens" "transfer" {| ``to`` = transferTo;symbol = tokenSymbol;quantity = String.asString tokenBalance; memo = memo|}
-        |> buildCustomJson username "ssc-mainnet-hive" 
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive" 
         |> scheduleActiveOperation ModuleName tokenSymbol 
         |> withResult entity 
     else 
