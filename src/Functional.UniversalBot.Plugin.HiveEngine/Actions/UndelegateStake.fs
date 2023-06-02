@@ -20,7 +20,7 @@ let action tokenSymbol undelegateFrom amountCalcualtor username (entity: Pipelin
     if tokenBalance > 0M
     then
         bindCustomJson "tokens" "undelegate" {|from = undelegateFrom;symbol = tokenSymbol;quantity = String.asStringWithPrecision tokenBalance|}
-        |> buildCustomJson username "ssc-mainnet-hive" 
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive" 
         |> scheduleActiveOperation ModuleName tokenSymbol 
         |> withResult entity 
     else 

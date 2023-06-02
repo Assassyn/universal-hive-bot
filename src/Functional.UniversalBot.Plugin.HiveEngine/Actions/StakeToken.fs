@@ -19,7 +19,7 @@ let action tokenSymbol amountCalcualtor username (entity: PipelineProcessData<Un
     if tokenBalance > 0M
     then 
         bindCustomJson "tokens" "stake" {| ``to`` = username;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
-        |> buildCustomJson username "ssc-mainnet-hive" 
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive" 
         |> scheduleActiveOperation ModuleName tokenSymbol 
         |> withResult entity 
     else 

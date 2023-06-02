@@ -29,7 +29,7 @@ let private scheduleTokenToPoolTransfer username tokenPair baseQuantity quoteQua
             maxSlippage = "1"
             maxDeviation = "0"
         |}
-    |> buildCustomJson username "ssc-mainnet-hive"
+    |> buildActiveKeyedCustomJson username "ssc-mainnet-hive"
     |> scheduleActiveOperation ModuleName tokenPair
 
 let action hive hiveEngineUrl tokenPair leftAmountCalculator rightAmountCalculator username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 

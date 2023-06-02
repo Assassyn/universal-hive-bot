@@ -29,7 +29,7 @@ let action hive hiveEngineUrl tokenSymbol amountCalcualtor username (entity: Pip
     then 
         let tokenPrice = getTokenPrice hiveEngineUrl tokenSymbol amountToSell
         bindCustomJson "market" "sell" {| symbol = tokenSymbol; quantity = String.asString amountToSell; price = String.asString tokenPrice; |}
-        |> buildCustomJson username "ssc-mainnet-hive"
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive"
         |> scheduleActiveOperation ModuleName tokenSymbol
         |> withResult entity
     else 

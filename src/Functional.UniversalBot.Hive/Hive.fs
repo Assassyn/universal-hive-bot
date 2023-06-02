@@ -33,6 +33,10 @@ let brodcastTransactions hiveUrl operations key =
         System.Threading.Thread.Sleep (3 |> TimeSpan.FromSeconds)
         transactionId)
 
-let buildCustomJson username method payload = 
+let buildActiveKeyedCustomJson username method payload = 
+    let json = System.Text.Json.JsonSerializer.Serialize (payload)
+    createCustomJsonPostingKey username method json
+
+let buildPostingKeyedCustomJson username method payload = 
     let json = System.Text.Json.JsonSerializer.Serialize (payload)
     createCustomJsonPostingKey username method json

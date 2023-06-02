@@ -24,7 +24,7 @@ let action tokenSymbol delegateTo amountCalcualtor username (entity: PipelinePro
     if tokenBalance > 0M
     then 
         bindCustomJson "tokens" "delegate" {|``to`` = delegateTo;symbol = tokenSymbol;quantity = String.asString tokenBalance|}
-        |> buildCustomJson username "ssc-mainnet-hive" 
+        |> buildActiveKeyedCustomJson username "ssc-mainnet-hive" 
         |> scheduleActiveOperation ModuleName tokenSymbol 
         |> withResult entity 
     else 
