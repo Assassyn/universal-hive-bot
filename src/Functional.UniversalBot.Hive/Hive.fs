@@ -6,6 +6,12 @@ open System
 
 type HiveUrl = string 
 
+[<Literal>]
+let useActiveKey = true
+
+[<Literal>]
+let usePostingKey = true
+
 let private setToUserNameWhenTrue username isTrue =
     match isTrue with 
     | true -> [| username |]
@@ -18,12 +24,6 @@ let private createCustomJson username activeKey postingKey methodName json =
         required_auths = setToUserNameWhenTrue username activeKey,
         required_posting_auths = setToUserNameWhenTrue username postingKey)
 
-let createCustomJsonActiveKey username methodName json = 
-    createCustomJson username true false methodName json
-
-let createCustomJsonPostingKey username methodName json = 
-    createCustomJson username false true methodName json
-    
 let brodcastTransactions hiveUrl operations key = 
     let hive = new CHived(new HttpClient(), hiveUrl)
     operations
@@ -35,8 +35,8 @@ let brodcastTransactions hiveUrl operations key =
 
 let buildActiveKeyedCustomJson username method payload = 
     let json = System.Text.Json.JsonSerializer.Serialize (payload)
-    createCustomJsonPostingKey username method json
+    createCustomJson username useActiveKey (not usePostingKey) method json
 
 let buildPostingKeyedCustomJson username method payload = 
     let json = System.Text.Json.JsonSerializer.Serialize (payload)
-    createCustomJsonPostingKey username method json
+    createCustomJson username (not useActiveKey) usePostingKey method json
