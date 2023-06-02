@@ -41,6 +41,7 @@ Task("Publish")
         "../src/Functional.UniversalBot.Plugin.HiveEngine/Functional.UniversalBot.Plugin.HiveEngine.fsproj",
         "../src/Functional.UniversalBot.Hive/Functional.UniversalBot.Plugin.Hive.fsproj",
         "../src/Functional.UniversalBot.Plugin.Terracore/Functional.UniversalBot.Plugin.Terracore.fsproj",
+        "../src/Functional.UniversalBot.Plugin.Logging/Functional.UniversalBot.Plugin.Logging.fsproj",        
     };
 
     foreach(var project in projects){

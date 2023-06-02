@@ -1,8 +1,5 @@
 ﻿open System
-open System.Threading
 open Configuration
-open PipelineResult
-open Functional.ETL.Pipeline
 
 let config = getConfiguration ()
 

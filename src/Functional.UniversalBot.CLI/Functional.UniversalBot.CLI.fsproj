@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="Logging.fs" />
         <Compile Include="Loop.fs" />
         <Compile Include="Scheduler.fs" />
         <Content Include="configuration.json">
@@ -35,6 +34,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
+      <ProjectReference Include="..\Functional.UniversalBot.Plugin.Logging\Functional.UniversalBot.Plugin.Logging.fsproj" />
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='DEBUG'">
