@@ -20,6 +20,7 @@
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Hive.fs" />
         <Compile Include="Types.fs" />
+        <Compile Include="Readers.fs" />
         <Compile Include="AmountCalator.fs" />
         <Compile Include="SeriesToActionsRewriter.fs" />
         <Compile Include="Configuration.Types.fs" />

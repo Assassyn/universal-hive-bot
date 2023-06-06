@@ -15,7 +15,9 @@
 
     <ItemGroup>
         <Compile Include="Loop.fs" />
+        <Compile Include="Messages.fs" />
         <Compile Include="Scheduler.fs" />
+        <Compile Include="BackgroundTaskRunner.fs" />
         <Content Include="configuration.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>

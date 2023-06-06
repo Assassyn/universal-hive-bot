@@ -5,6 +5,7 @@ open FsUnit.Xunit
 open Functional.ETL.Pipeline
 open TestingStubs
 open PipelineResult
+open FSharp.Control
 
 let private hiveNodeUrl = "https://anyx.io"
 
@@ -24,7 +25,7 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let pipelineDefinition = Pipeline.bind reader transformer
    
     processPipeline pipelineDefinition
-    |> Seq.collect (fun x-> x.results)
+    |> TaskSeq.collect (fun x-> x.results)
     |> Seq.item 0
     |> TestingStubs.extractCustomJson 
     |> should equal (sprintf """{"contractName":"tokens","contractAction":"undelegate","contractPayload":{"from":"delegation-target-user","quantity":"%s","symbol":"ONEUP"}}""" result)
@@ -37,6 +38,6 @@ let ``Check that balance is too low`` () =
     let pipelineDefinition = Pipeline.bind reader transformer
     
     processPipeline pipelineDefinition
-    |> Seq.collect (fun x-> x.results)
+    |> TaskSeq.collect (fun x-> x.results)
     |> Seq.item 0
     |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))

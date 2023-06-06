@@ -9,7 +9,10 @@
     <Compile Include="Hive.Types.fs" />
     <Compile Include="HttpQuery.fs" />
     <Compile Include="Hive.fs" />
+    <Compile Include="CondenserApi.Types.fs" />
     <Compile Include="CondenserApi.fs" />
+    <Compile Include="BridgeAPI.Types.fs" />
+    <Compile Include="BridgeAPI.fs" />
     <Compile Include="Actions\FlushTokens.fs" />
     <Compile Include="Actions\ActionRegistry.fs" />
   </ItemGroup>

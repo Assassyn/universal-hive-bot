@@ -23,7 +23,7 @@ let ``Can flush tokens`` () =
     let results = processPipeline pipelineDefinition
     let underTestObject =
         results
-        |> Seq.collect (fun x-> x.results)
+        |> TaskSeq.collect (fun x-> x.results)
         |> Seq.item 0
 
     underTestObject 

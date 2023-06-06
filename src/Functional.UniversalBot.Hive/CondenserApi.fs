@@ -1,8 +1,7 @@
 ﻿module CondenserApi
 
-open System.Net.Http
 open HttpQuery
-open HiveTypes
+open CondenserApiTypes
 
 let getDynamicGlobalroperties hiveUrl = 
     runHiveQuery<Properties> hiveUrl "condenser_api.get_dynamic_global_properties" emptyParameters

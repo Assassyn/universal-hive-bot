@@ -9,7 +9,6 @@
   <ItemGroup>
     <Compile Include="HiveEngine.Types.fs" />
     <Compile Include="HiveEngine.fs" />
-    <Compile Include="UserReader.fs" />
     <Compile Include="Actions\Action.fs" />
     <Compile Include="Actions\AddTokenToPool.fs" />
     <Compile Include="Actions\DelegateStake.fs" />

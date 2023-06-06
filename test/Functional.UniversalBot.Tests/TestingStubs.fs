@@ -48,15 +48,15 @@ let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
 
-    UserReader.bind [ userDefinition ]
+    Readers.bindReader userDefinition
 
 let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
     let userDefinition = new UserActionsDefinition ()
     userDefinition.Username <- ""
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
-
-    UserReader.bind [userDefinition ]
+    
+    Readers.bindReader userDefinition
 
 let bindAmount amount =
     amount |> AmountCalator.bind

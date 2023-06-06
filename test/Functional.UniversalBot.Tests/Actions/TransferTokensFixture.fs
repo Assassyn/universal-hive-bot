@@ -5,6 +5,7 @@ open FsUnit.Xunit
 open Functional.ETL.Pipeline
 open TestingStubs
 open PipelineResult
+open FSharp.Control
 
 let private hiveNodeUrl = "https://anyx.io"
 
@@ -26,7 +27,7 @@ let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (resul
     let results = processPipeline pipelineDefinition
     let underTestObject =
         results
-        |> Seq.collect (fun x-> x.results)
+        |> TaskSeq.collect (fun x-> x.results)
         |> Seq.item 0
 
     underTestObject 

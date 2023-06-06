@@ -48,7 +48,7 @@ let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRe
         Array.empty
 
 let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
+    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata 
 
     match userDetails with 
     | Some (username, activeKey, postingKey) -> 

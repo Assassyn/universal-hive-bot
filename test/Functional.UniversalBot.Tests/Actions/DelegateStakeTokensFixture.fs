@@ -5,6 +5,7 @@ open FsUnit.Xunit
 open Functional.ETL.Pipeline
 open TestingStubs
 open PipelineResult
+open FSharp.Control
 
 let private hiveNodeUrl = "https://anyx.io"
 
@@ -26,7 +27,7 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let results = processPipeline pipelineDefinition
     let underTestObject =
         results
-        |> Seq.collect (fun x-> x.results)
+        |> TaskSeq.collect (fun x-> x.results)
         |> Seq.item 0
 
     underTestObject 
@@ -42,6 +43,6 @@ let ``Check that balance is too low`` () =
     let pipelineDefinition = Pipeline.bind reader transformer
 
     processPipeline pipelineDefinition
-    |> Seq.collect (fun x-> x.results)
+    |> TaskSeq.collect (fun x-> x.results)
     |> Seq.item 0
     |> should equal (TokenBalanceTooLow ("DelegateStake", "universal-bot", "ONEUP"))

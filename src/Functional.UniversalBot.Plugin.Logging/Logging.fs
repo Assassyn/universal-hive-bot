@@ -17,7 +17,12 @@ let logger (entity: PipelineProcessData<UniversalHiveBotResutls>) =
 let logConfigurationFound (config: Types.Configuration) =
     let actionsMessage = sprintf "Found actions %i to process" (config.actions |> Seq.length)
     writeToConsole actionsMessage
-    config 
+
+    config.actions
+    |> Seq.iter (fun c -> writeToConsole (sprintf "Action name: %s" c.Name))
+
+    writeToConsole "\n"
+    config
 
 type ActionRegistry () as self =
     inherit ServiceRegistry ()

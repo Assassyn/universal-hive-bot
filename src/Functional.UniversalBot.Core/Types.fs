@@ -24,12 +24,17 @@ type ActionDefinition () =
 [<Literal>]
 let private defaultTrigger = "0 0 */1 * * *"
 
+type ExecutionType =
+    | Scheduler = 0
+    | Continous = 1 
+
 type UserActionsDefinition () =
     let mutable username = ""
     let mutable name = ""
     let mutable activeKey = ""
     let mutable postingKey = ""
     let mutable trigger = defaultTrigger
+    let mutable executionType = ExecutionType.Scheduler
     let mutable tasks = new List<ActionDefinition>()
 
     member this.Username 
@@ -55,6 +60,9 @@ type UserActionsDefinition () =
     member this.Trigger 
         with get () = trigger
         and set (value) = trigger <- value
+    member this.Type 
+        with get () = executionType
+        and set (value) = executionType <- value
         
 
 type Configuration = 
