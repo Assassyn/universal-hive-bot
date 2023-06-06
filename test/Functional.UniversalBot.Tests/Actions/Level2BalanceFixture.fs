@@ -13,10 +13,12 @@ let extractSome (option: Option<obj>) =
 
 [<Fact>]
 let ``Can read all tokens from levle 2`` () =
-    let transformer = (Balance.action hiveEngineNode)
-    let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
+    task {
+        let transformer = (Balance.action hiveEngineNode)
+        let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
-    let results = processPipeline pipelineDefinition
-    let objectUnderTest = results |> TaskSeq.item 0
+        let results = processPipeline pipelineDefinition
+        let! objectUnderTest = results |> TaskSeq.item 0
              
-    PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M
+        PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M
+    }

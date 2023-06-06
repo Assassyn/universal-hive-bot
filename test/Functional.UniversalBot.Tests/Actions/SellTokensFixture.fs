@@ -20,20 +20,22 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
-    let transformer = 
-        (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
-    let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
+    task {
+        let transformer = 
+            (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
+            >> (SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
+        let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
-    let results = processPipeline pipelineDefinition
-    let underTestObject =
-        results
-        |> TaskSeq.collect (fun x-> x.results)
-        |> Seq.item 0
+        let results = processPipeline pipelineDefinition
+        let! underTestObject =
+            results
+            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
+            |> TaskSeq.item 0
 
-    underTestObject 
-    |> TestingStubs.extractCustomJson 
-    |> should startWith """{"contractName":"market","contractAction":"sell","contractPayload":{"""
+        underTestObject 
+        |> TestingStubs.extractCustomJson 
+        |> should startWith """{"contractName":"market","contractAction":"sell","contractPayload":{"""
+    }
 
 [<Fact>]
 let ``Check that balance is too low`` () =
@@ -43,6 +45,8 @@ let ``Check that balance is too low`` () =
     let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
 
     processPipeline pipelineDefinition
-    |> TaskSeq.collect (fun x-> x.results)
-    |> Seq.item 0
+    |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
+    |> TaskSeq.item 0
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
     |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))

@@ -19,20 +19,22 @@ let testData =
 [<Theory>]
 [<MemberData("testData")>]
 let ``Can stake tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
-    let transformer = 
-        (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (UnstakeToken.action "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
-    let pipelineDefinition = Pipeline.bind reader transformer
+    task {
+        let transformer = 
+            (TestingStubs.mockedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
+            >> (UnstakeToken.action "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
+        let pipelineDefinition = Pipeline.bind reader transformer
    
-    let results = processPipeline pipelineDefinition
-    let underTestObject =
-        results
-        |> TaskSeq.collect (fun x-> x.results)
-        |> TaskSeq.item 0
+        let results = processPipeline pipelineDefinition
+        let! underTestObject =
+            results
+            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
+            |> TaskSeq.item 0
 
-    underTestObject 
-    |> TestingStubs.extractCustomJson 
-    |> should equal (sprintf """{"contractName":"tokens","contractAction":"unstake","contractPayload":{"quantity":"%s","symbol":"ONEUP"}}""" result)
+        underTestObject 
+        |> TestingStubs.extractCustomJson 
+        |> should equal (sprintf """{"contractName":"tokens","contractAction":"unstake","contractPayload":{"quantity":"%s","symbol":"ONEUP"}}""" result)
+    }
 
 [<Fact>]
 let ``Check that balance is too low`` () =
@@ -42,6 +44,8 @@ let ``Check that balance is too low`` () =
     let pipelineDefinition = Pipeline.bind reader transformer
 
     processPipeline pipelineDefinition
-    |> TaskSeq.collect (fun x-> x.results)
-    |> Seq.item 0
+    |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
+    |> TaskSeq.item 0
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
     |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))

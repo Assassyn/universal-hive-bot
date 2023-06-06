@@ -14,17 +14,19 @@ let extractSome (option: Option<obj>) =
 
 [<Fact>]
 let ``Claim Action is producing valid JSON`` () =
-    let transformer = 
-        (TestingStubs.mockedTerracoreBalanceAction 123M)
-        >> (TerracoreClaim.action ("*" |> AmountCalator.bind) "universal-bot")
-    let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
+    task {
+        let transformer = 
+            (TestingStubs.mockedTerracoreBalanceAction 123M)
+            >> (TerracoreClaim.action ("*" |> AmountCalator.bind) "universal-bot")
+        let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
    
-    let results = processPipeline pipelineDefinition
-    let underTestObject =
-        results
-        |> TaskSeq.collect (fun x-> x.results)
-        |> Seq.item 0
+        let results = processPipeline pipelineDefinition
+        let! underTestObject =
+            results
+            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
+            |> TaskSeq.item 0
 
-    underTestObject 
-    |> TestingStubs.extractCustomJson 
-    |> should startWith (sprintf """{"amount":"%s","tx-hash":""" "123")
+        underTestObject 
+        |> TestingStubs.extractCustomJson 
+        |> should startWith (sprintf """{"amount":"%s","tx-hash":""" "123")
+    }
