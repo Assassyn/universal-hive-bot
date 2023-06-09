@@ -15,6 +15,8 @@
         <Compile Include="Json.fs" />
         <Compile Include="Map.fs" />
         <Compile Include="Decimal.fs" />
+        <Compile Include="Int32.fs" />
+        <Compile Include="Int16.fs" />
         <Compile Include="Some.fs" />
         <Compile Include="String.fs" />
         <Compile Include="PipelineResult.fs" />

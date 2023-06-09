@@ -3,5 +3,8 @@
 open HttpQuery
 open BridgeAPITypes
 
+let private castSort sort = 
+    sort.ToString().ToLower()
+
 let getRankedPosts hiveUrl (sort: Sort) tag =
-    runHiveQuery<RankedPost> hiveUrl "bridge.get_ranked_posts" {| sort = sort; tag = tag |}
+    runHiveQuery<RankedPost seq> hiveUrl "bridge.get_ranked_posts" {| sort = sort |> castSort; tag = tag |}

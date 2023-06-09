@@ -5,7 +5,7 @@ open System.Text.Json
 open FsUnit.Xunit
 
 [<Fact>]
-let ``Can deserialzie object `` () =
+let ``Can deserialzie object`` () =
     let json = """{"name":"test"}"""
     let jsonDocument = JsonDocument.Parse json
 

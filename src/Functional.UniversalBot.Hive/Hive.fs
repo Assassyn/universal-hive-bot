@@ -24,6 +24,13 @@ let private createCustomJson username activeKey postingKey methodName json =
         required_auths = setToUserNameWhenTrue username activeKey,
         required_posting_auths = setToUserNameWhenTrue username postingKey)
 
+let createVote voter author permlink weight = 
+    new COperations.vote (
+        author = author,
+        permlink = permlink,
+        voter = voter,
+        weight = weight)
+
 let brodcastTransactions hiveUrl operations key = 
     let hive = new CHived(new HttpClient(), hiveUrl)
     operations

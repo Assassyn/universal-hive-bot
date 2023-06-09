@@ -1,7 +1,7 @@
 ﻿module BridgeAPITypes
  
 type Sort = 
-    | Trending
+    | Trending 
     | Hot
     | Created
     | Promoted
@@ -15,6 +15,12 @@ type JsonMetadata =
         app: string
     }
     
+type ActiveVotes = 
+    {
+        voter: string 
+        rshares: int64
+    }
+
 type RankedPost = 
     {
         post_id: int64
@@ -37,7 +43,7 @@ type RankedPost =
         curator_payout_value: string
         promoted: string
         //"replies": [],
-        //"active_votes": [{"voter": "bob", "rshares": "67759296290"}],
+        active_votes: ActiveVotes seq
         author_reputation: decimal
         //"stats": {
         //  "hide": false,

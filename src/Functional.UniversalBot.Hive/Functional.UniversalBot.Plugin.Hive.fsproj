@@ -13,6 +13,12 @@
     <Compile Include="CondenserApi.fs" />
     <Compile Include="BridgeAPI.Types.fs" />
     <Compile Include="BridgeAPI.fs" />
+    <Compile Include="TemplateAPI.fs" />
+    <Compile Include="PostId.fs" />
+    <Compile Include="Actions\ReadPosts.fs" />
+    <Compile Include="Actions\VoteOnPosts.fs" />
+    <Compile Include="Actions\LoadTemplate.fs" />
+    <Compile Include="Actions\CommentOnPosts.fs" />
     <Compile Include="Actions\FlushTokens.fs" />
     <Compile Include="Actions\ActionRegistry.fs" />
   </ItemGroup>

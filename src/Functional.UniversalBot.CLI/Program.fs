@@ -10,9 +10,9 @@ let pipelines =
     |> Logging.logConfigurationFound
     |> createPipelines 
 
-pipelines
-|> Scheduler.bind Logging.writeToConsole
-|> Scheduler.start Logging.writeToConsole
+//pipelines
+//|> Scheduler.bind Logging.writeToConsole
+//|> Scheduler.start Logging.writeToConsole
 
 pipelines
 |> BackgroundTaskRunner.start Logging.writeToConsole

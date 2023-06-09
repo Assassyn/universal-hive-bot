@@ -19,7 +19,7 @@ module Pipeline =
         
     module PipelineProcessData = 
         let withProperty entity key value =
-            let properties = entity.properties.Add (key, value)
+            let properties = entity.properties.Add (key, value :> obj)
             { entity with properties = properties }
 
         let addProperty key value entity =

@@ -14,6 +14,9 @@ let split (character: string) (input: string) =
 let replace (old: Char) replaceWith (input: string) =
     input.Replace(old, replaceWith)
 
+let replaceString (old: string) replaceWith (input: string) =
+    input.Replace(old, replaceWith)
+
 let generateRandomString numebrOfCharacters = 
     let randomizer = Random()
     let chars = "0123456789abcdefghijklmnopqrstuvwxyz".ToCharArray()
