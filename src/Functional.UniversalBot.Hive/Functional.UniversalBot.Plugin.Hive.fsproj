@@ -15,6 +15,7 @@
     <Compile Include="BridgeAPI.fs" />
     <Compile Include="TemplateAPI.fs" />
     <Compile Include="PostId.fs" />
+    <Compile Include="Actions\Variable.fs" />
     <Compile Include="Actions\ReadPosts.fs" />
     <Compile Include="Actions\VoteOnPosts.fs" />
     <Compile Include="Actions\LoadTemplate.fs" />

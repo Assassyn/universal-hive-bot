@@ -7,6 +7,9 @@ open Functional.ETL.Pipeline.PipelineProcessData
 open BridgeAPITypes
 open System
 
+[<Literal>]
+let private ModuleName = "LoadTemplate" 
+
 let private createReplacmentOld = 
     sprintf "{{%s}}"
 
@@ -27,5 +30,5 @@ let action templateId label username (entity: PipelineProcessData<UniversalHiveB
 let bind urls (parameters: Map<string, string>) = 
     let templateId = Map.getValueWithDefault parameters "templateId" ""
     let label = Map.getValueWithDefault parameters "label" "template"
-    action templateId label
+    Action.bindAction ModuleName (action templateId label)
 

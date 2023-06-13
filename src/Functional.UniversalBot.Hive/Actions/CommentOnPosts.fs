@@ -1,31 +1,42 @@
 ﻿module CommentOnPosts
 
 open System
-open BridgeAPITypes
 open PipelineResult
 open Types 
 open Functional.ETL.Pipeline.PipelineProcessData
 open Functional.ETL.Pipeline
+open PostId
 
 [<Literal>]
 let ModuleName = "CommentOnPost"
 
-let private checkIfHasBeenCommentedOn username (post: PostIdentification) = 
-    post.voters |> Seq.contains username
+let private checkForPreviousComments hiveUrl username (post: PostIdentification) = 
+    let posts = 
+        BridgeAPI.getDiscussion hiveUrl post.author post.permlink
+        |> Map.toSeq
+        |> Seq.map (fun (key, _) -> key)
+        |> Seq.filter (fun key -> key.StartsWith($"{username}/"))
+        |> Seq.length > 0
+        
+    posts 
 
-let castAVote username weight (post: PostIdentification) = 
-    Hive.createVote username post.author post.permlink weight
+let private createTheComment username body (post: PostIdentification) = 
+    let metadata = """{"app":"universalbot/0.10.0"}"""
+    Hive.createComment username body metadata post.author post.permlink post.permlink ""
+
+let private getTemplate templateId (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    (Map.getValueWithDefault entity.properties templateId ("" :> obj)).ToString()
 
 let action hiveUrl collectionHandle template username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    readPropertyAsType entity label
+    readPropertyAsType entity collectionHandle
     |> Option.defaultValue Seq.empty
-    |> Seq.filter (checkIfHasBeenCommentedOn username >> not)
-    |> Seq.map (castAVote username weight)
-    |> Seq.map (Hive.schedulePostingOperation ModuleName "vote")
+    |> Seq.filter (checkForPreviousComments hiveUrl username >> not)
+    |> Seq.map (createTheComment username (getTemplate template entity))
+    |> Seq.map (Hive.scheduleSinglePostingOperation ModuleName "vote")
     |> Seq.fold withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
     let collectionHandle = Map.getValueWithDefault parameters "label" "posts"
     let template = Map.getValueWithDefault parameters "template" ""
-    action urls.hiveNodeUrl tag label
+
     Action.bindAction ModuleName (action urls.hiveNodeUrl collectionHandle template)

@@ -11,6 +11,8 @@ type Action = string
 type KeyRequired =
     | Active
     | Posting
+    | ActiveSingle
+    | PostingSingle
 
 type UniversalHiveBotResutls =
     | Unknow

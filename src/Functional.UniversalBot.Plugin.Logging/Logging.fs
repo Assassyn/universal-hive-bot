@@ -7,11 +7,33 @@ open Lamar
 let writeToConsole message = 
     printfn "%O" message
 
+let mutable loggedResults: UniversalHiveBotResutls seq = Seq.empty
+
+let getNotProcessedMessages (results: UniversalHiveBotResutls seq) = 
+    results
+    |> Seq.filter 
+        (fun result -> 
+            let contains = loggedResults |> Seq.contains result
+            not contains)
+
+let renderResult result =
+    match result with 
+    | Processed _ ->
+        ()
+    | _ ->
+        writeToConsole result
+
 let logger (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     if entity.results |> Seq.length > 0 
     then
-        let lastMessage = entity.results.Head
-        writeToConsole lastMessage
+        entity.results.Head
+        |> renderResult
+        //let notRendered = getNotProcessedMessages entity.results
+        
+        //notRendered |> Seq.iter renderResult
+
+        //let newLogged =  loggedResults |> Seq.append notRendered
+        //loggedResults <- newLo
     entity
 
 let logConfigurationFound (config: Types.Configuration) =

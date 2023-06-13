@@ -29,7 +29,6 @@ let private bindOneOffReader userdata =
 let private bindContinouseReader userdata =
     fun () -> 
         TaskSeq.initInfinite PipelineProcessData.bind32
-        //.initInfinite PipelineProcessData.bind32
         |> TaskSeq.map (addUserDataProprties userdata)
 
 
@@ -38,7 +37,7 @@ let bindReader (userdata: UserActionsDefinition) =
     | ExecutionType.Continous -> 
         let test = bindContinouseReader userdata
         test
-    | ExecutionType.Scheduler -> 
+    | _ -> 
         let test = bindOneOffReader userdata
         test
     

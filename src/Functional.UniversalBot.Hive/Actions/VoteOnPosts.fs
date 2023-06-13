@@ -16,23 +16,40 @@ open Functional.ETL.Pipeline.PipelineProcessData
 let ModuleName = "VoteOnPost"
 
 let private checkIfHasBeenCommentedOn username (post: PostIdentification) = 
-    post.voters |> Seq.contains username
+    let posts = post.voters 
+    
+    posts |> Seq.contains username
 
-let castAVote username weight (post: PostIdentification) = 
+let private castAVote username weight (post: PostIdentification) = 
     Hive.createVote username post.author post.permlink weight
 
-let action hiveUrl weight label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+let private getWeigth weight useVariable (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    match useVariable with
+    | false ->  
+        weight
+    | true ->
+        Map.getValueWithDefault entity.properties "weight" ("10.00":>obj)
+        |> Decimal.fromObject
+        |> Some.defaultWhenNone 10.00M
+        |> fun x -> x * 100M
+        |> int16
+
+let action hiveUrl weight useVaraible label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     readPropertyAsType entity label
     |> Option.defaultValue Seq.empty
     |> Seq.filter (checkIfHasBeenCommentedOn username >> not)
-    |> Seq.map (castAVote username weight)
+    |> Seq.map (castAVote username (getWeigth weight useVaraible entity))
     |> Seq.map (Hive.schedulePostingOperation ModuleName "vote")
     |> Seq.fold withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
     let label = Map.getValueWithDefault parameters "label" "posts"
     let weight = 
-        Map.getValueWithDefault parameters "weight" "0"  
+        Map.getValueWithDefault parameters "weight" ""  
         |> Int16.fromString
-        |> Some.defaultWhenNone 100s
-    Action.bindAction ModuleName (action urls.hiveNodeUrl weight label)
+        |> Some.defaultWhenNone 1000s
+    let useVaraible = 
+        Map.getValueWithDefault parameters "useVaraible" ""  
+        |> Bool.fromString
+        |> Some.defaultWhenNone false
+    Action.bindAction ModuleName (action urls.hiveNodeUrl weight useVaraible label)

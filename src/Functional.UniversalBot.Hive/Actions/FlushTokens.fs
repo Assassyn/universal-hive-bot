@@ -4,6 +4,7 @@ open PipelineResult
 open Functional.ETL.Pipeline
 open Types
 open Functional.ETL.Pipeline.PipelineProcessData
+open Hive
 
 [<Literal>]
 let private ModuleName = "Flush"
@@ -25,27 +26,31 @@ let private extractOperations entity =
     |> Seq.map (fun x -> x.Value)
     |> Seq.groupBy (fun (_, _, requiredKey, _) -> requiredKey)
 
-let private executeOperations hiveUrl keyRequired operations = 
-    Hive.brodcastTransactions hiveUrl operations keyRequired 
-
 let private extractCustomJson hiveOperationRequest = 
     let (_, _, _, customJson) = hiveOperationRequest
     customJson
 
-let private processHiveOperations hiveUrl requiredKey key (operations: Map<KeyRequired,seq<Module * Token * KeyRequired * obj>>) = 
+//let private getChunkSizeBasedOnKey key = 
+//    match key with
+//    | Active | Posting -> ChunkSize.MaxCountInBlock
+//    | _ -> ChunkSize.Single
+
+let private getByKey requiredKey (operations: Map<KeyRequired,seq<Module * Token * KeyRequired * obj>>) = 
     if operations.ContainsKey (requiredKey)
     then 
-        let ops =
-            operations.[requiredKey] 
-            |> Seq.map extractCustomJson
-            |> Array.ofSeq 
-
-        executeOperations hiveUrl key ops |> Array.ofSeq |> ignore
-
         operations.[requiredKey] 
-        |> Seq.map (fun (moduleName, tokenSymbol, _, _) -> Processed (moduleName, tokenSymbol))
+        |> Seq.map extractCustomJson
+        |> Array.ofSeq
     else 
         Array.empty
+
+let private processHiveOperations hiveUrl chunkSize key ops = 
+    Hive.brodcastTransactions hiveUrl chunkSize ops key 
+    |> Array.ofSeq 
+    
+let private mapperToProcessed transactionId = 
+    Processed ("TransactionId", transactionId)
+
 
 let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata 
@@ -55,15 +60,29 @@ let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) =
         let operations = extractOperations entity |> Map.ofSeq
 
         let activeOperationResults = 
-            operations |> processHiveOperations hiveUrl KeyRequired.Active activeKey 
+            operations
+            |> getByKey KeyRequired.Active
+            |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock activeKey
+        let activeSingleOperationResults = 
+            operations
+            |> getByKey KeyRequired.ActiveSingle
+            |> processHiveOperations hiveUrl ChunkSize.Single activeKey
         let postingOperationResults =
-            operations |> processHiveOperations hiveUrl KeyRequired.Posting postingKey
+            operations
+            |> getByKey KeyRequired.Posting
+            |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock postingKey
+        let postingSingleOperationResults =
+            operations
+            |> getByKey KeyRequired.PostingSingle
+            |> processHiveOperations hiveUrl ChunkSize.Single postingKey
 
         let results = 
             entity.results 
             |> Seq.filter (fun x -> not (isHiveOperation x))
-            |> Seq.append activeOperationResults 
-            |> Seq.append postingOperationResults 
+            |> Seq.append (activeOperationResults |> Seq.map mapperToProcessed)
+            |> Seq.append (activeSingleOperationResults |> Seq.map mapperToProcessed)
+            |> Seq.append (postingOperationResults |> Seq.map mapperToProcessed)
+            |> Seq.append (postingSingleOperationResults |> Seq.map mapperToProcessed)
             |> List.ofSeq
 
         { entity with results = results }

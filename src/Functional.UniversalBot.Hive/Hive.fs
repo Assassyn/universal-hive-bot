@@ -31,10 +31,24 @@ let createVote voter author permlink weight =
         voter = voter,
         weight = weight)
 
-let brodcastTransactions hiveUrl operations key = 
+let createComment author body json_metadata parent_author parent_permlink permlink title =
+    new COperations.comment (
+        author = author, 
+        body = body, 
+        json_metadata = json_metadata, 
+        parent_author = parent_author, 
+        parent_permlink = parent_permlink, 
+        permlink = permlink, 
+        title = title)
+
+type ChunkSize = 
+    | Single = 1
+    | MaxCountInBlock = 5
+
+let brodcastTransactions hiveUrl (chunkSize: ChunkSize) operations key = 
     let hive = new CHived(new HttpClient(), hiveUrl)
     operations
-    |> Seq.chunkBySize 5
+    |> Seq.chunkBySize (int chunkSize)
     |> Seq.map (fun op -> 
         let transactionId = hive.broadcast_transaction (op, [| key |])
         System.Threading.Thread.Sleep (3 |> TimeSpan.FromSeconds)
