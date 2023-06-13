@@ -5,6 +5,7 @@ type Item = string
 type Message = string
 type TransactionId = string
 type HiveOperation = HiveAPI.COperations.IOperationID
+type CustomJson = HiveAPI.COperations.custom_json
 type Token = string 
 type Username = string
 type Action = string

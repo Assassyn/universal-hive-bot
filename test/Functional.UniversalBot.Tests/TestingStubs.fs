@@ -37,8 +37,10 @@ let mockedTerracoreBalanceAction tokenBalance entity =
     
 let extractCustomJson underTestObject =
     match underTestObject with 
-    //| PipelineResult.HiveOperation (_, _, _, customJson) -> customJson.json
-    | _ -> ""
+    | PipelineResult.HiveOperation (_, _, _, customJson) -> 
+       (customJson :?> CustomJson).json
+    | _ -> 
+        ""
 
 let inline (~~) x = x :> obj
 

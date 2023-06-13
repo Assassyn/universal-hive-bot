@@ -184,6 +184,56 @@ I am aware that there are a few places where I cna improve the bot. For example,
 }
 ```
 
+13. ReadPost - used HIVE BridgeAPI to get top 20 ranked posts for given tag 
+
+ Parameters: 
+    * tag - a tag which post has to be tagged 
+    * label - a varaible which will store the posts, this is configurable as to allow storing various posts at the same time
+
+```
+{
+    "name": "read_posts",
+    "parameters": {
+        "tag": "youtrtag",
+        "label": "posts"
+    }
+}
+```
+
+14. Variable - allows to specify a variable to be shared between other tassk. 
+
+ Parameters: 
+
+
+        {
+          "name": "variable",
+          "parameters": {
+            "name": "weight",
+            "value":"15.00"
+          }
+        },
+        {
+          "name": "load_template",
+          "parameters": {
+            "templateId": "Assassyn/9a3b5399b7439134870cc278f09fea38/raw/3d9b03614247c01e2fd16e8ca277bcafeff7a005",
+            "label": "posts_template" //optional
+          }
+        },
+        {
+          "name": "vote_on_posts",
+          "parameters": {
+            "label": "posts",
+            "useVaraible":  true
+          }
+        },
+        {
+          "name": "comment_on_posts",
+          "parameters": {
+            "label": "posts",
+            "template": "posts_template"
+          }
+        },
+
 # Actions Series
 
 There is a new way to write the similar task now. So instead of writing 5 times to stake the five various tokens you can create a one Series action definition and specify the **splitOn** to include all 5 tokens. As a result there will be 5 actinon which will have it onw token used by amount will be the same for all of them. In a case there are other parametesr they will be copied as well to a child actions.
