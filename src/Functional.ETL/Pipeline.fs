@@ -15,13 +15,19 @@ module Pipeline =
     type ErrorMessage = string
     type Reader<'Result> = unit -> PipelineProcessData<'Result> taskSeq
     type Transformer<'Result> = PipelineProcessData<'Result> -> PipelineProcessData<'Result>
+
         
     module PipelineProcessData = 
         let withProperty entity key value =
-            let properties = entity.properties.Add (key, value)
+            let properties = entity.properties.Add (key, value :> obj)
             { entity with properties = properties }
+
         let addProperty key value entity =
             withProperty entity key value
+
+        let (|>+) entity key value = 
+            withProperty entity key (value :> obj) 
+
         let withResult<'Result> (entity: PipelineProcessData<'Result>) (value: 'Result) =
             let results = value::entity.results
             { entity with results = results }
@@ -47,11 +53,16 @@ module Pipeline =
         let readPropertyAsDecimal<'Result> = readPropertyAsType<'Result, decimal>
 
         let bind index = 
-            {
-                index = index
-                properties = Map.empty
-                results = list.Empty
-            }
+            let entity = 
+                {
+                    index = index
+                    properties = Map.empty
+                    results = list.Empty
+                }
+            entity
+            //Task.fromResult entity
+        let bind32 index =
+            bind (int64(index))
 
     module Transformer = 
         let empty<'Error> =
@@ -73,5 +84,4 @@ module Pipeline =
     let processPipeline pipelineDefinition =     
         pipelineDefinition.extractor ()
         |> TaskSeq.map pipelineDefinition.transformers
-        |> TaskSeq.toArray
         

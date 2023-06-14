@@ -34,12 +34,17 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Core", "src\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj", "{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.CLI", "src\Functional.UniversalBot.CLI\Functional.UniversalBot.CLI.fsproj", "{DEECBB21-1C4E-494D-A4DC-571507FE759B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC} = {29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D} = {558BFC4F-052B-4A40-8D15-C9397AF8404D}
+		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6} = {EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}
+	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.HiveEngine", "src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj", "{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.Terracore", "src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj", "{558BFC4F-052B-4A40-8D15-C9397AF8404D}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Functional.UniversalBot.Plugin.Logging", "src\Functional.UniversalBot.Plugin.Logging\Functional.UniversalBot.Plugin.Logging.fsproj", "{3C82FA67-4C9E-4A19-9811-B03C3C51F484}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.Logging", "src\Functional.UniversalBot.Plugin.Logging\Functional.UniversalBot.Plugin.Logging.fsproj", "{3C82FA67-4C9E-4A19-9811-B03C3C51F484}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -15,7 +15,9 @@
 
     <ItemGroup>
         <Compile Include="Loop.fs" />
+        <Compile Include="Messages.fs" />
         <Compile Include="Scheduler.fs" />
+        <Compile Include="BackgroundTaskRunner.fs" />
         <Content Include="configuration.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
@@ -38,8 +40,10 @@
     </ItemGroup>
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='DEBUG'">
+        <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
         <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj" />
         <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj" />
+        <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.Logging\Functional.UniversalBot.Plugin.Logging.fsproj" />
     </Target>
 
 </Project>

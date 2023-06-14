@@ -15,7 +15,7 @@ let ModuleName = "TerracoreClaim"
 let scrapHandle = "terracore_scrap" 
 
 let action (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity "userdata" 
+    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata
 
     match userDetails with 
     | Some (username, _, _) when username <> "" -> 

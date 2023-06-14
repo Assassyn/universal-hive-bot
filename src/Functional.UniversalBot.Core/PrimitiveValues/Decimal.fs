@@ -10,3 +10,6 @@ let fromString (input: string) =
     if Decimal.TryParse (input, &number)
     then Some number
     else None
+
+let fromObject input =
+    fromString (input.ToString())

@@ -11,14 +11,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="PrimitiveValues\Map.fs" />
+        <Compile Include="PrimitiveValues\Some.fs" />
+        <Compile Include="PrimitiveValues\String.fs" />
+        <Compile Include="PrimitiveValues\Int16.fs" />
+        <Compile Include="PrimitiveValues\Int32.fs" />
+        <Compile Include="PrimitiveValues\Decimal.fs" />
+        <Compile Include="PrimitiveValues\Bool.fs" />
+        <Compile Include="Persistance.fs" />
         <Compile Include="Json.fs" />
-        <Compile Include="Map.fs" />
-        <Compile Include="Decimal.fs" />
-        <Compile Include="Some.fs" />
-        <Compile Include="String.fs" />
         <Compile Include="PipelineResult.fs" />
         <Compile Include="Hive.fs" />
         <Compile Include="Types.fs" />
+        <Compile Include="Readers.fs" />
         <Compile Include="AmountCalator.fs" />
         <Compile Include="SeriesToActionsRewriter.fs" />
         <Compile Include="Configuration.Types.fs" />
@@ -30,6 +35,7 @@
         <PackageReference Include="FsHttp" Version="11.0.0-preview01" />
         <PackageReference Include="HiveAPI" Version="0.3.0" />
         <PackageReference Include="Lamar" Version="12.0.0" />
+        <PackageReference Include="LocalStorage" Version="2.1.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
