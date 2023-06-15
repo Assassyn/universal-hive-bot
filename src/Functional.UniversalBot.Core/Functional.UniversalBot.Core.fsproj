@@ -29,6 +29,19 @@
         <Compile Include="Configuration.Types.fs" />
         <Compile Include="Configuration.fs" />
         <Compile Include="Action.fs" />
+        <Compile Include="Actions\Action.fs" />
+        <Compile Include="Actions\AddTokenToPool.fs" />
+        <Compile Include="Actions\DelegateStake.fs" />
+        <Compile Include="Actions\FlushAndBalanceAction.fs" />
+        <Compile Include="Actions\FlushTokens.fs" />
+        <Compile Include="Actions\Level2Balance.fs" />
+        <Compile Include="Actions\SellToken.fs" />
+        <Compile Include="Actions\StakeToken.fs" />
+        <Compile Include="Actions\TokenSwapAction.fs" />
+        <Compile Include="Actions\TransferToken.fs" />
+        <Compile Include="Actions\UndelegateStake.fs" />
+        <Compile Include="Actions\UnstakeToken.fs" />
+        <Compile Include="Actions\UserReader.fs" />
     </ItemGroup>
 
     <ItemGroup>
