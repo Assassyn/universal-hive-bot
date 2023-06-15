@@ -35,12 +35,18 @@ let private getWeigth weight useVariable (entity: PipelineProcessData<UniversalH
         |> int16
 
 let action hiveUrl weight useVaraible label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    readPropertyAsType entity label
-    |> Option.defaultValue Seq.empty
-    |> Seq.filter (checkIfHasBeenCommentedOn username >> not)
-    |> Seq.map (castAVote username (getWeigth weight useVaraible entity))
-    |> Seq.map (Hive.schedulePostingOperation ModuleName "vote")
-    |> Seq.fold withResult entity
+    let newVotes = 
+        readPropertyAsType entity label
+        |> Option.defaultValue Seq.empty
+        |> Seq.filter (checkIfHasBeenCommentedOn username >> not)
+        |> Seq.map (castAVote username (getWeigth weight useVaraible entity))
+        |> Seq.map (Hive.schedulePostingOperation ModuleName "vote")
+
+    match Seq.length newVotes with 
+    | 0 -> 
+        entity |>= CountNotSuccessful "Found no post to vote on"
+    | _ -> 
+        newVotes |> Seq.fold withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
     let label = Map.getValueWithDefault parameters "label" "posts"

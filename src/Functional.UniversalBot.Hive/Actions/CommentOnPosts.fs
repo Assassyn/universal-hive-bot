@@ -28,12 +28,18 @@ let private getTemplate templateId (entity: PipelineProcessData<UniversalHiveBot
     (Map.getValueWithDefault entity.properties templateId ("" :> obj)).ToString()
 
 let action hiveUrl collectionHandle template username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    readPropertyAsType entity collectionHandle
-    |> Option.defaultValue Seq.empty
-    |> Seq.filter (checkForPreviousComments hiveUrl username >> not)
-    |> Seq.map (createTheComment username (getTemplate template entity))
-    |> Seq.map (Hive.scheduleSinglePostingOperation ModuleName "vote")
-    |> Seq.fold withResult entity
+    let postToCommentOn =
+        readPropertyAsType entity collectionHandle
+        |> Option.defaultValue Seq.empty
+        |> Seq.filter (checkForPreviousComments hiveUrl username >> not)
+        |> Seq.map (createTheComment username (getTemplate template entity))
+        |> Seq.map (Hive.scheduleSinglePostingOperation ModuleName "vote")
+    
+    match Seq.length postToCommentOn with 
+    | 0 -> 
+        entity |>= CountNotSuccessful "Found no post to comment on"
+    | _ -> 
+        postToCommentOn |> Seq.fold withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
     let collectionHandle = Map.getValueWithDefault parameters "label" "posts"

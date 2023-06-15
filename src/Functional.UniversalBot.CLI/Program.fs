@@ -10,11 +10,11 @@ let pipelines =
     |> Logging.logConfigurationFound
     |> createPipelines 
 
-//pipelines
-//|> Scheduler.bind Logging.writeToConsole
-//|> Scheduler.start Logging.writeToConsole
+pipelines
+|> Scheduler.bind (Logging.renderResult "setup")
+|> Scheduler.start (Logging.renderResult "setup")
 
 pipelines
-|> BackgroundTaskRunner.start Logging.writeToConsole
+|> BackgroundTaskRunner.start (Logging.renderResult "setup")
 
 Loop.executeLoop ()

@@ -13,10 +13,14 @@ let username = "username"
 [<Literal>]
 let userdata = "userdata"
 
+[<Literal>]
+let pipelineName = "pipelineName"
+
 let private addUserDataProprties (userdataDefinition: UserActionsDefinition) (entity: PipelineProcessData<UniversalHiveBotResutls>) =
     entity
     |> addProperty username userdataDefinition.Username
     |> addProperty userdata (userdataDefinition.Username, userdataDefinition.ActiveKey, userdataDefinition.PostingKey)
+    |> addProperty pipelineName userdataDefinition.Name
 
 
 let private bindOneOffReader userdata =
@@ -35,11 +39,9 @@ let private bindContinouseReader userdata =
 let bindReader (userdata: UserActionsDefinition) =
     match userdata.Type with 
     | ExecutionType.Continous -> 
-        let test = bindContinouseReader userdata
-        test
+        bindContinouseReader userdata
     | _ -> 
-        let test = bindOneOffReader userdata
-        test
+        bindOneOffReader userdata
     
 
 let selectSchedulerBasedOnly (userdata: UserActionsDefinition) =

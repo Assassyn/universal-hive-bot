@@ -1,52 +1,76 @@
 ﻿module Logging
 
+open Serilog
+open Microsoft.Extensions.Configuration
 open Functional.ETL.Pipeline
 open PipelineResult
 open Lamar
+open System.Runtime.Caching
 
-let writeToConsole message = 
-    printfn "%O" message
+let private logger = 
+    let config  = new ConfigurationBuilder()
+    let config = config.AddJsonFile("configuration.json", true)
+    let config = config.Build()
+    let logger = new LoggerConfiguration()
+    let logger = logger.ReadFrom
+    let logger = logger.Configuration(config)
+    logger.CreateLogger()
 
-let mutable loggedResults: UniversalHiveBotResutls seq = Seq.empty
+let private writeToConsole message = 
+    if message <> "" 
+    then 
+        logger.Information message
 
-let getNotProcessedMessages (results: UniversalHiveBotResutls seq) = 
-    results
-    |> Seq.filter 
-        (fun result -> 
-            let contains = loggedResults |> Seq.contains result
-            not contains)
+let mutable loggedResults: Map<int64, UniversalHiveBotResutls seq> = Map.empty
+let cache = new MemoryCache("log")
 
-let renderResult result =
+let private getNotProcessedMessages index (results: UniversalHiveBotResutls seq) = 
+    match cache.Contains index with 
+    | false -> 
+        results
+    | _ -> 
+        let cachedItems = cache.Get index :?> UniversalHiveBotResutls seq
+        let canBeFoundInCache = (cachedItems |> Seq.contains) >> not
+
+        let filtered = 
+            results
+            |> Seq.filter (fun result -> 
+                let contained = cachedItems |> Seq.contains result
+                not contained)
+        filtered
+
+let renderResult pipelineName result =
     match result with 
-    | Processed _ ->
+    | Processed _ | Nothing -> 
         ()
-    | _ ->
-        writeToConsole result
+    | FlushingFinshed _ ->
+        writeToConsole $"[{pipelineName}]: Flushing completed"
+    | FinishedProcessing index ->
+        writeToConsole $"[{pipelineName}]: Flushing processing action"
+    | _ -> 
+        writeToConsole ($"[{pipelineName}]: {result}")
 
-let logger (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    if entity.results |> Seq.length > 0 
-    then
-        entity.results.Head
-        |> renderResult
-        //let notRendered = getNotProcessedMessages entity.results
+let logEntity (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let cacheIndex = entity.index.ToString()
+    let pipelineName = entity.properties.[Readers.pipelineName]
+    let notRendered = getNotProcessedMessages cacheIndex entity.results |> Array.ofSeq
         
-        //notRendered |> Seq.iter renderResult
+    notRendered |> Seq.iter (renderResult pipelineName)
 
-        //let newLogged =  loggedResults |> Seq.append notRendered
-        //loggedResults <- newLo
+    let expireIn5Minutes = System.DateTimeOffset.Now.AddMinutes(5)
+    cache.Set(cacheIndex, entity.results:> obj, expireIn5Minutes)
+
     entity
 
 let logConfigurationFound (config: Types.Configuration) =
     let actionsMessage = sprintf "Found actions %i to process" (config.actions |> Seq.length)
     writeToConsole actionsMessage
-
     config.actions
     |> Seq.iter (fun c -> writeToConsole (sprintf "Action name: %s" c.Name))
 
-    writeToConsole "\n"
     config
 
 type ActionRegistry () as self =
     inherit ServiceRegistry ()
     do 
-        self.For<Transformer<UniversalHiveBotResutls>>().Use(logger).Named("decorator") |> ignore     
+        self.For<Transformer<UniversalHiveBotResutls>>().Use(logEntity).Named("decorator") |> ignore     

@@ -16,12 +16,15 @@ type KeyRequired =
     | PostingSingle
 
 type UniversalHiveBotResutls =
-    | Unknow
     | NoUserDetails of Module
     | TokenBalanceLoaded of Username
     | Loaded of Action
     | HiveOperation of Module * Token * KeyRequired * HiveOperation
     | FlushingFinshed of Username * UniversalHiveBotResutls seq
     | TokenBalanceTooLow of Module * Username * Token 
+    | CountNotSuccessful of Module
     | Processed of Module * Item
+    | FinishedProcessing of int64
+    | NextOccurance of System.DateTime
+    | Nothing
     | UnableToProcess of Module * Item * Message

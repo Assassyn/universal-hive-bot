@@ -17,10 +17,8 @@ let private options =
 let private bindAction logger name pipeline = 
      new Action<CancellationToken>(
         fun ct ->   
-            logger Messages.dividingLine
-            logger name
             processPipeline pipeline 
-            |> TaskSeq.iter (fun _ -> "Finished processing" |> Messages.renderFooter |> logger)
+            |> TaskSeq.iter (fun item -> FinishedProcessing item.index |> logger)
             |> Async.AwaitTask 
             |> Async.RunSynchronously)
 
@@ -40,12 +38,21 @@ let private calculateNextOccurance (scheduler: Scheduler) =
         |> Seq.map (fun x -> x.ToTuple())
         |> Seq.map (fun (date, _) -> date)
         |> Seq.sortBy (fun x -> x)
-    let dateOfOccurence = occurences |> Seq.head
-    dateOfOccurence
+    match occurences |> Seq.length with 
+    | 0 -> 
+        None
+    | _ -> 
+        let dateOfOccurence = occurences |> Seq.head
+        Some dateOfOccurence
 
 let private createMessageWithNextOccurance scheduler = 
     let dateOfOccurence = calculateNextOccurance scheduler
-    dateOfOccurence.ToString "dd/MM/yyyy HH:mm:ss" |> Messages.renderTable
+
+    if dateOfOccurence.IsSome 
+    then 
+        dateOfOccurence.Value |> NextOccurance
+    else
+        Nothing
 
 let start logger (scheduler: Scheduler) = 
     scheduler.Start()
