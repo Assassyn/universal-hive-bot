@@ -37,8 +37,10 @@ let mockedTerracoreBalanceAction tokenBalance entity =
     
 let extractCustomJson underTestObject =
     match underTestObject with 
-    | PipelineResult.HiveOperation (_, _, _, customJson) -> customJson.json
-    | _ -> ""
+    | PipelineResult.HiveOperation (_, _, _, customJson) -> 
+       (customJson :?> CustomJson).json
+    | _ -> 
+        ""
 
 let inline (~~) x = x :> obj
 
@@ -48,15 +50,15 @@ let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
 
-    UserReader.bind [ userDefinition ]
+    Readers.bindReader userDefinition
 
 let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
     let userDefinition = new UserActionsDefinition ()
     userDefinition.Username <- ""
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
-
-    UserReader.bind [userDefinition ]
+    
+    Readers.bindReader userDefinition
 
 let bindAmount amount =
     amount |> AmountCalator.bind

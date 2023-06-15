@@ -5,9 +5,16 @@ let config = getConfiguration ()
 
 printfn "Starting UniveralHiveBot processs"
 
-config
-|> Logging.logConfigurationFound
-|> Scheduler.bind Logging.writeToConsole
-|> Scheduler.start Logging.writeToConsole
+let pipelines =
+    config
+    |> Logging.logConfigurationFound
+    |> createPipelines 
+
+pipelines
+|> Scheduler.bind (Logging.renderResult "setup")
+|> Scheduler.start (Logging.renderResult "setup")
+
+pipelines
+|> BackgroundTaskRunner.start (Logging.renderResult "setup")
 
 Loop.executeLoop ()

@@ -54,7 +54,7 @@ let private addTokenBalanceAsProperty pendingUnstakes entity  (tokenInfo: TokenB
         entity
 
 let action hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let username  = PipelineProcessData.readPropertyAsString entity "username"
+    let username  = PipelineProcessData.readPropertyAsString entity Readers.username
 
     match username with 
     | Some username -> 

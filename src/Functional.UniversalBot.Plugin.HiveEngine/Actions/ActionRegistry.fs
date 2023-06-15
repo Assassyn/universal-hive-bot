@@ -19,4 +19,4 @@ type ActionRegistry () as self =
         self.For<Binder>().Use(FlushAndBalanceAction.bind).Named("flushandbalance") |> ignore
         self.For<Binder>().Use(TokenSwapAction.bind).Named("swaptoken") |> ignore     
         self.For<Binder>().UseIfNone(defaultBinder) 
-        self.For<UserActionReader>().Use(UserReader.bind) |> ignore
+        //self.For<PipelineReader>().Use(UserReader.bind).Named("defaultReader") |> ignore

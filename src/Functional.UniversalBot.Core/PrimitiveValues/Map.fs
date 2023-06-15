@@ -3,7 +3,7 @@
 open System
 open System.Collections.Generic
 
-let getValueWithDefault (parameters: Map<string, string>) key defaultValue =
+let getValueWithDefault<'TValue> (parameters: Map<string, 'TValue>) key defaultValue =
     match parameters.ContainsKey (key) with 
     | true -> parameters.[key]
     | _ -> defaultValue

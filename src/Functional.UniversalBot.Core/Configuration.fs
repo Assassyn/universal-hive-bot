@@ -8,6 +8,8 @@ open Lamar
 open ConfigurationTypes
 open System
 
+
+
 let getConfiguration () = 
     let config = 
         let config = new ConfigurationBuilder()
@@ -66,28 +68,16 @@ let private bindTransfomers url (config: UserActionsDefinition) =
     |> List.map (fun item -> binder item)
     |> List.fold (fun state next -> state >> next >> actionDecorator) Transformer.defaultTransformer<PipelineResult.UniversalHiveBotResutls>
     
-let private bindScheduledPipeline urls (config: UserActionsDefinition) =
-    let reader = container.GetInstance<UserActionReader>()
-    let transforms = bindTransfomers urls config 
-
-    let pipeline = Pipeline.bind (reader [config]) transforms
-
-    (config.Name, config.Trigger, pipeline)
-
 let private bindPipeline urls (config: UserActionsDefinition) =
-    let reader = container.GetInstance<UserActionReader>()
+    let reader = Readers.bindReader config
     let transforms = bindTransfomers urls config 
 
-    Pipeline.bind (reader [config]) transforms
+    let pipeline = Pipeline.bind reader transforms
+
+    (config, pipeline)
 
 let createPipelines (config: Configuration)  = 
     let urls = config.urls
-    
-    config.actions
-    |> Seq.map (bindPipeline urls)
-
-let createScheduledPipelines (config: Configuration)  = 
-    let urls = config.urls
         
     config.actions
-    |> Seq.map (bindScheduledPipeline urls)
+    |> Seq.map (bindPipeline urls)
