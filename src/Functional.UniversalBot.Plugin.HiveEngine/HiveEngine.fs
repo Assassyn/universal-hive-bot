@@ -45,7 +45,7 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
         {|
             contract = "market"
             query = {|
-                symbol = tokenSymbol
+                symbol = "HH"
             |}
             indexes = [
                 {| 
