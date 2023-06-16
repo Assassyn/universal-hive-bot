@@ -15,6 +15,11 @@ type KeyRequired =
     | ActiveSingle
     | PostingSingle
 
+type Value = 
+    | Price
+    | Balance
+    | Count 
+
 type UniversalHiveBotResutls =
     | NoUserDetails of Module
     | TokenBalanceLoaded of Username
@@ -22,6 +27,7 @@ type UniversalHiveBotResutls =
     | HiveOperation of Module * Token * KeyRequired * HiveOperation
     | FlushingFinshed of Username * UniversalHiveBotResutls seq
     | TokenBalanceTooLow of Module * Username * Token 
+    | ValueTooLow of Module * Token * Value  
     | CountNotSuccessful of Module
     | Processed of Module * Item
     | FinishedProcessing of int64
