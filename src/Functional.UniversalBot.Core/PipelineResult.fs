@@ -34,3 +34,4 @@ type UniversalHiveBotResutls =
     | NextOccurance of System.DateTime
     | Nothing
     | UnableToProcess of Module * Item * Message
+    | Error of Message

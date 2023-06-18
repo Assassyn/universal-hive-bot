@@ -14,19 +14,13 @@ let ModuleName = "TerracoreClaim"
 [<Literal>]
 let scrapHandle = "terracore_scrap" 
 
-let action (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata
+let action username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let playerInfo = 
+        TerracoreAPI.getPlayerInfo username
 
-    match userDetails with 
-    | Some (username, _, _) when username <> "" -> 
-        let playerInfo = 
-            TerracoreAPI.getPlayerInfo username
-
-        entity 
-        |> addProperty scrapHandle playerInfo.scrap
-        |>= TokenBalanceLoaded username
-    | _ -> 
-        NoUserDetails ModuleName |> PipelineProcessData.withResult entity
+    entity 
+    |> addProperty scrapHandle playerInfo.scrap
+    |>= TokenBalanceLoaded username
         
 let bind urls (parameters: Map<string, string>) = 
-    action 
+    Action.bindAction ModuleName action 

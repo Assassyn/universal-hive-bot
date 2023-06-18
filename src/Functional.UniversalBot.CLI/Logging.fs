@@ -6,6 +6,7 @@ open Functional.ETL.Pipeline
 open PipelineResult
 open Lamar
 open System.Runtime.Caching
+open System.Threading.Tasks
 
 let private logger = 
     let config  = new ConfigurationBuilder()
@@ -60,8 +61,6 @@ let logEntity (entity: PipelineProcessData<UniversalHiveBotResutls>) =
     let expireIn5Minutes = System.DateTimeOffset.Now.AddMinutes(5)
     cache.Set(cacheIndex, entity.results:> obj, expireIn5Minutes)
 
-    entity
-
 let logConfigurationFound (config: Types.Configuration) =
     let actionsMessage = sprintf "Found actions %i to process" (config.actions |> Seq.length)
     writeToConsole actionsMessage
@@ -70,7 +69,11 @@ let logConfigurationFound (config: Types.Configuration) =
 
     config
 
-//type ActionRegistry () as self =
-//    inherit ServiceRegistry ()
-//    do 
-//        self.For<Transformer<UniversalHiveBotResutls>>().Use(logEntity).Named("decorator") |> ignore     
+let logingDecorator transformer entity = 
+    task {
+        let! resultEntity = transformer entity
+
+        logEntity resultEntity
+
+        return resultEntity
+    }

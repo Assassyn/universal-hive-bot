@@ -9,12 +9,15 @@ open System
 
 
 let action hiveUrl tag label (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let posts = 
-        BridgeAPI.getRankedPosts hiveUrl Sort.Created tag
-        |> Seq.map PostId.bind
+    task {
+        let posts = 
+            BridgeAPI.getRankedPosts hiveUrl Sort.Created tag
+            |> Seq.map PostId.bind
         
-    withProperty entity label posts
-    |>= Loaded "ranked_posts"
+        return 
+            withProperty entity label posts
+            |>= Loaded "ranked_posts"
+    }
 
 let bind urls (parameters: Map<string, string>) = 
     let label = Map.getValueWithDefault parameters "label" "posts"

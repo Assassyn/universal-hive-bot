@@ -1,6 +1,7 @@
 ﻿namespace Functional.ETL
 
 open FSharp.Control
+open System.Threading.Tasks
 
 module Pipeline =
     type PipelineProcessData<'Result> = 
@@ -14,7 +15,7 @@ module Pipeline =
         | Failure
     type ErrorMessage = string
     type Reader<'Result> = unit -> PipelineProcessData<'Result> taskSeq
-    type Transformer<'Result> = PipelineProcessData<'Result> -> PipelineProcessData<'Result>
+    type Transformer<'Result> = PipelineProcessData<'Result> -> Task<PipelineProcessData<'Result>>
 
         
     module PipelineProcessData = 
@@ -67,12 +68,16 @@ module Pipeline =
     module Transformer = 
         let empty<'Error> =
             fun entity -> Ok entity
-        let defaultTransformer<'Result> (entity: PipelineProcessData<'Result>) = entity
+        let defaultTransformer<'Result> (entity: PipelineProcessData<'Result>) = 
+            task {
+                return entity
+            }
+            
 
     type Pipeline<'Results> = 
         {
             extractor: Reader<'Results>
-            transformers: Transformer<'Results>
+            transformers: Transformer<'Results> taskSeq
         }
     module Pipeline = 
         let bind reader transformers = 
@@ -81,7 +86,18 @@ module Pipeline =
                 transformers = transformers
             }
 
+    let transformEntity transformers entity = 
+        let fold state transformer= 
+            backgroundTask {
+                let! entity = transformer state
+                return entity
+            }
+        backgroundTask {
+            return!
+                transformers
+                |> TaskSeq.foldAsync fold entity 
+        }
+
     let processPipeline pipelineDefinition =     
         pipelineDefinition.extractor ()
-        |> TaskSeq.map pipelineDefinition.transformers
-        
+        |> TaskSeq.mapAsync (transformEntity pipelineDefinition.transformers)

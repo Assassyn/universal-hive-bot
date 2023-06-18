@@ -43,52 +43,59 @@ let private getByKey requiredKey (operations: Map<KeyRequired,seq<Module * Token
         |> Array.ofSeq
     else 
         Array.empty
-
-let private processHiveOperations hiveUrl chunkSize key ops = 
-    Hive.brodcastTransactions hiveUrl chunkSize ops key 
-    |> Array.ofSeq 
-    
+        
 let private mapperToProcessed transactionId = 
     Processed ("TransactionId", transactionId)
 
+let private processHiveOperations hiveUrl chunkSize key ops = 
+    try 
+        Hive.brodcastTransactions hiveUrl chunkSize ops key 
+        |> Array.ofSeq 
+        |> Array.map mapperToProcessed 
+    with 
+        | ex -> [| Error ex.Message |]
+
 
 let action hiveUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata 
+    task {
+        let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata 
 
-    match userDetails with 
-    | Some (username, activeKey, postingKey) -> 
-        let operations = extractOperations entity |> Map.ofSeq
+        return 
+            match userDetails with 
+            | Some (username, activeKey, postingKey) -> 
+                let operations = extractOperations entity |> Map.ofSeq
 
-        let activeOperationResults = 
-            operations
-            |> getByKey KeyRequired.Active
-            |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock activeKey
-        let activeSingleOperationResults = 
-            operations
-            |> getByKey KeyRequired.ActiveSingle
-            |> processHiveOperations hiveUrl ChunkSize.Single activeKey
-        let postingOperationResults =
-            operations
-            |> getByKey KeyRequired.Posting
-            |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock postingKey
-        let postingSingleOperationResults =
-            operations
-            |> getByKey KeyRequired.PostingSingle
-            |> processHiveOperations hiveUrl ChunkSize.Single postingKey
+                let activeOperationResults = 
+                    operations
+                    |> getByKey KeyRequired.Active
+                    |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock activeKey
+                let activeSingleOperationResults = 
+                    operations
+                    |> getByKey KeyRequired.ActiveSingle
+                    |> processHiveOperations hiveUrl ChunkSize.Single activeKey
+                let postingOperationResults =
+                    operations
+                    |> getByKey KeyRequired.Posting
+                    |> processHiveOperations hiveUrl ChunkSize.MaxCountInBlock postingKey
+                let postingSingleOperationResults =
+                    operations
+                    |> getByKey KeyRequired.PostingSingle
+                    |> processHiveOperations hiveUrl ChunkSize.Single postingKey
 
-        let results = 
-            entity.results 
-            |> Seq.filter (fun x -> not (isHiveOperation x))
-            |> Seq.append (activeOperationResults |> Seq.map mapperToProcessed)
-            |> Seq.append (activeSingleOperationResults |> Seq.map mapperToProcessed)
-            |> Seq.append (postingOperationResults |> Seq.map mapperToProcessed)
-            |> Seq.append (postingSingleOperationResults |> Seq.map mapperToProcessed)
-            |> List.ofSeq
+                let results = 
+                    entity.results 
+                    |> Seq.filter (fun x -> not (isHiveOperation x))
+                    |> Seq.append (activeOperationResults)
+                    |> Seq.append (activeSingleOperationResults)
+                    |> Seq.append (postingOperationResults)
+                    |> Seq.append (postingSingleOperationResults)
+                    |> List.ofSeq
 
-        { entity with results = results }
-        |>= FlushingFinshed (username, results)
-    | _ -> 
-        NoUserDetails ModuleName <=< entity
+                { entity with results = results }
+                |>= FlushingFinshed (username, results)
+            | _ -> 
+                NoUserDetails ModuleName <=< entity
+    }
 
 let bind urls (parameters: Map<string, string>) = 
     action urls.hiveNodeUrl

@@ -25,6 +25,7 @@
         <Compile Include="Configuration.Types.fs" />
         <Compile Include="Configuration.fs" />
         <Compile Include="Action.fs" />
+        <Compile Include="HttpQuery.fs" />
     </ItemGroup>
 
     <ItemGroup>

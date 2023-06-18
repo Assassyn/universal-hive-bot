@@ -1,20 +1,21 @@
 ﻿open System
 open Configuration
 
-let config = getConfiguration ()
+task {
+    let config = getConfiguration ()
 
-printfn "Starting UniveralHiveBot processs"
+    printfn "Starting UniveralHiveBot processs"
 
-let pipelines =
-    config
-    |> Logging.logConfigurationFound
-    |> createPipelines 
+    let pipelines =
+        config
+        |> Logging.logConfigurationFound
+        |> Pipeline.createPipelines 
 
-pipelines
-|> Scheduler.bind (Logging.renderResult "setup")
-|> Scheduler.start (Logging.renderResult "setup")
+    pipelines
+    |> Scheduler.bind (Logging.renderResult "setup")
+    |> Scheduler.start (Logging.renderResult "setup")
 
-pipelines
-|> BackgroundTaskRunner.start (Logging.renderResult "setup")
-
-Loop.executeLoop ()
+    do! 
+        pipelines
+        |> BackgroundTaskRunner.start (Logging.renderResult "setup")
+} |> Async.AwaitTask |> Async.RunSynchronously
