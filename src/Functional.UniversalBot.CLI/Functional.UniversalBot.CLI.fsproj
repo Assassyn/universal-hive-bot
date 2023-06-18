@@ -49,8 +49,8 @@
 
     <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)'=='DEBUG'">
         <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
-        <!--<Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj" />
-        <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj" />-->
+        <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj" />
+        <Exec Command="dotnet build $(SolutionDir)src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj" />
     </Target>
 
 </Project>
