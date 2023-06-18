@@ -101,9 +101,3 @@ module Pipeline =
     let processPipeline pipelineDefinition =     
         pipelineDefinition.extractor ()
         |> TaskSeq.mapAsync (transformEntity pipelineDefinition.transformers)
-
-    //let executePipeline<'Result> (pipelineStream: PipelineProcessData<'Result>  taskSeq)=
-    //    taskSeq {
-    //        return! pipelineStream
-    //    }
-        

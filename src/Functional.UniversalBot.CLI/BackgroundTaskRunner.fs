@@ -11,7 +11,6 @@ let runPipeline logger pipeline =
             |> TaskSeq.iter (fun item -> FinishedProcessing item.index |> logger)
     }
 
-
 let start logger pipelines = 
     pipelines
     |> Seq.filter (fun (config, _) -> Readers.selectContinouseBasedOnly config)
