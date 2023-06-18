@@ -37,18 +37,20 @@ let ``Can combine multiple using decoration pattern`` () =
 
 [<Fact>]
 let ``Execute All readers`` () =
-    let testReader () = 
-        let indexes = taskSeq { yield! [1L..5L] }
+    task {
+        let testReader () = 
+            let indexes = taskSeq { yield! [1L..5L] }
         
-        indexes 
-        |> TaskSeq.map PipelineProcessData.bind
+            indexes 
+            |> TaskSeq.map PipelineProcessData.bind
 
-    let testConverter entity = 
-        entity
-
-    let pipeline = Pipeline.bind testReader testConverter
-   
-    let results = processPipeline pipeline
-
-    let underTestResult = results |> TaskSeq.length 
-    underTestResult |> should equal 5 
+        let testConverter entity = 
+            Task.fromResult entity
+     
+        let! objectUnderTest = 
+            Pipeline.bind testReader ([| testConverter |] |> TaskSeq.ofSeq)
+            |> processPipeline 
+            |> TaskSeq.length 
+        
+        objectUnderTest |> should equal 5 
+    }

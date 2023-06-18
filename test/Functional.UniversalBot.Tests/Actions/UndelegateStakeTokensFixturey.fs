@@ -20,8 +20,10 @@ let testData =
 [<MemberData("testData")>]
 let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
     let transformer = 
-        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
-        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind) "universal-bot")
+        [|
+            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", oneUpBalance) |])
+            (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind amountToBind) "universal-bot") |> TestingStubs.taskDecorator
+        |] |> TaskSeq.ofSeq
     let pipelineDefinition = Pipeline.bind reader transformer
    
     processPipeline pipelineDefinition
@@ -35,8 +37,10 @@ let ``Can delegate stake tokens`` oneUpBalance amountToBind result =
 [<Fact>]
 let ``Check that balance is too low`` () =
     let transformer = 
-        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot")
+        [|
+            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
+            (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot") |> TestingStubs.taskDecorator
+        |] |> TaskSeq.ofSeq
     let pipelineDefinition = Pipeline.bind reader transformer
     
     processPipeline pipelineDefinition

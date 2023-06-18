@@ -16,10 +16,12 @@ let extractSome (option: Option<obj>) =
 [<Fact>]
 let ``Can flush tokens`` () =
     task {
-        let transformer = 
-            (TestingStubs.mockedTerracoreBalanceAction 123M)
-            >> (FlushTokens.action hiveUrl)
-        let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
+        let transformers = 
+            [|
+                (TestingStubs.mockedTerracoreBalanceAction 123M);
+                (FlushTokens.action hiveUrl)
+            |] |> TaskSeq.ofSeq
+        let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformers
    
         let results = processPipeline pipelineDefinition
         let! underTestObject =
