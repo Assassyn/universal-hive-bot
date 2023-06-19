@@ -53,17 +53,11 @@ let private addTokenBalanceAsProperty pendingUnstakes entity  (tokenInfo: TokenB
     | _ -> 
         entity
 
-let action hiveEngineUrl (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    let username  = PipelineProcessData.readPropertyAsString entity Readers.username
-
-    match username with 
-    | Some username -> 
-        getBalance hiveEngineUrl username
-        |> Seq.fold (addTokenBalanceAsProperty (getPendingUnstakes hiveEngineUrl username)) entity
-        |> addTokensDetails (getTokenDetails hiveEngineUrl)
-        |>= TokenBalanceLoaded username
-    | _ -> 
-        NoUserDetails ModuleName <=< entity
+let action hiveEngineUrl username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    getBalance hiveEngineUrl username
+    |> Seq.fold (addTokenBalanceAsProperty (getPendingUnstakes hiveEngineUrl username)) entity
+    |> addTokensDetails (getTokenDetails hiveEngineUrl)
+    |>= TokenBalanceLoaded username
 
 let bind (urls: Urls) (parameters: Map<string, string>) = 
-    action urls.hiveEngineNodeUrl
+    Action.bindAction ModuleName (action urls.hiveEngineNodeUrl)

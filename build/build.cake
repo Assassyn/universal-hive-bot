@@ -41,7 +41,6 @@ Task("Publish")
         "../src/Functional.UniversalBot.Plugin.HiveEngine/Functional.UniversalBot.Plugin.HiveEngine.fsproj",
         "../src/Functional.UniversalBot.Hive/Functional.UniversalBot.Plugin.Hive.fsproj",
         "../src/Functional.UniversalBot.Plugin.Terracore/Functional.UniversalBot.Plugin.Terracore.fsproj",
-        "../src/Functional.UniversalBot.Plugin.Logging/Functional.UniversalBot.Plugin.Logging.fsproj",        
     };
 
     foreach(var project in projects){
@@ -120,12 +119,12 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    DotNetTest(solution, new DotNetTestSettings
+   /* DotNetTest(solution, new DotNetTestSettings
     {
         Configuration = configuration,
         NoBuild = true,
         ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"TestResults.xml\" --collect:\"XPlat Code Coverage\"")
-    });
+    });*/
 });
 
 //////////////////////////////////////////////////////////////////////

@@ -16,8 +16,10 @@ let extractSome (option: Option<obj>) =
 let ``Claim Action is producing valid JSON`` () =
     task {
         let transformer = 
-            (TestingStubs.mockedTerracoreBalanceAction 123M)
-            >> (TerracoreClaim.action ("*" |> AmountCalator.bind) "universal-bot")
+            [| 
+                TestingStubs.mockedTerracoreBalanceAction 123M
+                (TerracoreClaim.action ("*" |> AmountCalator.bind) "universal-bot") |> TestingStubs.taskDecorator
+            |] |> TaskSeq.ofSeq
         let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
    
         let results = processPipeline pipelineDefinition

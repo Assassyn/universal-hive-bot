@@ -21,8 +21,10 @@ let testData =
 let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
     task {
         let transformer = 
-            (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-            >> (TransferToken.action "ONEUP" "universal-bot" (AmountCalator.bind amountToBind) "" "universal-bot") 
+            [|
+                (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
+                (TransferToken.action "ONEUP" "universal-bot" (AmountCalator.bind amountToBind) "" "universal-bot") |> TestingStubs.taskDecorator
+            |] |> TaskSeq.ofSeq 
         let pipelineDefinition = Pipeline.bind reader transformer
    
         let results = processPipeline pipelineDefinition
@@ -39,8 +41,10 @@ let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (resul
 [<Fact>]
 let ``Check that balance is too low`` () =
     let transformer = 
-        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (TransferToken.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "" "universal-bot")
+        [|
+            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
+            (TransferToken.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "" "universal-bot") |> TestingStubs.taskDecorator
+        |] |> TaskSeq.ofSeq
     let pipelineDefinition = Pipeline.bind reader transformer
     
     processPipeline pipelineDefinition

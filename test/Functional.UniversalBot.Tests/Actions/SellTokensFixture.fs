@@ -22,8 +22,10 @@ let testData =
 let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: string) =
     task {
         let transformer = 
-            (TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |])
-            >> (SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind) "universal-bot")
+            [|
+                TestingStubs.mockedBalanceAction [| ("ONEUP", oneUpBalance) |]
+                SellToken.action hiveNodeUrl hiveEngineNode "ONEUP" (AmountCalator.bind amountToBind) "universal-bot" |> TestingStubs.taskDecorator
+            |] |> TaskSeq.ofSeq
         let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
         let results = processPipeline pipelineDefinition
@@ -40,8 +42,10 @@ let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: s
 [<Fact>]
 let ``Check that balance is too low`` () =
     let transformer = 
-        (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-        >> (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot")
+        [|
+            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
+            (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot") |> TestingStubs.taskDecorator 
+        |] |> TaskSeq.ofSeq
     let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
 
     processPipeline pipelineDefinition

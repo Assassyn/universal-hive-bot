@@ -35,20 +35,22 @@ let ``Can combine multiple using decoration pattern`` () =
     PipelineProcessData.readProperty result "b" |> extractSome |> should equal 2
     PipelineProcessData.readProperty result "c" |> extractSome |> should equal true
 
-//[<Fact>]
-//let ``Execute All readers`` () =
-//    let testReader () = 
-//        let indexes = taskSeq { yield! [1L..5L] }
+[<Fact>]
+let ``Execute All readers`` () =
+    task {
+        let testReader () = 
+            let indexes = taskSeq { yield! [1L..5L] }
         
-//        indexes 
-//        |> TaskSeq.map PipelineProcessData.bind
+            indexes 
+            |> TaskSeq.map PipelineProcessData.bind
 
-//    let testConverter entity = 
-//        entity
-
-//    let pipeline = Pipeline.bind testReader testConverter
-   
-//    let results = processPipeline pipeline
-
-//    let underTestResult = results |> TaskSeq.length 
-//    underTestResult |> should equal 5 
+        let testConverter entity = 
+            Task.fromResult entity
+     
+        let! objectUnderTest = 
+            Pipeline.bind testReader ([| testConverter |] |> TaskSeq.ofSeq)
+            |> processPipeline 
+            |> TaskSeq.length 
+        
+        objectUnderTest |> should equal 5 
+    }

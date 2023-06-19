@@ -1,33 +1,11 @@
 ﻿module HiveEngine
 
 open System.Net.Http
-open HiveAPI
-open System.Text.Json
-open FsHttp
 open HiveEngineTypes
-open Json
+open HttpQuery
 
-let private runContractsQuery<'ResponsePayload> hiveEngineUrl method (parameters: obj) = 
-   let contractsUri = sprintf "%s/contracts" hiveEngineUrl
-   let response = 
-       http {
-           POST contractsUri
-           CacheControl "no-cache"
-           body
-           jsonSerialize
-               {|
-                   jsonrpc = "2.0"
-                   id = 1
-                   method = method
-                   ``params`` = parameters
-               |}
-       }
-       |> Request.send
-       |> Response.toJson
-       |> deserialize<HiveResponse<'ResponsePayload>>
-       
-   response.result
-   
+let contractsUri = sprintf "%s/contracts" 
+
 let getBalance hiveEngineUrl username = 
     let payload = 
         {|
@@ -37,7 +15,7 @@ let getBalance hiveEngineUrl username =
                 account = username
             |}
         |}
-    let result = runContractsQuery<RawTokenBalance> hiveEngineUrl "find" (payload :> obj)
+    let result = runHiveQuery<RawTokenBalance seq> (contractsUri hiveEngineUrl) "find" (payload :> obj)
     result |> Seq.map TokenBalance.bind
 
 let getMarketBuyBook hiveEngineUrl tokenSymbol =
@@ -58,7 +36,7 @@ let getMarketBuyBook hiveEngineUrl tokenSymbol =
             table = "buyBook"
         |}
 
-    runContractsQuery<RawMarketBuyBook> hiveEngineUrl "find" (payload :> obj)
+    runHiveQuery<RawMarketBuyBook seq> (contractsUri hiveEngineUrl) "find" (payload :> obj)
     |> Seq.map MarketBuyBook.bind
 
 let getPendingUnstakes hiveEngineUrl username =
@@ -71,7 +49,7 @@ let getPendingUnstakes hiveEngineUrl username =
             |}
         |}
 
-    runContractsQuery<RawPendingUnstakes> hiveEngineUrl "find" (payload :> obj)
+    runHiveQuery<RawPendingUnstakes seq> (contractsUri hiveEngineUrl) "find" (payload :> obj)
     |> Seq.map PendingUnstakes.bind
     |> Array.ofSeq
 
@@ -88,7 +66,7 @@ let getAvailableMarketPools hiveEngineUrl tokenPair =
 
     seq { 0 .. 5 }
     |> Seq.map (fun x -> x * 1000)
-    |> Seq.collect (fun offset ->  runContractsQuery<RawLiqudityPools> hiveEngineUrl "find" (payload offset))
+    |> Seq.collect (fun offset ->  runHiveQuery<RawLiqudityPools seq> hiveEngineUrl "find" (payload offset))
     |> Seq.find (fun result -> result.tokenPair = tokenPair)
     |> LiqudityPools.bind
 
@@ -105,6 +83,6 @@ let getTokenDetails hiveEngineUrl =
     
     seq { 0 .. 5 }
     |> Seq.map (fun x -> x * 1000)
-    |> Seq.collect (fun offset ->  runContractsQuery<RawTokenInfo> hiveEngineUrl "find" (payload offset))
+    |> Seq.collect (fun offset ->  runHiveQuery<RawTokenInfo seq> (contractsUri hiveEngineUrl) "find" (payload offset))
     |> Seq.map TokenInfo.bind
     |> Array.ofSeq
