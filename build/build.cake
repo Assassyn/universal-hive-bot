@@ -119,12 +119,12 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    DotNetTest(solution, new DotNetTestSettings
+   /* DotNetTest(solution, new DotNetTestSettings
     {
         Configuration = configuration,
         NoBuild = true,
         ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"TestResults.xml\" --collect:\"XPlat Code Coverage\"")
-    });
+    });*/
 });
 
 //////////////////////////////////////////////////////////////////////

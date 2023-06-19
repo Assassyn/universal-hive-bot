@@ -3,15 +3,13 @@
 open PipelineResult
 open Functional.ETL.Pipeline
 open Functional.ETL.Pipeline.PipelineProcessData
+open System.Threading.Tasks
 
 let bindAction moduleName userbasedAction (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-    task {
-        let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata
+    let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata
 
-        return 
-            match userDetails with 
-            | Some (username, _, _) when username <> "" -> 
-                userbasedAction username entity 
-            | _ -> 
-                NoUserDetails moduleName |> PipelineProcessData.withResult entity
-    }
+    match userDetails with 
+    | Some (username, _, _) when username <> "" -> 
+        userbasedAction username entity |> Task.FromResult
+    | _ -> 
+        NoUserDetails moduleName |> PipelineProcessData.withResult entity |> Task.FromResult
