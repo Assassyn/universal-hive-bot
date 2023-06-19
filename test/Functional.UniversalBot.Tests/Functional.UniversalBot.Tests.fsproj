@@ -21,7 +21,6 @@
     <Compile Include="SeriesToActionsRewriterFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Compile Include="Core\JsonFixture.fs" />
-    <Compile Include="Actions\SellTokensFixture.fs" />
     <Compile Include="Actions\TransferTokensFixture.fs" />
     <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
     <Compile Include="Actions\StakeTokensFixture.fs" />
