@@ -8,26 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Actions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="Core\JsonFixture.fs" />
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="TestingStubs.fs" />
-    <Compile Include="SeriesToActionsRewriterFixture.fs" />
-    <Compile Include="ConfigurationFixture.fs" />
-    <Compile Include="AmountCalatorFixture.fs" />
-    <Compile Include="UserReaderFixture.fs" />
-    <Compile Include="PipelineFixture.fs" />
-    <Compile Include="Actions\FlushTokenFixture.fs" />
-    <Compile Include="Actions\Level2BalanceFixture.fs" />
-    <Compile Include="Actions\StakeTokensFixture.fs" />
-    <Compile Include="Actions\UnstakeTokensFixture.fs" />
-    <Compile Include="Actions\SellTokensFixture.fs" />
-    <Compile Include="Actions\TransferTokensFixture.fs" />
-    <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
-    <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
-    <Compile Include="TerracoreFixture.fs" />
-    <Compile Include="HiveMessagesPipelineFixture.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
