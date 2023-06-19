@@ -12,17 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="ActionFixture.fs" />
+    <Compile Include="AmountCalatorFixture.fs" />
+    <Compile Include="ConfigurationFixture.fs" />
+    <Compile Include="HiveMessagesPipelineFixture.fs" />
+    <Compile Include="PipelineFixture.fs" />
+    <Compile Include="SeriesToActionsRewriterFixture.fs" />
     <Compile Include="TestingStubs.fs" />
-    <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
-    <Compile Include="Actions\FlushTokenFixture.fs" />
-    <Compile Include="Actions\Level2BalanceFixture.fs" />
-    <Compile Include="Actions\SellTokensFixture.fs" />
-    <Compile Include="Actions\StakeTokensFixture.fs" />
-    <Compile Include="Actions\TerracoreFixture.fs" />
-    <Compile Include="Actions\TransferTokensFixture.fs" />
-    <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
     <Compile Include="Actions\UnstakeTokensFixture.fs" />
     <Compile Include="Core\JsonFixture.fs" />
+    <Compile Include="UserReaderFixture.fs" />
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
