@@ -28,7 +28,6 @@
     <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
     <Compile Include="Actions\FlushTokenFixture.fs" />
     <Compile Include="Actions\Level2BalanceFixture.fs" />
-    <Compile Include="Actions\SellTokensFixture.fs" />
     <Compile Include="Actions\UnstakeTokensFixture.fs" />
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
