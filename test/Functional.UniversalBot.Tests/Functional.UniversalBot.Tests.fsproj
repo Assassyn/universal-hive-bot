@@ -19,8 +19,12 @@
     <Compile Include="HiveMessagesPipelineFixture.fs" />
     <Compile Include="PipelineFixture.fs" />
     <Compile Include="SeriesToActionsRewriterFixture.fs" />
-    <Compile Include="Actions\UnstakeTokensFixture.fs" />
     <Compile Include="Core\JsonFixture.fs" />
+    <Compile Include="Actions\DelegateStakeTokensFixture.fs" />
+    <Compile Include="Actions\FlushTokenFixture.fs" />
+    <Compile Include="Actions\Level2BalanceFixture.fs" />
+    <Compile Include="Actions\SellTokensFixture.fs" />
+    <Compile Include="Actions\UnstakeTokensFixture.fs" />
     <Compile Include="UserReaderFixture.fs" />
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
