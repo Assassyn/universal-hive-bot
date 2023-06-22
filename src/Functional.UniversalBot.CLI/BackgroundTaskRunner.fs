@@ -13,6 +13,6 @@ let runPipeline logger pipeline =
 
 let start logger pipelines = 
     pipelines
-    |> Seq.filter (fun (config, _) -> Readers.selectContinouseBasedOnly config)
+    //|> Seq.filter (fun (config, _) -> Readers.selectContinouseBasedOnly config)
     |> TaskSeq.ofSeq
     |> TaskSeq.iterAsync (fun (_, pipeline) -> runPipeline logger pipeline)

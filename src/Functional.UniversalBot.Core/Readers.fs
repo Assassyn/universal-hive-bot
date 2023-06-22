@@ -37,11 +37,12 @@ let private bindContinouseReader userdata =
 
 
 let bindReader (userdata: UserActionsDefinition) =
-    match userdata.Type with 
-    | ExecutionType.Continous -> 
-        bindContinouseReader userdata
-    | _ -> 
-        bindOneOffReader userdata
+    bindOneOffReader userdata
+    //match userdata.Type with 
+    //| ExecutionType.Continous -> 
+    //    bindContinouseReader userdata
+    //| _ -> 
+    //    bindOneOffReader userdata
     
 
 let selectSchedulerBasedOnly (userdata: UserActionsDefinition) =

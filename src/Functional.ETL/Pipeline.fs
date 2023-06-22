@@ -76,28 +76,40 @@ module Pipeline =
 
     type Pipeline<'Results> = 
         {
+            name: string
+            settings: Map<string, string>
             extractor: Reader<'Results>
             transformers: Transformer<'Results> taskSeq
         }
     module Pipeline = 
-        let bind reader transformers = 
+        let bindCustom name settings reader transformers = 
             { 
+                name = name
+                settings = settings
                 extractor = reader 
                 transformers = transformers
             }
+        let bind reader transformers = 
+            bindCustom (System.Guid.NewGuid().ToString()) (Map.empty) reader transformers
 
     let transformEntity transformers entity = 
         let fold state transformer= 
-            backgroundTask {
+            task {
                 let! entity = transformer state
                 return entity
             }
-        backgroundTask {
-            return!
-                transformers
-                |> TaskSeq.foldAsync fold entity 
+        task {
+            //let! newEntity =
+            transformers
+            |> TaskSeq.foldAsync fold entity 
+            |> ignore
+            //return newEntity
         }
 
-    let processPipeline pipelineDefinition =     
-        pipelineDefinition.extractor ()
-        |> TaskSeq.mapAsync (transformEntity pipelineDefinition.transformers)
+    let processPipeline pipelineDefinition =
+        task {
+            do! 
+                pipelineDefinition.extractor ()
+                |> TaskSeq.iterAsync (transformEntity pipelineDefinition.transformers)
+        }
+        

@@ -1,0 +1,39 @@
+﻿{
+    "urls": {
+        "hiveNodeUrl": "https://anyx.io",
+        "hiveEngineNodeUrl": "https://herpc.dtools.dev"
+        //"hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
+    },
+    "actions": [
+    ],
+    "Serilog": {
+        "Using": [ "Serilog.Sinks.File", "Serilog.Sinks.Console" ],
+        "MinimumLevel": {
+            "Default": "Debug",
+            "Override": {
+                "Microsoft": "Debug",
+                "System": "Debug"
+            }
+        },
+        "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessId", "WithThreadId" ],
+        "WriteTo": [
+            {
+                "Name": "Console",
+                "Args": {
+                    "outputTemplate": "{Timestamp:HH:mm:ss} {Message}{NewLine}{Exception}"
+                }
+            },
+            {
+                "Name": "File",
+                "Args": {
+                    "path": "logs/universal-bot.log",
+                    "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Message}{NewLine}{Exception}",
+                    "rollOnFileSizeLimit": true,
+                    "fileSizeLimitBytes": 4194304,
+                    "retainedFileCountLimit": 10,
+                    "rollingInterval": "Day"
+                }
+            }
+        ]
+    }
+}

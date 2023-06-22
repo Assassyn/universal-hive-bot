@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <BaseOutputPath>..\..\build\debugBuild</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

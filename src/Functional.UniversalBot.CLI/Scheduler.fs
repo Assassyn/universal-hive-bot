@@ -27,7 +27,7 @@ let bind logger pipelines =
 
     pipelines
     |> Seq.filter (fun (config, _) -> Readers.selectSchedulerBasedOnly config)
-    |> Seq.map (fun (config, pipeline) -> (config.Name, CrontabSchedule.Parse(config.Trigger, options), pipeline))
+    |> Seq.map (fun (config, pipeline) -> (config.Name, CrontabSchedule.Parse(config.Trigger), pipeline))
     |> Seq.map (fun (name, cron, pipeline) -> (cron, bindAction logger name pipeline))
     |> Seq.map (fun (cron, action) -> new AsyncScheduledTask(cron, action))
     |> Seq.iter crontab.AddTask

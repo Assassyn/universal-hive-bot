@@ -18,6 +18,15 @@ let postQuery<'ResponsePayload> requestUri (requestBody: obj) =
         jsonSerialize requestBody
     }
     |> Request.send
+
+let postQueryAsync<'ResponsePayload> requestUri (requestBody: obj) = 
+    http {
+        POST requestUri
+        CacheControl "no-cache"
+        body
+        jsonSerialize requestBody
+    }
+    |> Request.sendTAsync
     
 module Response = 
     let deserializeFromJson<'ResponsePayload> (response: Domain.Response) =
