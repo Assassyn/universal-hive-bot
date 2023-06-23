@@ -1,7 +1,7 @@
 ﻿{
     "urls": {
         "hiveNodeUrl": "https://anyx.io",
-        "hiveEngineNodeUrl": "https://enginerpc.com"
+        "hiveEngineNodeUrl": "https://herpc.dtools.dev"
         //"hiveEngineNodeUrl": "http://engine.alamut.uk:5000"
     },
     "actions": [
@@ -26,7 +26,7 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "universal-bot.log",
+                    "path": "logs/universal-bot.log",
                     "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Message}{NewLine}{Exception}",
                     "rollOnFileSizeLimit": true,
                     "fileSizeLimitBytes": 4194304,

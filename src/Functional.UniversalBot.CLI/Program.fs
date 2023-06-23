@@ -1,60 +1,46 @@
-﻿////open Microsoft.Extensions.Hosting
+namespace Functional.UniversalBot.CLI2
 
-////use App.WorkerService
+open System
+open System.Collections.Generic
+open System.Linq
+open System.Threading.Tasks
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
+open Serilog
+open Microsoft.Extensions.Configuration
+open System.IO
+open Workers
 
-////let builder = Host.CreateApplicationBuilder(args)
-////builder.Services.AddHostedService<Worker>();
+module Program =
+    let private createLogger (hostingContext: HostBuilderContext) (logger: LoggerConfiguration) = 
+        logger
+            .ReadFrom
+            .Configuration(hostingContext.Configuration)
+        |> ignore
 
-////IHost host = builder.Build();
-////host.Run();
+    let private addMultipleConfigFiles path (builder: IConfigurationBuilder)  = 
+        Directory.GetFiles(path, "*.json")
+        |> Seq.map (fun file -> builder.AddJsonFile(file, true))
+        |> ignore
 
-//let config = getConfiguration ()
+    let createHostBuilder args =
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(fun builder ->
+                builder.AddJsonFile("configuration.json", true) |> ignore
+                builder.AddUserSecrets() |> ignore
+                builder |> addMultipleConfigFiles "actions")
+            .ConfigureServices(fun hostContext services ->
+                let configuration =
+                    hostContext.Configuration
+                    |> Configuration.getConfiguration
+                services.AddSingleton (configuration) |> ignore
+                services.AddHostedService<Workers.Worker>() |> ignore)
+            .UseSerilog(createLogger)
 
-//printfn "Starting UniveralHiveBot processs"
+    [<EntryPoint>]
+    let main args =
+        createHostBuilder(args)
+            .Build()
+            .Run()
 
-//let pipelines =
-//    config
-//    |> Logging.logConfigurationFound
-//    |> Pipeline.createPipelines 
-
-////pipelines
-////|> Scheduler.bind (Logging.renderResult "setup")
-////|> Scheduler.start (Logging.renderResult "setup")
-
-//pipelines
-//|> BackgroundTaskRunner.start (Logging.renderResult "setup")
-//|> Async.AwaitTask
-//|> Async.RunSynchronously
-
-//Loop.executeLoop()
-
-
-//let builder =
-//    new HostBuilder().ConfigureAppConfiguration((hostingContext, config) =>
-//{
-//// i needed the input argument for command line, you can use it or simply remove this block
-//    config.AddEnvironmentVariables();
-
-//    if (args != null)
-//    {
-//        config.AddCommandLine(args);
-//    }
-
-//    Shared.Configuration = config.Build();
-//})
-//.ConfigureServices((hostContext, services) =>
-//{
-//    // dependency injection
-      
-//    services.AddOptions();
-//   // here is the core, where you inject the
-//   services.AddSingleton<Daemon>();
-//   services.AddSingleton<IHostedService, MyService>();
-//})
-//.ConfigureLogging((hostingContext, logging) => {
-//   // console logging 
-//    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-//    logging.AddConsole();
-//});
-
-//    await builder.RunConsoleAsync();
+        0 // exit code

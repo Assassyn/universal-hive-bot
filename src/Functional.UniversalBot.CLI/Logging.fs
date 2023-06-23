@@ -1,57 +1,48 @@
 ﻿
 module Logging
 
-open Serilog
-open Microsoft.Extensions.Configuration
-open Functional.ETL.Pipeline
-open PipelineResult
-open Lamar
+open Microsoft.Extensions.Logging
 open System.Runtime.Caching
-open System.Threading.Tasks
+open PipelineResult
+open Functional.ETL.Pipeline
 
-//let private writeToConsole message = 
-//    if message <> "" 
-//    then 
-//        //logger.Information message
+let cache = new MemoryCache("log")
 
-//let mutable loggedResults: Map<int64, UniversalHiveBotResutls seq> = Map.empty
-//let cache = new MemoryCache("log")
+let private getNotProcessedMessages index (results: UniversalHiveBotResutls seq) = 
+    match cache.Contains index with 
+    | false -> 
+        results
+    | _ -> 
+        let cachedItems = cache.Get index :?> UniversalHiveBotResutls seq
+        let canBeFoundInCache = (cachedItems |> Seq.contains) >> not
 
-//let private getNotProcessedMessages index (results: UniversalHiveBotResutls seq) = 
-//    match cache.Contains index with 
-//    | false -> 
-//        results
-//    | _ -> 
-//        let cachedItems = cache.Get index :?> UniversalHiveBotResutls seq
-//        let canBeFoundInCache = (cachedItems |> Seq.contains) >> not
+        let filtered = 
+            results
+            |> Seq.filter (fun result -> 
+                let contained = cachedItems |> Seq.contains result
+                not contained)
+        filtered
 
-//        let filtered = 
-//            results
-//            |> Seq.filter (fun result -> 
-//                let contained = cachedItems |> Seq.contains result
-//                not contained)
-//        filtered
+let renderResult pipelineName result =
+    match result with 
+    | Processed _ | Nothing -> 
+        ""
+    | FlushingFinshed _ ->
+        $"[{pipelineName}]: Flushing completed"
+    | FinishedProcessing index ->
+        $"[{pipelineName}]: Flushing processing action"
+    | _ -> 
+        $"[{pipelineName}]: {result}"
 
-//let renderResult pipelineName result =
-//    match result with 
-//    | Processed _ | Nothing -> 
-//        ()
-//    | FlushingFinshed _ ->
-//        writeToConsole $"[{pipelineName}]: Flushing completed"
-//    | FinishedProcessing index ->
-//        writeToConsole $"[{pipelineName}]: Flushing processing action"
-//    | _ -> 
-//        writeToConsole ($"[{pipelineName}]: {result}")
-
-//let logEntity (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
-//    let cacheIndex = entity.index.ToString()
-//    let pipelineName = entity.properties.[Readers.pipelineName]
-//    let notRendered = getNotProcessedMessages cacheIndex entity.results |> Array.ofSeq
-        
-//    notRendered |> Seq.iter (renderResult pipelineName)
-
-//    let expireIn5Minutes = System.DateTimeOffset.Now.AddMinutes(5)
-//    cache.Set(cacheIndex, entity.results:> obj, expireIn5Minutes)
+let logEntity (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    let cacheIndex = entity.index.ToString()
+    let pipelineName = entity.properties.[Readers.pipelineName]
+    let notRendered = getNotProcessedMessages cacheIndex entity.results |> Array.ofSeq
+    let expireIn5Minutes = System.DateTimeOffset.Now.AddMinutes(5)
+    
+    cache.Set(cacheIndex, entity.results:> obj, expireIn5Minutes)
+    
+    notRendered |> Seq.map (renderResult pipelineName)
 
 //let logConfigurationFound (config: Types.Configuration) =
 //    let actionsMessage = sprintf "Found actions %i to process" (config.actions |> Seq.length)
@@ -61,11 +52,14 @@ open System.Threading.Tasks
 
 //    config
 
-let logingDecorator transformer entity = 
+let logingDecorator (logger: ILogger) transformer entity = 
     task {
         let! resultEntity = transformer entity
 
-        //logEntity resultEntity
+        resultEntity
+        |> logEntity
+        |> Seq.iter logger.LogInformation
+
 
         return resultEntity
     }
