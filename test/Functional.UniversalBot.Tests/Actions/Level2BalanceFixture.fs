@@ -15,14 +15,16 @@ let extractSome (option: Option<obj>) =
 [<Fact>]
 let ``Can read all tokens from levle 2`` () =
     task {
-        let transformer entity = 
-            Balance.action hiveEngineNode "universal-bot" entity 
-            |> Task.fromResult
-        let pipelineDefinition = Pipeline.bind TestingStubs.reader  ([| transformer |] |> TaskSeq.ofArray)
-   
-        let! objectUnderTest = 
+        let transformers = 
+            [|
+                (Balance.action hiveEngineNode "universal-bot") |> TestingStubs.taskDecorator
+            |] |> TaskSeq.ofSeq
+            
+        let pipelineDefinition = Pipeline.bind TestingStubs.reader  transformers
+        
+        let objectUnderTest = 
             processPipeline pipelineDefinition
-            |> TaskSeq.item 0
+            |> Seq.item 0
              
         PipelineProcessData.readProperty objectUnderTest "GAMER" |> extractSome |> should equal 5M
     }

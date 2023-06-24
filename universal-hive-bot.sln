@@ -33,16 +33,11 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plu
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Core", "src\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj", "{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.CLI", "src\Functional.UniversalBot.CLI\Functional.UniversalBot.CLI.fsproj", "{DEECBB21-1C4E-494D-A4DC-571507FE759B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC} = {29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}
-		{558BFC4F-052B-4A40-8D15-C9397AF8404D} = {558BFC4F-052B-4A40-8D15-C9397AF8404D}
-		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6} = {EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}
-	EndProjectSection
-EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.HiveEngine", "src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj", "{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.Terracore", "src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj", "{558BFC4F-052B-4A40-8D15-C9397AF8404D}"
+EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.CLI", "src\Functional.UniversalBot.CLI\Functional.UniversalBot.CLI.fsproj", "{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,10 +61,6 @@ Global
 		{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2226B4C-1332-44D9-BD70-CBB3EAC6D150}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DEECBB21-1C4E-494D-A4DC-571507FE759B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEECBB21-1C4E-494D-A4DC-571507FE759B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEECBB21-1C4E-494D-A4DC-571507FE759B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEECBB21-1C4E-494D-A4DC-571507FE759B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,6 +69,10 @@ Global
 		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{558BFC4F-052B-4A40-8D15-C9397AF8404D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,9 +84,9 @@ Global
 		{4F9303C1-20D0-4A7A-B871-B238020C1DCB} = {44706128-3DC7-4205-AC6E-AE625A5C9C4D}
 		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{B2226B4C-1332-44D9-BD70-CBB3EAC6D150} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
-		{DEECBB21-1C4E-494D-A4DC-571507FE759B} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 		{558BFC4F-052B-4A40-8D15-C9397AF8404D} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
+		{2EB9663B-47F6-468B-A861-6B2A9AA83AC3} = {F85CC260-5594-48C0-A4CE-2019342ABCAB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0F60D737-597D-4CE0-94EB-0CE960EF3735}

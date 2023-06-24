@@ -1,21 +1,46 @@
-﻿open System
-open Configuration
+namespace Functional.UniversalBot.CLI2
 
-task {
-    let config = getConfiguration ()
+open System
+open System.Collections.Generic
+open System.Linq
+open System.Threading.Tasks
+open Microsoft.Extensions.DependencyInjection
+open Microsoft.Extensions.Hosting
+open Serilog
+open Microsoft.Extensions.Configuration
+open System.IO
+open Workers
 
-    printfn "Starting UniveralHiveBot processs"
+module Program =
+    let private createLogger (hostingContext: HostBuilderContext) (logger: LoggerConfiguration) = 
+        logger
+            .ReadFrom
+            .Configuration(hostingContext.Configuration)
+        |> ignore
 
-    let pipelines =
-        config
-        |> Logging.logConfigurationFound
-        |> Pipeline.createPipelines 
+    let private addMultipleConfigFiles path (builder: IConfigurationBuilder)  = 
+        Directory.GetFiles(path, "*.json")
+        |> Seq.map (fun file -> builder.AddJsonFile(file, true))
+        |> ignore
 
-    pipelines
-    |> Scheduler.bind (Logging.renderResult "setup")
-    |> Scheduler.start (Logging.renderResult "setup")
+    let createHostBuilder args =
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(fun builder ->
+                builder.AddJsonFile("configuration.json", true) |> ignore
+                builder.AddUserSecrets() |> ignore
+                builder |> addMultipleConfigFiles "actions")
+            .ConfigureServices(fun hostContext services ->
+                let configuration =
+                    hostContext.Configuration
+                    |> Configuration.getConfiguration
+                services.AddSingleton (configuration) |> ignore
+                services.AddHostedService<Workers.Worker>() |> ignore)
+            .UseSerilog(createLogger)
 
-    do! 
-        pipelines
-        |> BackgroundTaskRunner.start (Logging.renderResult "setup")
-} |> Async.AwaitTask |> Async.RunSynchronously
+    [<EntryPoint>]
+    let main args =
+        createHostBuilder(args)
+            .Build()
+            .Run()
+
+        0 // exit code

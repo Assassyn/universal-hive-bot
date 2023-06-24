@@ -23,29 +23,30 @@ let private addUserDataProprties (userdataDefinition: UserActionsDefinition) (en
     |> addProperty pipelineName userdataDefinition.Name
 
 
-let private bindOneOffReader userdata =
+let bindOneOffReader userdata =
     fun () -> 
         [| (PipelineProcessData.bind32 0) |]
         |> TaskSeq.ofArray
         |> TaskSeq.map (addUserDataProprties userdata)
 
         
-let private bindContinouseReader userdata =
-    fun () -> 
-        TaskSeq.initInfinite PipelineProcessData.bind32
-        |> TaskSeq.map (addUserDataProprties userdata)
+//let private bindContinouseReader userdata =
+//    fun () -> 
+//        TaskSeq.initInfinite PipelineProcessData.bind32
+//        |> TaskSeq.map (addUserDataProprties userdata)
 
 
-let bindReader (userdata: UserActionsDefinition) =
-    match userdata.Type with 
-    | ExecutionType.Continous -> 
-        bindContinouseReader userdata
-    | _ -> 
-        bindOneOffReader userdata
+//let bindReader (userdata: UserActionsDefinition) =
+//    bindOneOffReader userdata
+//    //match userdata.Type with 
+//    //| ExecutionType.Continous -> 
+//    //    bindContinouseReader userdata
+//    //| _ -> 
+//    //    bindOneOffReader userdata
     
 
-let selectSchedulerBasedOnly (userdata: UserActionsDefinition) =
-    userdata.Type = ExecutionType.Scheduler
+//let selectSchedulerBasedOnly (userdata: UserActionsDefinition) =
+//    userdata.Type = ExecutionType.Scheduler
 
-let selectContinouseBasedOnly (userdata: UserActionsDefinition) =
-    userdata.Type = ExecutionType.Continous   
+//let selectContinouseBasedOnly (userdata: UserActionsDefinition) =
+//    userdata.Type = ExecutionType.Continous   

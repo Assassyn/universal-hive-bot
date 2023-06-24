@@ -28,29 +28,27 @@ let ``Can sell tokens`` (oneUpBalance:decimal) (amountToBind: string) (result: s
             |] |> TaskSeq.ofSeq
         let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
    
-        let results = processPipeline pipelineDefinition
-        let! underTestObject =
-            results
-            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
-            |> TaskSeq.item 0
-
-        underTestObject 
+        processPipeline pipelineDefinition
+        |> Seq.item 0
+        |> fun entity -> entity.results
+        |> Seq.item 0
         |> TestingStubs.extractCustomJson 
         |> should startWith """{"contractName":"market","contractAction":"sell","contractPayload":{"""
     }
 
 [<Fact>]
 let ``Check that balance is too low`` () =
-    let transformer = 
-        [|
-            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-            (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot") |> TestingStubs.taskDecorator 
-        |] |> TaskSeq.ofSeq
-    let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
+    task { 
+        let transformer = 
+            [|
+                (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
+                (UndelegateStake.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "universal-bot") |> TestingStubs.taskDecorator 
+            |] |> TaskSeq.ofSeq
+        let pipelineDefinition = Pipeline.bind TestingStubs.reader transformer
 
-    processPipeline pipelineDefinition
-    |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
-    |> TaskSeq.item 0
-    |> Async.AwaitTask
-    |> Async.RunSynchronously
-    |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))
+        processPipeline pipelineDefinition
+        |> Seq.item 0
+        |> fun entity -> entity.results
+        |> Seq.item 0
+        |> should equal (TokenBalanceTooLow ("UndelegateStake", "universal-bot", "ONEUP"))
+    }

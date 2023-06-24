@@ -8,7 +8,14 @@ open Lamar
 open ConfigurationTypes
 open System
 open FSharp.Control
+open PipelineResult
     
+[<Literal>]
+let private TypeLabel = "type"
+
+[<Literal>]
+let private TriggerLabel = "trigger"
+
 let private container = 
     new Container (fun service -> 
         service.Scan (fun scanner -> 
@@ -28,7 +35,7 @@ let private bindActions url parameters bindingFunctionName =
     let pipelineAction = prototypeFunction url parameters
     pipelineAction
 
-let private bindTransfomers url (config: UserActionsDefinition) =
+let private bindTransfomers url logingDecorator (config: UserActionsDefinition) =
     let binder fromConfig = 
         let (bindingFunctionName, parameters ) = fromConfig
         let action = bindActions url parameters bindingFunctionName
@@ -39,19 +46,29 @@ let private bindTransfomers url (config: UserActionsDefinition) =
     |> List.ofSeq
     |> List.map (fun item -> (item.Name, item.Parameters |> Seq.map (|KeyValue|)  |> Map.ofSeq))
     |> List.map (fun item -> binder item)
-    |> List.map Logging.logingDecorator
+    |> List.map logingDecorator
     |> TaskSeq.ofList
     
-let private bindPipeline urls (config: UserActionsDefinition) =
-    let reader = Readers.bindReader config
-    let transforms = bindTransfomers urls config 
+let private bindPipeline urls logingDecorator (config: UserActionsDefinition) =
+    let reader = Readers.bindOneOffReader config
+    let transforms = bindTransfomers urls logingDecorator config 
+    
+    let settings = Map [ 
+        (TypeLabel, config.Type.ToString())
+        (TriggerLabel, config.Trigger) ]
 
-    let pipeline = Pipeline.bind reader transforms
+    Pipeline.bindCustom config.Name settings reader transforms
 
-    (config, pipeline)
-
-let createPipelines (config: Configuration)  = 
+let createPipelines logingDecorator (config: Configuration) = 
     let urls = config.urls
         
     config.actions
-    |> Seq.map (bindPipeline urls)
+    |> Seq.map (bindPipeline urls logingDecorator)
+    |> TaskSeq.ofSeq
+
+
+let getType pipeline =
+    pipeline.settings.[TypeLabel]
+
+let getTrigger pipeline =
+    pipeline.settings.[TriggerLabel]

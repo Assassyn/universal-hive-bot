@@ -6,19 +6,21 @@ open Types
 open Functional.ETL.Pipeline.PipelineProcessData
 open Functional.ETL.Pipeline
 open PostId
+open FSharp.Control
 
 [<Literal>]
 let ModuleName = "CommentOnPost"
 
-let private checkForPreviousComments hiveUrl username (post: PostIdentification) = 
-    let posts = 
-        BridgeAPI.getDiscussion hiveUrl post.author post.permlink
-        |> Map.toSeq
-        |> Seq.map (fun (key, _) -> key)
-        |> Seq.filter (fun key -> key.StartsWith($"{username}/"))
-        |> Seq.length > 0
-        
-    posts 
+let private filterMessagesWithoutPreviousComment hiveUrl username (post: PostIdentification) = 
+    task {
+        let! discussion = BridgeAPI.getDiscussion hiveUrl post.author post.permlink
+        return  
+            discussion
+            |> Map.toSeq
+            |> Seq.map (fun (key, _) -> key)
+            |> Seq.filter (fun key -> key.StartsWith($"{username}/"))
+            |> Seq.length = 0
+    }
 
 let private createTheComment username body (post: PostIdentification) = 
     let metadata = """{"app":"universalbot/0.10.0"}"""
@@ -31,14 +33,18 @@ let action hiveUrl collectionHandle template username (entity: PipelineProcessDa
     let postToCommentOn =
         readPropertyAsType entity collectionHandle
         |> Option.defaultValue Seq.empty
-        |> Seq.filter (checkForPreviousComments hiveUrl username >> not)
-        |> Seq.map (createTheComment username (getTemplate template entity))
-        |> Seq.map (Hive.scheduleSinglePostingOperation ModuleName "vote")
+        |> TaskSeq.ofSeq
+        |> TaskSeq.filterAsync (filterMessagesWithoutPreviousComment hiveUrl username)
+        |> TaskSeq.map (createTheComment username (getTemplate template entity))
+        |> TaskSeq.map (Hive.scheduleSinglePostingOperation ModuleName "vote")
+        |> TaskSeq.toSeq
     
-    match Seq.length postToCommentOn with 
-    | 0 -> 
+    let lenght = Seq.length postToCommentOn 
+        
+    if lenght = 0
+    then
         entity |>= CountNotSuccessful "Found no post to comment on"
-    | _ -> 
+    else
         postToCommentOn |> Seq.fold withResult entity
 
 let bind urls (parameters: Map<string, string>) = 
