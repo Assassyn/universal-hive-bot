@@ -16,8 +16,8 @@ module Pipeline =
     type ErrorMessage = string
     type Reader<'Result> = unit -> PipelineProcessData<'Result> taskSeq
     type Transformer<'Result> = PipelineProcessData<'Result> -> Task<PipelineProcessData<'Result>>
+    type Transformers<'Result> = Transformer<'Result> taskSeq
 
-        
     module PipelineProcessData = 
         let withProperty entity key value =
             let properties = entity.properties.Add (key, value :> obj)
@@ -73,7 +73,6 @@ module Pipeline =
                 return entity
             }
             
-
     type Pipeline<'Results> = 
         {
             name: string
@@ -92,24 +91,20 @@ module Pipeline =
         let bind reader transformers = 
             bindCustom (System.Guid.NewGuid().ToString()) (Map.empty) reader transformers
 
-    let transformEntity transformers entity = 
+    let transformEntity<'Entity> (transformers: Transformers<'Entity>) (entity: PipelineProcessData<'Entity>): Task<PipelineProcessData<'Entity>> = 
         let fold state transformer= 
             task {
                 let! entity = transformer state
                 return entity
             }
         task {
-            //let! newEntity =
-            transformers
-            |> TaskSeq.foldAsync fold entity 
-            |> ignore
-            //return newEntity
+            return! 
+                transformers
+                |> TaskSeq.foldAsync fold entity 
         }
 
     let processPipeline pipelineDefinition =
-        task {
-            do! 
-                pipelineDefinition.extractor ()
-                |> TaskSeq.iterAsync (transformEntity pipelineDefinition.transformers)
-        }
+        pipelineDefinition.extractor ()
+        |> TaskSeq.mapAsync (transformEntity pipelineDefinition.transformers)
+        |> TaskSeq.toSeq
         

@@ -6,7 +6,6 @@ open Functional.ETL.Pipeline.PipelineProcessData
 open FSharp.Control
 open Types
 open HiveEngineTypes
-open System.Collections.Generic
 
 let a b =
     ()
@@ -54,7 +53,7 @@ let reader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
 
-    Readers.bindReader userDefinition
+    Readers.bindOneOffReader userDefinition
 
 let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq = 
     let userDefinition = new UserActionsDefinition ()
@@ -62,10 +61,17 @@ let noUserReader: unit -> PipelineProcessData<UniversalHiveBotResutls> taskSeq =
     userDefinition.ActiveKey <- ""
     userDefinition.PostingKey <- ""
     
-    Readers.bindReader userDefinition
+    Readers.bindOneOffReader userDefinition
 
 let bindAmount amount =
     amount |> AmountCalator.bind
 
 let taskDecorator notAsyncFunction entity =
     notAsyncFunction entity |> Task.fromResult
+
+
+let emptyEntity: PipelineProcessData<UniversalHiveBotResutls> = PipelineProcessData.bind 1
+
+let trackingAction (testingResult: byref<PipelineProcessData<UniversalHiveBotResutls>>) (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
+    testingResult <- entity
+    entity |> Task.fromResult

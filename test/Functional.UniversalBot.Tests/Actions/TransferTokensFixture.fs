@@ -27,29 +27,27 @@ let ``Can transfer tokens`` (oneUpBalance:decimal) (amountToBind: string) (resul
             |] |> TaskSeq.ofSeq 
         let pipelineDefinition = Pipeline.bind reader transformer
    
-        let results = processPipeline pipelineDefinition
-        let! underTestObject =
-            results
-            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
-            |> TaskSeq.item 0
-
-        underTestObject 
+        processPipeline pipelineDefinition
+        |> Seq.item 0
+        |> fun entity -> entity.results
+        |> Seq.item 0
         |> TestingStubs.extractCustomJson 
         |> should equal (sprintf """{"contractName":"tokens","contractAction":"transfer","contractPayload":{"memo":"","quantity":"%s","symbol":"ONEUP","to":"universal-bot"}}""" result)
     }
 
 [<Fact>]
 let ``Check that balance is too low`` () =
-    let transformer = 
-        [|
-            (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
-            (TransferToken.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "" "universal-bot") |> TestingStubs.taskDecorator
-        |] |> TaskSeq.ofSeq
-    let pipelineDefinition = Pipeline.bind reader transformer
+    task {
+        let transformer = 
+            [|
+                (TestingStubs.mockedDelegatedStakedBalanceAction [| ("ONEUP", 0M) |])
+                (TransferToken.action "ONEUP" "delegation-target-user" (AmountCalator.bind "100") "" "universal-bot") |> TestingStubs.taskDecorator
+            |] |> TaskSeq.ofSeq
+        let pipelineDefinition = Pipeline.bind reader transformer
     
-    processPipeline pipelineDefinition
-    |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
-    |> TaskSeq.item 0
-    |> Async.AwaitTask
-    |> Async.RunSynchronously
-    |> should equal (TokenBalanceTooLow ("Transfer", "universal-bot", "ONEUP"))
+        processPipeline pipelineDefinition
+        |> Seq.item 0
+        |> fun entity -> entity.results
+        |> Seq.item 0
+        |> should equal (TokenBalanceTooLow ("Transfer", "universal-bot", "ONEUP"))
+    }

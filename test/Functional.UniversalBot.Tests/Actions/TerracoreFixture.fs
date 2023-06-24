@@ -22,13 +22,10 @@ let ``Claim Action is producing valid JSON`` () =
             |] |> TaskSeq.ofSeq
         let pipelineDefinition = Pipeline.bind (TestingStubs.reader) transformer
    
-        let results = processPipeline pipelineDefinition
-        let! underTestObject =
-            results
-            |> TaskSeq.collect (fun x-> x.results |> TaskSeq.ofList)
-            |> TaskSeq.item 0
-
-        underTestObject 
+        processPipeline pipelineDefinition
+        |> Seq.item 0
+        |> fun entity -> entity.results
+        |> Seq.item 0 
         |> TestingStubs.extractCustomJson 
         |> should startWith (sprintf """{"amount":"%s","tx-hash":""" "123")
     }

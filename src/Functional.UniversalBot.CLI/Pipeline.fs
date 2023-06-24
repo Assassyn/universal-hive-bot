@@ -50,7 +50,7 @@ let private bindTransfomers url logingDecorator (config: UserActionsDefinition) 
     |> TaskSeq.ofList
     
 let private bindPipeline urls logingDecorator (config: UserActionsDefinition) =
-    let reader = Readers.bindReader config
+    let reader = Readers.bindOneOffReader config
     let transforms = bindTransfomers urls logingDecorator config 
     
     let settings = Map [ 

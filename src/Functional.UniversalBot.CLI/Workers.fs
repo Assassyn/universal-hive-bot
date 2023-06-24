@@ -41,10 +41,10 @@ type Worker(config: Types.Configuration, logger: ILogger<Worker>) =
             while not ct.IsCancellationRequested do
                 logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now)
                                 
-                do! 
-                    pipelines
-                    |> TaskSeq.filter (canExecute startTime)
-                    |> TaskSeq.iterAsync processPipeline
+                pipelines
+                |> TaskSeq.filter (canExecute startTime)
+                |> TaskSeq.map processPipeline
+                |> ignore
 
                 startTime <- DateTime.Now
         }
