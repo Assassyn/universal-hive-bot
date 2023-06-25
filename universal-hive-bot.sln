@@ -38,6 +38,11 @@ EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.Plugin.Terracore", "src\Functional.UniversalBot.Plugin.Terracore\Functional.UniversalBot.Plugin.Terracore.fsproj", "{558BFC4F-052B-4A40-8D15-C9397AF8404D}"
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Functional.UniversalBot.CLI", "src\Functional.UniversalBot.CLI\Functional.UniversalBot.CLI.fsproj", "{2EB9663B-47F6-468B-A861-6B2A9AA83AC3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC} = {29C0C9EF-C3F1-4163-B694-CA2BDFE9C7DC}
+		{558BFC4F-052B-4A40-8D15-C9397AF8404D} = {558BFC4F-052B-4A40-8D15-C9397AF8404D}
+		{EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6} = {EA6F4AF0-FE1D-49EF-AAF4-F32B3467F6F6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

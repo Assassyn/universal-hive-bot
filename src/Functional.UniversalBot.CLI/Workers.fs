@@ -38,13 +38,19 @@ type Worker(config: Types.Configuration, logger: ILogger<Worker>) =
                 
             let mutable startTime = DateTime.Now
 
+            do! 
+                3
+                |> TimeSpan.FromSeconds
+                |> Task.Delay
+
             while not ct.IsCancellationRequested do
                 logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now)
                                 
-                pipelines
-                |> TaskSeq.filter (canExecute startTime)
-                |> TaskSeq.map processPipeline
-                |> ignore
+                let results = 
+                    pipelines
+                    |> TaskSeq.filter (canExecute startTime)
+                    |> TaskSeq.map processPipeline
+                    |> TaskSeq.toArray
 
                 startTime <- DateTime.Now
         }

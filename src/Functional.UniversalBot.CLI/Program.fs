@@ -18,10 +18,12 @@ module Program =
             .Configuration(hostingContext.Configuration)
         |> ignore
 
-    let private addMultipleConfigFiles path (builder: IConfigurationBuilder)  = 
-        Directory.GetFiles(path, "*.json")
-        |> Seq.map (fun file -> builder.AddJsonFile(file, true))
-        |> ignore
+    let private addMultipleConfigFiles path (builder: IConfigurationBuilder)  =
+        if Directory.Exists path 
+        then
+            Directory.GetFiles(path, "*.json")
+            |> Seq.map (fun file -> builder.AddJsonFile(file, true))
+            |> ignore
 
     let createHostBuilder args =
         Host.CreateDefaultBuilder(args)

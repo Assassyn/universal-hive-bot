@@ -106,5 +106,5 @@ module Pipeline =
     let processPipeline pipelineDefinition =
         pipelineDefinition.extractor ()
         |> TaskSeq.mapAsync (transformEntity pipelineDefinition.transformers)
-        |> TaskSeq.toSeq
+        |> TaskSeq.toArray
         
