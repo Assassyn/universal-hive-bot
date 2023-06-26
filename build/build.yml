@@ -14,7 +14,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-name: 0.11.0
+name: 0.11.1
 
 stages:
   - stage: BuildAndTest

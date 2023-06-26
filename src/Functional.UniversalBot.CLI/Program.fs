@@ -36,7 +36,10 @@ module Program =
                     hostContext.Configuration
                     |> Configuration.getConfiguration
                 services.AddSingleton (configuration) |> ignore
-                services.AddHostedService<Workers.Worker>() |> ignore)
+                let timeProvider () = DateTime.Now
+                services.AddSingleton<unit -> DateTime> (timeProvider) |> ignore
+                services.AddHostedService<Workers.ScheduleWorker>() |> ignore
+                services.AddHostedService<Workers.ContinousWorker>() |> ignore)
             .UseSerilog(createLogger)
 
     [<EntryPoint>]

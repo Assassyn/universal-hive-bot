@@ -12,45 +12,84 @@ open NCrontab
 open Types
 open FSharp.Control
 
-type Worker(config: Types.Configuration, logger: ILogger<Worker>) =
+let private areDateEqulaForMinutePrecision (leftDate:DateTime) (rightDate: DateTime) = 
+    leftDate.Year = rightDate.Year
+    && leftDate.Month = rightDate.Month
+    && leftDate.Day = rightDate.Day
+    && leftDate.Hour = rightDate.Hour
+    && leftDate.Minute = rightDate.Minute
+
+let canExecute timeProvider startTime (pipeline: Pipeline<UniversalHiveBotResutls>) =
+    let trigger = pipeline |> getTrigger
+    let cron = CrontabSchedule.Parse trigger 
+    let nextOccurence = cron.GetNextOccurrence (startTime)
+    let now = timeProvider ()
+    let areEqual = areDateEqulaForMinutePrecision nextOccurence now
+    areEqual
+
+let private delayStart () =
+    task {
+        do! 
+            3
+            |> TimeSpan.FromSeconds
+            |> Task.Delay
+    }
+
+let private getPiplinesByExecution executionType piplines =
+    piplines
+    |> TaskSeq.filter (fun pipline -> ExecutionType.areEqual executionType (pipline |> getType))
+    |> TaskSeq.toArray
+    |> TaskSeq.ofArray
+    
+
+type ScheduleWorker(config: Types.Configuration, timeProvider: unit -> DateTime, logger: ILogger<ScheduleWorker>) =
     inherit BackgroundService()
-
-
-    let canExecute startTime (pipeline: Pipeline<UniversalHiveBotResutls>) =
-        match pipeline with 
-        | x when x |> getType = "Continous" -> 
-            true
-        | x when x |> getTrigger <> "" -> 
-            let trigger = x |> getTrigger
-            let cron = CrontabSchedule.Parse trigger
-            let nextOccurence = cron.GetNextOccurrence (startTime)
-            let now = DateTime.Now 
-            let diffrence = nextOccurence - now
-
-            diffrence.TotalSeconds < 60
-        | _ ->
-            false
 
     override _.ExecuteAsync(ct: CancellationToken) =
         task {
             let pipelines = 
                 createPipelines (Logging.logingDecorator logger) config
-                
+                |> getPiplinesByExecution ExecutionType.Scheduler
+
             let mutable startTime = DateTime.Now
 
-            do! 
-                3
-                |> TimeSpan.FromSeconds
-                |> Task.Delay
-
+            do! delayStart ()
             while not ct.IsCancellationRequested do
-                logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now)
+                
+                if (areDateEqulaForMinutePrecision startTime DateTime.Now) 
+                then 
+                    do! 
+                        60 
+                        |> TimeSpan.FromSeconds
+                        |> Task.Delay
+
+                logger.LogDebug("Schedule Worker running at: {time}", DateTimeOffset.Now)
                                 
                 let results = 
                     pipelines
-                    |> TaskSeq.filter (canExecute startTime)
+                    |> TaskSeq.filter (canExecute timeProvider startTime)
                     |> TaskSeq.map processPipeline
                     |> TaskSeq.toArray
 
                 startTime <- DateTime.Now
+        }
+
+type ContinousWorker(config: Types.Configuration, logger: ILogger<ContinousWorker>) =
+    inherit BackgroundService()
+    
+    override _.ExecuteAsync(ct: CancellationToken) =
+        task {
+            let pipelines = 
+                createPipelines (Logging.logingDecorator logger) config
+                |> getPiplinesByExecution ExecutionType.Continous
+                    
+            do! delayStart ()
+            while not ct.IsCancellationRequested do
+                logger.LogDebug ("Continous Worker running at: {time}", DateTimeOffset.Now)
+                                    
+                let results = 
+                    pipelines
+                    |> TaskSeq.map processPipeline
+                    |> TaskSeq.toArray
+                ()
         }

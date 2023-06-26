@@ -27,6 +27,9 @@ let private defaultTrigger = "0 0 */1 * * *"
 type ExecutionType =
     | Scheduler = 0
     | Continous = 1 
+module ExecutionType = 
+    let areEqual executinoType input =
+        System.String.Equals (executinoType.ToString(), input, System.StringComparison.OrdinalIgnoreCase)
 
 type UserActionsDefinition () =
     let mutable username = ""
