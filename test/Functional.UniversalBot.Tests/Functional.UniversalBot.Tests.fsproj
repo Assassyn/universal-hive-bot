@@ -30,6 +30,7 @@
     <Compile Include="Actions\TransferTokensFixture.fs" />
     <Compile Include="Actions\UndelegateStakeTokensFixturey.fs" />
     <Compile Include="Actions\UnstakeTokensFixture.fs" />
+    <Compile Include="CLI\TimerFixture.fs" />
     <Content Include="configuration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -53,6 +54,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Functional.ETL\Functional.ETL.fsproj" />
+    <ProjectReference Include="..\..\src\Functional.UniversalBot.CLI\Functional.UniversalBot.CLI.fsproj" />
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Core\Functional.UniversalBot.Core.fsproj" />
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Hive\Functional.UniversalBot.Plugin.Hive.fsproj" />
     <ProjectReference Include="..\..\src\Functional.UniversalBot.Plugin.HiveEngine\Functional.UniversalBot.Plugin.HiveEngine.fsproj" />
