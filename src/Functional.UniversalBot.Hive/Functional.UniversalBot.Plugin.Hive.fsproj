@@ -18,6 +18,7 @@
     <Compile Include="PostId.fs" />
     <Compile Include="Actions\Variable.fs" />
     <Compile Include="Actions\ReadPosts.fs" />
+    <Compile Include="Actions\ReadUserComments.fs" />
     <Compile Include="Actions\VoteOnPosts.fs" />
     <Compile Include="Actions\LoadTemplate.fs" />
     <Compile Include="Actions\CommentOnPosts.fs" />
