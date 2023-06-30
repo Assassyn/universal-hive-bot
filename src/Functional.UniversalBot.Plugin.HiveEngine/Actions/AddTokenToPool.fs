@@ -8,8 +8,8 @@ open Decimal
 open Types
 open PipelineResult
 open Hive
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 
 [<Literal>]
 let ModuleName = "AddToPool"

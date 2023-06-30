@@ -2,7 +2,7 @@
 
 open ConfigurationTypes
 open Lamar
-open Functional.ETL.Pipeline
+open Pipeline
 
 type ActionRegistry () as self =
     inherit ServiceRegistry ()

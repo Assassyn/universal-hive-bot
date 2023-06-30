@@ -1,7 +1,9 @@
 ﻿module PostId
 
-open BridgeAPITypes
 open System
+open BridgeAPITypes
+open PipelineProcessData
+open Pipeline
 
 type PostIdentification = 
     {

@@ -3,7 +3,7 @@
 open System
 open Xunit
 open FsUnit.Xunit
-open Functional.ETL.Pipeline
+open Pipeline
 open FSharp.Control
 
 let private hiveNodeUrl = "http://engine.alamut.uk"

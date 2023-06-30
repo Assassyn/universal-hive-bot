@@ -5,7 +5,7 @@ open Xunit
 open FsUnit.Xunit
 open FSharp.Control
 open TestingStubs
-open Functional.ETL.Pipeline
+open Pipeline
 
 let testData =
     [|

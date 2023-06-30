@@ -4,7 +4,7 @@ module Logging
 open Microsoft.Extensions.Logging
 open System.Runtime.Caching
 open PipelineResult
-open Functional.ETL.Pipeline
+open Pipeline
 
 let cache = new MemoryCache("log")
 

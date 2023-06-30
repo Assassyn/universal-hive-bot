@@ -1,9 +1,9 @@
 ﻿module Action
 
-open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
 open System.Threading.Tasks
+open Pipeline
+open PipelineProcessData
+open PipelineResult
 
 let bindAction moduleName userbasedAction (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let userDetails: (string * string * string) option = PipelineProcessData.readPropertyAsType entity Readers.userdata

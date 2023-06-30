@@ -2,7 +2,7 @@
 
 open Xunit
 open FsUnit.Xunit
-open Functional.ETL.Pipeline
+open Pipeline
 open PipelineResult
 
 let sampleAction username entity =

@@ -1,7 +1,7 @@
 ﻿module ConfigurationTypes
 
 open Types
-open Functional.ETL.Pipeline
+open Pipeline
 
 type Binder = Urls -> Map<string, string> -> Transformer<PipelineResult.UniversalHiveBotResutls>
         

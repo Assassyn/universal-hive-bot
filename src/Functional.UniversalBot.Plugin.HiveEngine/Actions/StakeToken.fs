@@ -4,8 +4,8 @@ open Action
 open Hive
 open Some
 open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 
 [<Literal>]
 let ModuleName = "Stake"

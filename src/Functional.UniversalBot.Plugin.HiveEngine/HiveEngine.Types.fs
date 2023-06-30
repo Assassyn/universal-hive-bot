@@ -4,7 +4,7 @@ open System.Net.Http
 open HiveAPI
 open System.Text.Json
 open FsHttp
-open Functional.ETL.Pipeline
+open Pipeline
 
 type HiveResponse<'Result> =
     {

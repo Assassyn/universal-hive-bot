@@ -3,7 +3,7 @@
 open System
 open System.Threading
 open PipelineResult
-open Functional.ETL.Pipeline
+open Pipeline
 open Types
 open System.Threading.Tasks
 

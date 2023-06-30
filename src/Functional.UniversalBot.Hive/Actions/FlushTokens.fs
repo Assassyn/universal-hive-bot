@@ -1,9 +1,9 @@
 ﻿module FlushTokens 
 
 open PipelineResult
-open Functional.ETL.Pipeline
+open Pipeline
 open Types
-open Functional.ETL.Pipeline.PipelineProcessData
+open PipelineProcessData
 open Hive
 
 [<Literal>]

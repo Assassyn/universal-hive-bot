@@ -3,8 +3,8 @@
 open System
 open PipelineResult
 open Types 
-open Functional.ETL.Pipeline.PipelineProcessData
-open Functional.ETL.Pipeline
+open Pipeline
+open PipelineProcessData
 open PostId
 open FSharp.Control
 
@@ -31,8 +31,7 @@ let private getTemplate templateId (entity: PipelineProcessData<UniversalHiveBot
 
 let action hiveUrl collectionHandle template username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let postToCommentOn =
-        readPropertyAsType entity collectionHandle
-        |> Option.defaultValue Seq.empty
+        enumerateProperties collectionHandle entity
         |> TaskSeq.ofSeq
         |> TaskSeq.filterAsync (filterMessagesWithoutPreviousComment hiveUrl username)
         |> TaskSeq.map (createTheComment username (getTemplate template entity))

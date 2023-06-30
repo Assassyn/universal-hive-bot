@@ -7,3 +7,6 @@ let fromString (input: string) =
     if Int32.TryParse (input, &number)
     then Some number
     else None
+
+let (++) number = 
+    number + 1

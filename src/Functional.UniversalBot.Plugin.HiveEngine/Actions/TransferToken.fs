@@ -4,8 +4,8 @@ open Action
 open Hive
 open PipelineResult
 open Some
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 open HiveEngineTypes
 open Decimal
 

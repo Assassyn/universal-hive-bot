@@ -1,7 +1,7 @@
 ﻿module Types
 
 open System.Collections.Generic
-open Functional.ETL.Pipeline
+open Pipeline
 open PipelineResult
 
 type Urls =

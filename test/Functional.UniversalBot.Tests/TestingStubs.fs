@@ -1,8 +1,8 @@
 ﻿module TestingStubs
 
 open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 open FSharp.Control
 open Types
 open HiveEngineTypes

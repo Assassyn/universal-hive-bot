@@ -6,8 +6,8 @@ open Decimal
 open HiveEngineTypes
 open Some
 open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 
 [<Literal>]
 let ModuleName = "DelegateStake"

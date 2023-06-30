@@ -1,16 +1,16 @@
 ﻿module VoteOnPosts
 
 open PipelineResult
-open Functional.ETL.Pipeline
+open Pipeline
 open Types
-open Functional.ETL.Pipeline.PipelineProcessData
+open PipelineProcessData
 open BridgeAPITypes
 open System
 open PostId
 open Types
 open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 
 [<Literal>]
 let ModuleName = "VoteOnPost"
@@ -36,8 +36,7 @@ let private getWeigth weight useVariable (entity: PipelineProcessData<UniversalH
 
 let action hiveUrl weight useVaraible label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     let newVotes = 
-        readPropertyAsType entity label
-        |> Option.defaultValue Seq.empty
+        enumerateProperties label entity
         |> Seq.filter (checkIfHasBeenCommentedOn username >> not)
         |> Seq.map (castAVote username (getWeigth weight useVaraible entity))
         |> Seq.map (Hive.schedulePostingOperation ModuleName "vote")

@@ -5,8 +5,8 @@ open Hive
 open Some
 open Types
 open PipelineResult
-open Functional.ETL.Pipeline
-open Functional.ETL.Pipeline.PipelineProcessData
+open Pipeline
+open PipelineProcessData
 
 [<Literal>]
 let ModuleName = "SwapToken"

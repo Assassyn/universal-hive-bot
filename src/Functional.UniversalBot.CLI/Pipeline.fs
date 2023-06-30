@@ -3,7 +3,7 @@
 open Microsoft.Extensions.Configuration
 open Types
 open SeriesToActionsRewriter
-open Functional.ETL.Pipeline
+open Pipeline
 open Lamar
 open ConfigurationTypes
 open System

@@ -7,7 +7,7 @@ open Microsoft.Extensions.Hosting
 open Microsoft.Extensions.Logging
 open Pipeline
 open PipelineResult
-open Functional.ETL.Pipeline
+open Pipeline
 open NCrontab
 open Types
 open FSharp.Control
