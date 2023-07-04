@@ -51,6 +51,7 @@ let bind index =
             results = list.Empty
         }
     entity
+
 let bind32 index =
     bind (int64(index))
 
@@ -58,6 +59,7 @@ let enumerateProperties<'EntityResult, 'PropertyType> (label: string) (entity: P
     let isMatch (key: string) = 
         let pattern = $"{label}_\d{{1,}}"
         Regex.IsMatch (key, pattern)
+
     entity.properties.Keys
     |> Seq.filter isMatch 
     |> Seq.map (readPropertyAsType<'EntityResult, 'PropertyType> entity)

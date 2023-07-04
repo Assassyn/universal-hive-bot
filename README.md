@@ -234,6 +234,22 @@ I am aware that there are a few places where I cna improve the bot. For example,
           }
         },
 
+
+14. load_template - returns a string value from GITHUB's GIST collection
+
+ Parameters: 
+    * templateId - a part of ulr fomr ggithub's gist, e.g. <username>/12233423423423423423432423423433/raw/1234534545345345345abcdef1234566778890ab
+    * label - local variable which will store the remplate value for later use
+
+```
+{
+  "name": "load_template",
+  "parameters": {
+    "templateId": "<username>/12233423423423423423432423423433/raw/1234534545345345345abcdef1234566778890ab",
+    "label": "example_template"
+}
+```
+
 # Actions Series
 
 There is a new way to write the similar task now. So instead of writing 5 times to stake the five various tokens you can create a one Series action definition and specify the **splitOn** to include all 5 tokens. As a result there will be 5 actinon which will have it onw token used by amount will be the same for all of them. In a case there are other parametesr they will be copied as well to a child actions.
