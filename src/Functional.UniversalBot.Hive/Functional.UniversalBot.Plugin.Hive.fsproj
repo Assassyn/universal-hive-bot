@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="HiveAPI" Version="0.3.0" />
+    <PackageReference Include="Nettle" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

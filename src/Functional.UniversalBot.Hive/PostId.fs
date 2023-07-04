@@ -24,3 +24,22 @@ let bind (rankedPost: RankedPost) =
         created = DateTimeOffset.Parse(rankedPost.created)
         voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
     }
+let bindPost (rankedPost: Post) = 
+    {
+        id = rankedPost.post_id
+        author = rankedPost.author
+        category = rankedPost.category
+        permlink = rankedPost.permlink
+        created = DateTimeOffset.Parse(rankedPost.created)
+        voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
+    }
+
+let bindParentPost (rankedPost: Post) = 
+    {
+        id = rankedPost.post_id
+        author = rankedPost.parent_author
+        category = rankedPost.category
+        permlink = rankedPost.parent_permlink
+        created = DateTimeOffset.Parse(rankedPost.created)
+        voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
+    }

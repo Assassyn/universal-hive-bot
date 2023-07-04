@@ -1,29 +1,60 @@
 ﻿module LoadTemplate
 
+open System
+open System.Threading
 open PipelineResult
 open Pipeline
-open Types
 open PipelineProcessData
-open BridgeAPITypes
-open System
+open Nettle
+open Nettle.Functions
+
+type ReadEntityFunction (entity: PipelineProcessData<UniversalHiveBotResutls>) =
+    inherit FunctionBase ()
+
+    override this.Description =
+        "Reads property from entity";
+    override this.GenerateOutput (request, cancellationToken) = 
+        task {  
+            let key = request.ParameterValues.[0].ToString ()
+            
+            if entity.properties.ContainsKey (key) 
+            then 
+                return entity.properties.[key]
+            else 
+                return (String.Empty :> obj)
+        }
+
+type EnumerateEntityFunction (entity: PipelineProcessData<UniversalHiveBotResutls>) =
+    inherit FunctionBase ()
+
+    override this.Description =
+        "Enumerates property from entity";
+    override this.GenerateOutput (request, cancellationToken) = 
+        task {  
+            let key = request.ParameterValues.[0].ToString ()
+            
+            let items = enumerateProperties key entity |> Array.ofSeq
+            return items
+        }
 
 [<Literal>]
 let private ModuleName = "LoadTemplate" 
 
-let private createReplacmentOld = 
-    sprintf "{{%s}}"
-
-let private foldProperties (properties: Map<string, obj>) (state: String) next = 
-    let mustache = createReplacmentOld next
-    state |> String.replaceString mustache (properties.[next].ToString())
-
-let private replaceMustache (properties: Map<string, obj>) (input: string) =
-    properties.Keys
-    |> Seq.fold (foldProperties properties) input 
+let private replaceMustache entity (input: string) =
+    task {
+        let compiler 
+            = NettleEngine.GetCompiler([|        
+                new ReadEntityFunction (entity) :> Functions.IFunction
+                new EnumerateEntityFunction (entity) :> Functions.IFunction
+            |])
+        let execute = compiler.Compile(input)
+        let! output = execute.Invoke(entity, CancellationToken.None)
+        return output
+    }
 
 let action templateId label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     TemplateAPI.getTemplate templateId
-    |> replaceMustache entity.properties
+    |> replaceMustache entity
     |> withProperty entity label 
     |>= Loaded (sprintf "Template with id %s" templateId)
 

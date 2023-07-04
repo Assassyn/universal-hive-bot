@@ -13,4 +13,4 @@ let getDiscussion hiveUrl author permlink =
     runHiveQueryAsync<Map<string, Discussion>> hiveUrl "bridge.get_discussion" {| author  = author; permlink = permlink|}
 
 let getAccountComments hiveUrl account limit = 
-    runHiveQuery<RankedPost seq> hiveUrl "bridge.get_account_posts" {| sort = "comments"; account = account; limit = limit |}
+    runHiveQuery<Post seq> hiveUrl "bridge.get_account_posts" {| sort = "comments"; account = account; limit = limit |}

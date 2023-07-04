@@ -19,7 +19,7 @@ let private foldPosts label indexEntity post =
 
 let action hiveUrl label username (entity: PipelineProcessData<UniversalHiveBotResutls>) = 
     BridgeAPI.getAccountComments hiveUrl username 25
-    |> Seq.map PostId.bind
+    |> Seq.map PostId.bindPost
     |> Seq.fold (foldPosts label) (entity, 0)
     |> fun (entity, _) -> entity
     |>= Loaded "comments_read"
