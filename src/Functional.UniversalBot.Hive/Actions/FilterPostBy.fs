@@ -1,4 +1,4 @@
-﻿module ReadUserComments
+﻿module FilterPostBy
 
 open System
 open PipelineResult
@@ -29,7 +29,7 @@ let action hiveUrl label usernameToLoadPostFor commentsCount username (entity: P
     |>= Loaded "comments_read"
 
 let bind urls (parameters: Map<string, string>) = 
-    let label = Map.getValueWithDefault parameters "label" "comments"
-    let username = Map.getValueWithDefault parameters "username" ""
-    let commentsCount = Map.getValueWithDefault parameters "commentsCount" "25"
+    let filterProperty = Map.getValueWithDefault parameters "filterOn" "created"
+    let comparer = Map.getValueWithDefault parameters "comparer" "="
+    let compareWith = Map.getValueWithDefault parameters "compareWith" "24h"
     Action.bindAction moduleName (action urls.hiveNodeUrl label username commentsCount)

@@ -13,6 +13,8 @@ type PostIdentification =
         category: string
         created: DateTimeOffset
         voters: string seq
+        parent_author: string
+        parent_permlink: string
     }
 
 let bind (rankedPost: RankedPost) = 
@@ -23,6 +25,8 @@ let bind (rankedPost: RankedPost) =
         permlink = rankedPost.permlink
         created = DateTimeOffset.Parse(rankedPost.created)
         voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
+        parent_author = rankedPost.parent_author
+        parent_permlink = rankedPost.parent_permlink
     }
 let bindPost (rankedPost: Post) = 
     {
@@ -32,6 +36,8 @@ let bindPost (rankedPost: Post) =
         permlink = rankedPost.permlink
         created = DateTimeOffset.Parse(rankedPost.created)
         voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
+        parent_author = rankedPost.parent_author
+        parent_permlink = rankedPost.parent_permlink
     }
 
 let bindParentPost (rankedPost: Post) = 
@@ -42,4 +48,6 @@ let bindParentPost (rankedPost: Post) =
         permlink = rankedPost.parent_permlink
         created = DateTimeOffset.Parse(rankedPost.created)
         voters = rankedPost.active_votes |> Seq.map (fun votes -> votes.voter)
+        parent_author = rankedPost.parent_author
+        parent_permlink = rankedPost.parent_permlink
     }

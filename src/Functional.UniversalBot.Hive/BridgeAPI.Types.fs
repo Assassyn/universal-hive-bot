@@ -45,6 +45,8 @@ type RankedPost =
         active_votes: ActiveVotes seq
         author_reputation: decimal
         percent_hbd: int32
+        parent_author: string
+        parent_permlink: string
       }
 
 type Post = 

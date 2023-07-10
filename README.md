@@ -235,7 +235,9 @@ I am aware that there are a few places where I cna improve the bot. For example,
         },
 
 
-14. load_template - returns a string value from GITHUB's GIST collection
+14. load_template - returns a string value from GITHUB's GIST collection, Template is using a templating library to make it more powerfull. There are added two support function to access entity(the bot context object). **ReadEntity** used to read a single type entity and **EnumerateEntity** whixch allows to read a collection based properties(one retunred by ReadComments, ReadPosts actions). 
+
+    Please see the documentation at https://github.com/craigbridges/Nettle/wiki for more details .
 
  Parameters: 
     * templateId - a part of ulr fomr ggithub's gist, e.g. <username>/12233423423423423423432423423433/raw/1234534545345345345abcdef1234566778890ab
@@ -248,6 +250,22 @@ I am aware that there are a few places where I cna improve the bot. For example,
     "templateId": "<username>/12233423423423423423432423423433/raw/1234534545345345345abcdef1234566778890ab",
     "label": "example_template"
 }
+```
+
+Example template: 
+
+```
+Daily Report for {{@GetDate()}}
+
+# tl;dr
+
+This is a daily summary of all post which has been supported by dcrop Boost 
+
+# Voted on posts
+{{ var posts = @EnumerateEntity("post") }}
+{{each posts}}
+  * {{$.name}}
+{{/each}}
 ```
 
 # Actions Series

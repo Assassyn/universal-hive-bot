@@ -9,16 +9,11 @@ open FSharp.Control
 open Nettle
 open LoadTemplate
 
-let template = """Daily Report for {{@GetDate()}}
-
+let template = """Daily Report for 
 # tl;dr
-
 This is a daily summary of all post which has been supported by dcrop Boost 
-
-# Voted on posts
-{{ var posts = @EnumerateEntity("post") }}
-{{each posts}}
-  * {{$.name}}
+# Voted on posts{{ var posts = @EnumerateEntity("post") }}{{ var today = @GetDate() }}{{ var yesterday = @AddDays(today, -1.0) }}
+{{each posts}}{{var isIn24Hours = @CompareDates(yesterday, "<", $.date) }}{{ if isIn24Hours }}* {{$.name}} - {{isIn24Hours}}{{/if}}
 {{/each}}"""
 
 [<Fact>]
@@ -27,19 +22,25 @@ let ``Load more advanced template from entity`` () =
         let model = 
             PipelineProcessData.bind 1
             |> PipelineProcessData.addProperty "date" (DateTime.Now.ToShortDateString())
-            |> PipelineProcessData.addProperty "post_001" {| postId = 1; name = "1"|}
-            |> PipelineProcessData.addProperty "post_002" {| postId = 1; name = "2"|}
-            |> PipelineProcessData.addProperty "post_003" {| postId = 1; name = "3"|}
-            |> PipelineProcessData.addProperty "post_004" {| postId = 1; name = "4"|}
+            |> PipelineProcessData.addProperty "post_001" {| postId = 1; name = "1"; date = DateTimeOffset.Now|}
+            |> PipelineProcessData.addProperty "post_002" {| postId = 1; name = "2"; date = DateTimeOffset.Now|}
+            |> PipelineProcessData.addProperty "post_003" {| postId = 1; name = "3"; date = DateTimeOffset.Now.AddDays(-2)|}
+            |> PipelineProcessData.addProperty "post_004" {| postId = 1; name = "4"; date = DateTimeOffset.Now.AddDays(-2)|}
 
         let compiler 
-            = NettleEngine.GetCompiler([|
+            = NettleEngine.GetCompiler ([|
                 new ReadEntityFunction (model) :> Functions.IFunction
                 new EnumerateEntityFunction (model) :> Functions.IFunction
+                new CompareDatesFunction() :> Functions.IFunction
             |])
-        let execute = compiler.Compile(template)
-        let! output = execute.Invoke(model.properties, System.Threading.CancellationToken.None)
-        output |> should startWith "Daily Report for "
+        let execute = compiler.Compile (template)
+        let! output = execute.Invoke (model.properties, System.Threading.CancellationToken.None)
+        output |> should startWith """Daily Report for 
+# tl;dr
+This is a daily summary of all post which has been supported by dcrop Boost 
+# Voted on posts
+* 1 - True
+* 2 - True"""
     }
 
 

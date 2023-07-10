@@ -14,3 +14,6 @@ let getDiscussion hiveUrl author permlink =
 
 let getAccountComments hiveUrl account limit = 
     runHiveQuery<Post seq> hiveUrl "bridge.get_account_posts" {| sort = "comments"; account = account; limit = limit |}
+
+let getPost hiveUrl author permanentLink = 
+    runHiveQuery<Post> hiveUrl "bridge.get_post" {| author = author; permlink = permanentLink |} 

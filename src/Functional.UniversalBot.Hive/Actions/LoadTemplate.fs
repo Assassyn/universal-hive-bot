@@ -37,6 +37,27 @@ type EnumerateEntityFunction (entity: PipelineProcessData<UniversalHiveBotResutl
             return items
         }
 
+type CompareDatesFunction () = 
+    inherit FunctionBase ()
+
+    override this.Description =
+        "Enumerates property from entity";
+    override this.GenerateOutput (request, cancellationToken) = 
+        task {  
+            let left = request.ParameterValues.[0].ToString () |> DateTime.Parse
+            let comparer = request.ParameterValues.[1].ToString ()
+            let right = request.ParameterValues.[2].ToString () |> DateTime.Parse
+
+            return 
+                match comparer with 
+                | "=" -> left = right
+                | ">=" -> left >= right
+                | "<=" -> left <= right
+                | ">" -> left > right
+                | "<" -> left < right
+                | _ -> false
+        }
+
 [<Literal>]
 let private ModuleName = "LoadTemplate" 
 
@@ -46,6 +67,7 @@ let private replaceMustache entity (input: string) =
             = NettleEngine.GetCompiler([|        
                 new ReadEntityFunction (entity) :> Functions.IFunction
                 new EnumerateEntityFunction (entity) :> Functions.IFunction
+                new CompareDatesFunction() :> Functions.IFunction
             |])
         let execute = compiler.Compile(input)
         let! output = execute.Invoke(entity, CancellationToken.None)
